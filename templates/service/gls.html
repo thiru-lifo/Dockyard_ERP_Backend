@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+    h2,td,p{
+        font-family: Arial Nova Cond;
+    }
+    
+</style>
+
+
+<h2 style="text-align:center"><u><b>{% if  moduleDet%}{{ moduleDet.name }}{% endif %}</b></u></h2>
+
+ <table cellspacing="0" cellpadding="5" border="1" class="table grid-tab" width="100%" style="font-family: Arial Nova Cond; text-align: left;">
+    {% for sub_module in  globaltransactionname %}
+    <tr><td>
+        <h4 style="text-align:center"><b>{{ sub_module.submodule.name}}
+</b></h4></td>
+</tr>
+{% for section in  sub_module.submodule.section%}
+      
+   <tr><td>         
+
+{% if  section.view == True %}
+<b> {{ section.name}}</b>
+{% if  section.paragraph != None %}
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<p style="background-color:#90EE90;">
+
+         {% if  section.para_no != '' %}
+            <b>{{ section.para_no}}</b> : 
+         {% endif %}
+
+          {{  section.paragraph|striptags}}{%endif%}</p>
+{% if  section.paragraph != section.paragraphlog %}
+
+               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <p style="background-color:#FFCCCB;">  
+
+               {% if section.para_nolog != '' and section.para_no != section.para_nolog %}
+                  <b>{{ section.para_nolog}}</b> : 
+               {% endif %}
+
+               {{  section.paragraphlog|striptags}}</p>{%endif%}{%endif%}</td>
+ <td>
+                {% for subsection in  section.subsections %}{%if subsection.name != None %}
+{% if  subsection.view == True %}
+
+
+
+ <b><u>{{ subsection.name}}</u></b></br>{%if subsection.paragraph != None %}
+<p style="background-color:#90EE90;">
+
+{% if  subsection.para_no != '' %}
+   <b>{{ subsection.para_no}}</b> : 
+{% endif %}
+
+{{ subsection.paragraph|striptags }}</p>{%endif%}
+{% if  subsection.paragraph != subsection.paragraphlog %}
+
+<p style="background-color:#FFCCCB;">
+
+      {% if subsection.para_nolog != '' and subsection.para_no != subsection.para_nolog %}
+         <b>{{ subsection.para_nolog}}</b> : 
+      {% endif %}
+
+{{ subsection.paragraphlog|striptags }}</p>{%endif%}
+{% endif %}{%endif%}{% for subsubsection in subsection.subsubsections %}{%if subsubsection.name != None %}
+{% if  subsubsection.view == True %}
+<h6 ><li>{{ subsubsection.name}}</li></h6>
+{%if  subsubsection.paragraph != None %}
+<p style="background-color:#90EE90;">
+
+{% if  subsubsection.para_no != '' %}
+   <b>{{ subsubsection.para_no}}</b> : 
+{% endif %}
+
+{{  subsubsection.paragraph|striptags }}</p>{%endif%}
+{% if  subsubsection.paragraph != subsubsection.paragraphlog %}
+
+<p style="background-color:#FFCCCB;">
+
+      {% if subsubsection.para_nolog != '' and subsubsection.para_no != subsubsection.para_nolog %}
+         <b>{{ subsubsection.para_nolog}}</b> : 
+      {% endif %}
+
+{{  subsubsection.paragraphlog|striptags }}</p>{% endif %}
+
+{% endif %}{%endif%}
+
+{%endfor%} {%endfor%} {%endfor%} 
+        </td>
+ 
+     </tr>
+   
+{%endfor%} 
+</table>
+
+
+
+{% for sub_module in sytemdata %}
+{% for section in sub_module.submodule.section %}
+{% if section.equipment_value or section.system_value or section.compartment_value%}
+<h5>{{section.name}}</h5>
+{%endif%}
+{% if  section.equipment_value %}
+<h4>Equipment</h4>
+ <table cellspacing="0" cellpadding="5" border="1" class="table grid-tab" width="100%" style="font-family: Arial Nova Cond; text-align: left;">
+    <thead>
+       <tr>
+          <th>Ser</th>
+          <th>Name</th>
+          <th>Numbers</th>
+          <th>Capabilities / Feature </th>
+          <th>Weight, Volume and Power Consumption </th>
+          <th>Location</th>
+          <th>Interface</th>
+          <th>Procurement Router</th>
+          <th>Vendor</th>
+          <th>Cost</th>
+          <th>Standards</th>
+          <th>Sustenance</th>
+       </tr>
+    </thead>
+    <tbody>
+        {% for sysvalue in  section.equipment_value%}
+         <tr>
+            <td>{{sysvalue.ser}}</td>
+            <td>{{sysvalue.name }}</td>
+            <td>{{sysvalue.numbers}}</td>
+            <td>{{sysvalue.capabilities_feature}}</td>
+            <td>{{sysvalue.weight_volume_power_consumption}}</td>
+            <td>{{sysvalue.location}}</td>
+            <td>{{sysvalue.interface}}</td>
+            <td>{{sysvalue.procurement_router}}</td>
+            <td>{{sysvalue.vendor}}</td>
+            <td>{{sysvalue.cost}}</td>
+            <td>{{sysvalue.standards}}</td>
+            <td>{{sysvalue.sustenance}}</td>
+         </tr>
+         {% endfor %}
+    </tbody>
+ </table>
+ {%endif%}
+ {% if  section.system_value %}
+<h4>Sytem</h4>
+ <table cellspacing="0" cellpadding="5" border="1" class="table grid-tab" width="100%" style="font-family: Arial Nova Cond; text-align: left;">
+    <thead>
+       <tr>
+          <th>Ser</th>
+          <th>Name</th>
+          <th>Numbers</th>
+          <th>Capabilities / Feature </th>
+          <th>Weight, Volume and Power Consumption </th>
+          <th>Location</th>
+          <th>Interface</th>
+          <th>Procurement Router</th>
+          <th>Vendor</th>
+          <th>Cost</th>
+          <th>Standards</th>
+          <th>Sustenance</th>
+       </tr>
+    </thead>
+    <tbody>
+        {% for sysvalue in  section.system_value%}
+         <tr>
+            <td>{{sysvalue.ser}}</td>
+            <td>{{sysvalue.name }}</td>
+            <td>{{sysvalue.numbers}}</td>
+            <td>{{sysvalue.capabilities_feature}}</td>
+            <td>{{sysvalue.weight_volume_power_consumption}}</td>
+            <td>{{sysvalue.location}}</td>
+            <td>{{sysvalue.interface}}</td>
+            <td>{{sysvalue.procurement_router}}</td>
+            <td>{{sysvalue.vendor}}</td>
+            <td>{{sysvalue.cost}}</td>
+            <td>{{sysvalue.standards}}</td>
+            <td>{{sysvalue.sustenance}}</td>
+         </tr>
+         {% endfor %}
+    </tbody>
+ </table>
+ {%endif%}
+ {% if  section.compartment_value %}
+<h4>Compartment</h4>
+ <table cellspacing="0" cellpadding="5" border="1" class="table grid-tab" width="100%" style="font-family: Arial Nova Cond; text-align: left;">
+    <thead>
+       <tr>
+          <th>Ser</th>
+                  <th>Name</th>
+                  <th>Numbers</th>
+                  <th>Location</th>
+                  <th>Equipment</th>
+                  <th>Features</th>
+                  <th>Layout</th>
+                  <th>Special Requirements</th>
+                  <th>Standards</th>
+       </tr>
+    </thead>
+    <tbody>
+        {% for sysvalue in  section.compartment_value%}
+         <tr>
+            <td>{{sysvalue.ser}}</td>
+            <td>{{sysvalue.name }}</td>
+            <td>{{sysvalue.numbers}}</td>
+             <td>{{sysvalue.location }}</td>
+            <td>{{sysvalue.equipment}}</td>
+            <td>{{sysvalue.features}}</td>
+            <td>{{sysvalue.layout}}</td>
+            <td>{{sysvalue.special_requiremnets}}</td>
+            
+            <td>{{sysvalue.standards}}</td>
+            
+         </tr>
+         {% endfor %}
+    </tbody>
+ </table>
+ {%endif%}
+
+
+
+
+
+<!-- Subsection -->
+{% for subsection in section.subsections %}
+{% if subsection.equipment_value or subsection.system_value or subsection.compartment_value%}
+<h5>{{subsection.name}}</h5>
+{%endif%}
+{% if subsection.equipment_value %}
+<h4>Equipment</h4>
+ <table cellspacing="0" cellpadding="5" border="1" class="table grid-tab" width="100%" style="font-family: Arial Nova Cond; text-align: left;">
+    <thead>
+       <tr>
+          <th>Ser</th>
+          <th>Name</th>
+          <th>Numbers</th>
+          <th>Capabilities / Feature </th>
+          <th>Weight, Volume and Power Consumption </th>
+          <th>Location</th>
+          <th>Interface</th>
+          <th>Procurement Router</th>
+          <th>Vendor</th>
+          <th>Cost</th>
+          <th>Standards</th>
+          <th>Sustenance</th>
+       </tr>
+    </thead>
+    <tbody>
+        {% for sysvalue in subsection.equipment_value%}
+         <tr>
+            <td>{{sysvalue.ser}}</td>
+            <td>{{sysvalue.name }}</td>
+            <td>{{sysvalue.numbers}}</td>
+            <td>{{sysvalue.capabilities_feature}}</td>
+            <td>{{sysvalue.weight_volume_power_consumption}}</td>
+            <td>{{sysvalue.location}}</td>
+            <td>{{sysvalue.interface}}</td>
+            <td>{{sysvalue.procurement_router}}</td>
+            <td>{{sysvalue.vendor}}</td>
+            <td>{{sysvalue.cost}}</td>
+            <td>{{sysvalue.standards}}</td>
+            <td>{{sysvalue.sustenance}}</td>
+         </tr>
+         {% endfor %}
+    </tbody>
+ </table>
+ {%endif%}
+ {% if subsection.system_value %}
+<h4>System</h4>
+ <table cellspacing="0" cellpadding="5" border="1" class="table grid-tab" width="100%" style="font-family: Arial Nova Cond; text-align: left;">
+    <thead>
+       <tr>
+          <th>Ser</th>
+          <th>Name</th>
+          <th>Numbers</th>
+          <th>Capabilities / Feature </th>
+          <th>Weight, Volume and Power Consumption </th>
+          <th>Location</th>
+          <th>Interface</th>
+          <th>Procurement Router</th>
+          <th>Vendor</th>
+          <th>Cost</th>
+          <th>Standards</th>
+          <th>Sustenance</th>
+       </tr>
+    </thead>
+    <tbody>
+        {% for sysvalue in subsection.system_value%}
+         <tr>
+            <td>{{sysvalue.ser}}</td>
+            <td>{{sysvalue.name }}</td>
+            <td>{{sysvalue.numbers}}</td>
+            <td>{{sysvalue.capabilities_feature}}</td>
+            <td>{{sysvalue.weight_volume_power_consumption}}</td>
+            <td>{{sysvalue.location}}</td>
+            <td>{{sysvalue.interface}}</td>
+            <td>{{sysvalue.procurement_router}}</td>
+            <td>{{sysvalue.vendor}}</td>
+            <td>{{sysvalue.cost}}</td>
+            <td>{{sysvalue.standards}}</td>
+            <td>{{sysvalue.sustenance}}</td>
+         </tr>
+         {% endfor %}
+    </tbody>
+ </table>
+ {%endif%}
+
+{% if  subsection.compartment_value %}
+<h4>Compartment</h4>
+ <table cellspacing="0" cellpadding="5" border="1" class="table grid-tab" width="100%" style="font-family: Arial Nova Cond; text-align: left;">
+    <thead>
+       <tr>
+          <th>Ser</th>
+                  <th>Name</th>
+                  <th>Numbers</th>
+                  <th>Location</th>
+                  <th>Equipment</th>
+                  <th>Features</th>
+                  <th>Layout</th>
+                  <th>Special Requirements</th>
+                  <th>Standards</th>
+       </tr>
+    </thead>
+    <tbody>
+        {% for sysvalue in  subsection.compartment_value%}
+         <tr>
+            <td>{{sysvalue.ser}}</td>
+            <td>{{sysvalue.name }}</td>
+            <td>{{sysvalue.numbers}}</td>
+             <td>{{sysvalue.location }}</td>
+            <td>{{sysvalue.equipment}}</td>
+            <td>{{sysvalue.features}}</td>
+            <td>{{sysvalue.layout}}</td>
+            <td>{{sysvalue.special_requiremnets}}</td>            
+            <td>{{sysvalue.standards}}</td>
+            
+         </tr>
+         {% endfor %}
+    </tbody>
+ </table>
+ {%endif%}
+
+
+
+
+{% for subsubsection in subsection.subsubsections %}
+{% if subsubsection.equipment_value or subsubsection.system_value or subsubsection.compartment_value%}
+<h5>{{subsubsection.name}}</h5>
+{%endif%}
+{% if subsubsection.equipment_value %}
+<h4>Equipment</h4>
+ <table cellspacing="0" cellpadding="5" border="1" class="table grid-tab" width="100%" style="font-family: Arial Nova Cond; text-align: left;">
+    <thead>
+       <tr>
+          <th>Ser</th>
+          <th>Name</th>
+          <th>Numbers</th>
+          <th>Capabilities / Feature </th>
+          <th>Weight, Volume and Power Consumption </th>
+          <th>Location</th>
+          <th>Interface</th>
+          <th>Procurement Router</th>
+          <th>Vendor</th>
+          <th>Cost</th>
+          <th>Standards</th>
+          <th>Sustenance</th>
+       </tr>
+    </thead>
+    <tbody>
+        {% for sysvalue in subsubsection.equipment_value%}
+         <tr>
+            <td>{{sysvalue.ser}}</td>
+            <td>{{sysvalue.name }}</td>
+            <td>{{sysvalue.numbers}}</td>
+            <td>{{sysvalue.capabilities_feature}}</td>
+            <td>{{sysvalue.weight_volume_power_consumption}}</td>
+            <td>{{sysvalue.location}}</td>
+            <td>{{sysvalue.interface}}</td>
+            <td>{{sysvalue.procurement_router}}</td>
+            <td>{{sysvalue.vendor}}</td>
+            <td>{{sysvalue.cost}}</td>
+            <td>{{sysvalue.standards}}</td>
+            <td>{{sysvalue.sustenance}}</td>
+         </tr>
+         {% endfor %}
+    </tbody>
+ </table>
+ {%endif%}
+ {% if subsubsection.system_value %}
+<h4>System</h4>
+ <table cellspacing="0" cellpadding="5" border="1" class="table grid-tab" width="100%" style="font-family: Arial Nova Cond; text-align: left;">
+    <thead>
+       <tr>
+          <th>Ser</th>
+          <th>Name</th>
+          <th>Numbers</th>
+          <th>Capabilities / Feature </th>
+          <th>Weight, Volume and Power Consumption </th>
+          <th>Location</th>
+          <th>Interface</th>
+          <th>Procurement Router</th>
+          <th>Vendor</th>
+          <th>Cost</th>
+          <th>Standards</th>
+          <th>Sustenance</th>
+       </tr>
+    </thead>
+    <tbody>
+        {% for sysvalue in subsubsection.system_value%}
+         <tr>
+            <td>{{sysvalue.ser}}</td>
+            <td>{{sysvalue.name }}</td>
+            <td>{{sysvalue.numbers}}</td>
+            <td>{{sysvalue.capabilities_feature}}</td>
+            <td>{{sysvalue.weight_volume_power_consumption}}</td>
+            <td>{{sysvalue.location}}</td>
+            <td>{{sysvalue.interface}}</td>
+            <td>{{sysvalue.procurement_router}}</td>
+            <td>{{sysvalue.vendor}}</td>
+            <td>{{sysvalue.cost}}</td>
+            <td>{{sysvalue.standards}}</td>
+            <td>{{sysvalue.sustenance}}</td>
+         </tr>
+         {% endfor %}
+    </tbody>
+ </table>
+ {%endif%}
+
+ 
+ {% if  subsubsection.compartment_value %}
+<h4>Compartment</h4>
+ <table cellspacing="0" cellpadding="5" border="1" class="table grid-tab" width="100%" style="font-family: Arial Nova Cond; text-align: left;">
+    <thead>
+       <tr>
+          <th>Ser</th>
+                  <th>Name</th>
+                  <th>Numbers</th>
+                  <th>Location</th>
+                  <th>Equipment</th>
+                  <th>Features</th>
+                  <th>Layout</th>
+                  <th>Special Requirements</th>
+                  <th>Standards</th>
+       </tr>
+    </thead>
+    <tbody>
+        {% for sysvalue in  subsubsection.compartment_value%}
+         <tr>
+            <td>{{sysvalue.ser}}</td>
+            <td>{{sysvalue.name }}</td>
+            <td>{{sysvalue.numbers}}</td>
+             <td>{{sysvalue.location }}</td>
+            <td>{{sysvalue.equipment}}</td>
+            <td>{{sysvalue.features}}</td>
+            <td>{{sysvalue.layout}}</td>
+            <td>{{sysvalue.special_requiremnets}}</td>            
+            <td>{{sysvalue.standards}}</td>
+            
+         </tr>
+         {% endfor %}
+    </tbody>
+ </table>
+ {%endif%}
+
+
+{% endfor %}
+
+
+
+<!-- System -->
+
+
+{% endfor %}
+{% endfor %}
+{% endfor %}
+
+</html>

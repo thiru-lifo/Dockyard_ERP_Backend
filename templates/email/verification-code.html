@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<style type="text/css">
+  .verification-code ul{padding: 0; margin: 0;}
+  .verification-code ul li{list-style: none; display: inline-block; width: 40px; height: 40px; line-height: 40px; font-size: 18px; font-weight: 500; color: #651037; text-align: center; border: 1px solid #651037; border-radius: 4px; margin-right: 5px;}
+</style>
+</head>
+<body style="background-color:#fafafa;">
+	  <table width="600" border="0" cellspacing="0" cellpadding="0" style="background:rgb(242, 242, 242); font-family:Arial, Helvetica, sans-serif;font-size:14px;color:#314853; margin:20px auto; border: 1px solid #f4e3eb;">
+      <tr>
+          <td colspan="3" style="background:#ffeaf4; text-align:center; padding:10px 0;">
+            <a href="#" style="text-align:center; display:block;"><img alt="" title="" src="" width="130"></a>
+          </td>
+      </tr>
+      <tr>
+         <td colspan="3" style="background:#fff; padding:20px;">
+            <h3 style="font-size:15px; color:#651037; margin:0 0 15px; text-transform:uppercase;">Dear {{user_name}}!</h3>
+            <p>Your verification code is</p>
+            <div class="verification-code">
+              <ul>
+                {% for item in verification_code %}
+                <li>{{ item }}</li>
+                {%endfor%}
+              </ul>
+            </div>
+            <p>Enter this code to access your account with STEMZ Global</p>
+            <br>
+            <p>*If you didn't request a code, you can ignore this email.</p>
+            <p>*If you have any questions, send us an email <a href="mailto:support@test.com">support@test.com</a>.</p>
+            <br>
+            <br>
+            <p style="margin:30px 0 10px;">Best Regards,</p>
+            <p style="font-weight:600; margin:0 0 10px;">Stemz Global Team</p>
+         </td>
+      </tr>
+      <tr>
+          <td colspan="3" style="background:#651037; text-align:center; padding:0;">
+             <table width="100%" border="0" cellspacing="0" cellpadding="0" style=" font-family:Arial, Helvetica, sans-serif;font-size:14px;color:#314853; padding:20px;">
+                <tr>
+                  <td><p style="color:#fff; font-size:14px; text-align:left; margin:0;">Phone: +01548-355-320</p></td>
+                  <td><p style="color:#fff; font-size:14px; text-align:right; margin:0;">Email: <a href="#" style="color:#fff; text-decoration:none;">info@test.com</a></p></td>
+                </tr>
+             </table>
+          </td>
+      </tr>
+    </table>
+</body>
+</html>

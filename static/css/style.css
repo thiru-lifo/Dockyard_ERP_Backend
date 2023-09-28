@@ -1,0 +1,10 @@
+div#header{background-color: #630332 !important;}
+div#header #branding{/*background: #FFF;width: 150px;*/text-align: center;height: 75px;}
+div#header #branding img{/*width: 120px;*/height: 75px;}
+div#header #branding h1{margin: 0;}
+.module h2, .module caption, .inline-group h2{background-color: #630332 !important;}
+#content-related .module h2{color: #fff;}
+div.breadcrumbs{background: #72a932;}
+.login #container{box-shadow: rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset, rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;}
+div#recent-actions-module{display: none;}
+.navbar ul li {        list-style-type: none;        padding: 0;    }    .navbar .dropdown-item {        width: auto;    }
