@@ -284,7 +284,7 @@ class Section(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
     code = models.CharField(max_length=15)    
-    department_id = models.ForeignKey(Department, on_delete= models.CASCADE)
+    #department_id = models.ForeignKey(Department, on_delete= models.CASCADE)
     sequence = models.IntegerField(null=True)
     status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
     created_on = models.DateTimeField(auto_now_add=True)
@@ -865,3 +865,120 @@ class Ships(models.Model):
         db_table = 'master.ships'
         verbose_name = 'ships'
         verbose_name_plural = 'ships'
+
+
+############################
+
+class Dockyard(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField(null=True, blank=True)
+    code = models.CharField(max_length=15)
+    command_id = models.ForeignKey(Command, on_delete= models.CASCADE)
+    sequence = models.IntegerField(null=True)
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True) 
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = 'master.dockyard'
+        verbose_name = 'dockyard'
+        verbose_name_plural = 'dockyard'
+
+class DockyardGroup(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField(null=True, blank=True)
+    code = models.CharField(max_length=15)
+    sequence = models.IntegerField(null=True)
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True) 
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = 'master.dockyard_group'
+        verbose_name = 'dockyard_group'
+        verbose_name_plural = 'dockyard_group'
+
+
+class DockyardSubGroup(models.Model):
+    dockyard = models.ForeignKey(Dockyard, on_delete= models.CASCADE)
+    dockyard_group = models.ForeignKey(DockyardGroup, on_delete= models.CASCADE)
+    name = models.CharField(max_length=100)
+    description = models.TextField(null=True, blank=True)
+    code = models.CharField(max_length=15)
+    sequence = models.IntegerField(null=True)
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True) 
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = 'master.dockyard_sub_group'
+        verbose_name = 'dockyard_sub_group'
+        verbose_name_plural = 'dockyard_sub_group'
+
+
+class Center(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField(null=True, blank=True)
+    code = models.CharField(max_length=15)
+    sequence = models.IntegerField(null=True)
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True) 
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = 'master.center'
+        verbose_name = 'center'
+        verbose_name_plural = 'center'
+
+
+class Shopfloor(models.Model):
+    center = models.ForeignKey(Center, on_delete= models.CASCADE)
+    dockyard_sub_group = models.ForeignKey(DockyardSubGroup, on_delete= models.CASCADE)
+    section = models.ForeignKey(Section, on_delete= models.CASCADE)
+    name = models.CharField(max_length=100)
+    description = models.TextField(null=True, blank=True)
+    code = models.CharField(max_length=15)
+    sequence = models.IntegerField(null=True)
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True) 
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = 'master.shopfloor'
+        verbose_name = 'shopfloor'
+        verbose_name_plural = 'shopfloor'
