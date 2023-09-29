@@ -686,13 +686,14 @@ class Equipment(models.Model):
     equipment_ship_id = models.IntegerField(null=True)
     sequence = models.IntegerField(null=True)
 
+    # New Fields
     equipment_model = models.CharField(max_length=100, blank=True, null=True)
     nomenclature = models.CharField(max_length=100, blank=True, null=True)
-
     esd_equipment_id = models.IntegerField(null=True) #??? master
     ship_id = models.IntegerField(null=True) #??? master
     universal_id_m_ship = models.IntegerField(null=True) #???
     equipment_sr_no = models.IntegerField(null=True) #???
+    # New Fields
 
     status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
     created_on = models.DateTimeField(auto_now_add=True)
@@ -1047,3 +1048,98 @@ class Shopfloor(models.Model):
         db_table = 'master.shopfloor'
         verbose_name = 'shopfloor'
         verbose_name_plural = 'shopfloor'
+
+
+
+### Sub Module ###
+
+class TimeKeepingAttendance(models.Model):
+    module =  models.ForeignKey(Module, on_delete = models.CASCADE)
+    name = models.CharField(max_length=100)
+    description = models.TextField(null=True, blank=True)
+    code = models.CharField(max_length=15)
+    sequence = models.IntegerField(null=True)
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True) 
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = 'master.time_keeping_attendance'
+        verbose_name = 'time_keeping_attendance'
+        verbose_name_plural = 'time_keeping_attendance'
+
+
+class ManpowerBooking(models.Model):
+    module =  models.ForeignKey(Module, on_delete = models.CASCADE)
+    name = models.CharField(max_length=100)
+    description = models.TextField(null=True, blank=True)
+    code = models.CharField(max_length=15)
+    sequence = models.IntegerField(null=True)
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True) 
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = 'master.manpower_booking'
+        verbose_name = 'manpower_booking'
+        verbose_name_plural = 'manpower_booking'
+
+
+class PayEmolumentsPension(models.Model):
+    module =  models.ForeignKey(Module, on_delete = models.CASCADE)
+    name = models.CharField(max_length=100)
+    description = models.TextField(null=True, blank=True)
+    code = models.CharField(max_length=15)
+    sequence = models.IntegerField(null=True)
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True) 
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = 'master.pay_emoluments_pension'
+        verbose_name = 'pay_emoluments_pension'
+        verbose_name_plural = 'pay_emoluments_pension'
+
+
+class YardClinic(models.Model):
+    module =  models.ForeignKey(Module, on_delete = models.CASCADE)
+    name = models.CharField(max_length=100)
+    description = models.TextField(null=True, blank=True)
+    code = models.CharField(max_length=15)
+    sequence = models.IntegerField(null=True)
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True) 
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = 'master.yard_clinic'
+        verbose_name = 'yard_clinic'
+        verbose_name_plural = 'yard_clinic'

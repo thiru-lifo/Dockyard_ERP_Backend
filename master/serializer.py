@@ -620,3 +620,42 @@ class ListDefectSerializer(serializers.ModelSerializer):
         refit_type_id = response['refit_type']
         response['refit_type_det'] = models.RefitType.objects.values('id','name','code').filter(id=refit_type_id).first()
         return response
+
+
+
+class SubModuleTimeKeepingAttendanceSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.TimeKeepingAttendance
+        fields = "__all__"       
+
+class ListSubModuleTimeKeepingAttendanceSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.TimeKeepingAttendance
+        fields = "__all__" 
+
+    def to_representation(self, instance):        
+        response = super().to_representation(instance) 
+        module_id = response['module']
+        response['module'] = models.Module.objects.values('id','name').filter(id=module_id).first()
+        return response
+
+
+class SubModuleManpowerBookingSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.ManpowerBooking
+        fields = "__all__"       
+
+class ListSubModuleManpowerBookingSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.ManpowerBooking
+        fields = "__all__" 
+
+    def to_representation(self, instance):        
+        response = super().to_representation(instance) 
+        module_id = response['module']
+        response['module'] = models.Module.objects.values('id','name').filter(id=module_id).first()
+        return response

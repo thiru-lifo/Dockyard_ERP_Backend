@@ -163,4 +163,18 @@ urlpatterns = [
     path('defect', views.DefectViews.as_view(), name = 'view_defect'),
     path('defect/<int:pk>', views.DefectViews.as_view(), name = 'view_defect'),
     path('defect/details', views.DefectDetailViews.as_view(), name = 'add_defect'),
+
+    path('sub_module_time_keeping_attendance', views.SubModuleTimeKeepingAttendanceViews.as_view(), name = 'view_sub_module_time_keeping_attendance'),
+    path('sub_module_time_keeping_attendance/<int:pk>', views.SubModuleTimeKeepingAttendanceViews.as_view(), name = 'view_sub_module_time_keeping_attendance'),
+    path('sub_module_time_keeping_attendance/details', views.SubModuleTimeKeepingAttendanceCURD.as_view(), name = 'add_sub_module_time_keeping_attendance'),
+
+
+    path('sub_module/man_power_booking', views.SubModuleManPowerBookingViews.as_view(), name = 'view_man_power_booking'),
+    path('sub_module/man_power_booking/<int:pk>', views.SubModuleManPowerBookingViews.as_view(), name = 'man_power_booking'),
+    path('sub_module/man_power_booking/details', views.SubModuleManPowerBookingCURD.as_view(), name = 'man_power_booking'),
+
+
+    # path('sub_module/man_power_booking', views.SubModuleManPowerBookingViews.as_view(), name = 'view_man_power_booking'),
+    # path('sub_module/man_power_booking/<int:pk>', views.SubModuleManPowerBookingViews.as_view(), name = 'man_power_booking'),
+    # path('sub_module/man_power_booking/details', views.SubModuleManPowerBookingCURD.as_view(), name = 'man_power_booking'),
 ]
