@@ -2,7 +2,7 @@ from socketserver import DatagramRequestHandler
 from venv import create
 from django.db.models import F
 from rest_framework import serializers
-from .models import Countries, States, Cities,LookupType,Lookup,Region
+from .models import Countries, States, Cities,LookupType,Lookup,Region,Dockyard,Command
 from access.serializer import AccessUserRoleserializer
 from . import models
 
@@ -77,16 +77,42 @@ class LookupSerializer(serializers.ModelSerializer):
 class ClassSerializer(serializers.ModelSerializer):
     
     class Meta:
-        model = models.Class
-        #fields = "__all__"       
-        fields = ['id','name']
-
-class ListClassSerializer(serializers.ModelSerializer):
+        model = models.Dockyard
+        fields = "__all__"       
+        # fields = ['id','name']
+class CommandSerializer(serializers.ModelSerializer):
     
+    class Meta:
+        model = models.Command
+        fields = "__all__"       
+
+class ListCommandSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.Command
+        fields = "__all__" 
+
+
+class ListDockyardSerializer(serializers.ModelSerializer):
+    command_id = CommandSerializer(read_only = True)
     #project_id = projectSerializer(read_only=True)
     class Meta:
-        model = models.Class
+        model = models.Dockyard
         fields = "__all__" 
+
+class DockyardSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.Dockyard
+        fields = "__all__"       
+        #fields = ['id','name']
+
+# class ListDockyardSerializer(serializers.ModelSerializer):
+    
+#     #project_id = projectSerializer(read_only=True)
+#     class Meta:
+#         model = models.Class
+#         fields = "__all__" 
 
 class ProjectTypeSerializer(serializers.ModelSerializer):
     
@@ -120,17 +146,6 @@ class ListProjectSerializer(serializers.ModelSerializer):
         response['project_type_det'] = models.ProjectType.objects.values('id','name','code').filter(id=project_type_id).first()
         return response
 
-class CommandSerializer(serializers.ModelSerializer):
-    
-    class Meta:
-        model = models.Command
-        fields = "__all__"       
-
-class ListCommandSerializer(serializers.ModelSerializer):
-    
-    class Meta:
-        model = models.Command
-        fields = "__all__" 
 
 class DepartmentSerializer(serializers.ModelSerializer):
     

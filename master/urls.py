@@ -68,6 +68,11 @@ urlpatterns = [
     path('class/<int:pk>', views.ClassViews.as_view(), name = 'view_class'),
     path('class/details', views.ClassDetailViews.as_view(), name = 'add_class'),
 
+    path('dockyard', views.DockyardViews.as_view(), name = 'view_dockyard'),
+    path('dockyard/<int:pk>', views.DockyardViews.as_view(), name = 'view_dockyard'),
+    path('dockyard/details', views.DockyardDetailViews.as_view(), name = 'add_dockyard'),
+
+
     path('ship', views.ShipViews.as_view(), name = 'view_ship'),
     path('ship/<int:pk>', views.ShipViews.as_view(), name = 'view_ship'),
     path('ship/details', views.ShipDetailViews.as_view(), name = 'add_ship'),
