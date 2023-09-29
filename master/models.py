@@ -238,6 +238,62 @@ class Project(models.Model):
         verbose_name = 'project'
         verbose_name_plural = 'project' 
 
+
+class RefitType(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField(null=True, blank=True)
+    code = models.CharField(max_length=15)
+    sequence = models.IntegerField(null=True)
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True) 
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = 'master.refit_type'
+        verbose_name = 'refit_type'
+        verbose_name_plural = 'refit_type'
+
+
+class Defect(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField(null=True, blank=True)
+    code = models.CharField(max_length=15)
+
+    dl_1 = models.CharField(max_length=15, blank=True, null=True)
+    dl_2 = models.CharField(max_length=15, blank=True, null=True)
+    dl_3 = models.CharField(max_length=15, blank=True, null=True)
+    sdl = models.CharField(max_length=15, blank=True, null=True)
+
+    awrf_1 = models.CharField(max_length=15, blank=True, null=True)
+    awrf_2 = models.CharField(max_length=15, blank=True, null=True)
+    awrf_3 = models.CharField(max_length=15, blank=True, null=True)
+
+    refit_type = models.ForeignKey(RefitType, on_delete= models.CASCADE)
+    sequence = models.IntegerField(null=True)
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True) 
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = 'master.defect_list'
+        verbose_name = 'defect_list'
+        verbose_name_plural = 'defect_list'
+
+
 class Command(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
@@ -629,6 +685,15 @@ class Equipment(models.Model):
     global_sub_sub_section= models.ForeignKey(GlobalSubSubSection,null=True, on_delete= models.CASCADE)
     equipment_ship_id = models.IntegerField(null=True)
     sequence = models.IntegerField(null=True)
+
+    equipment_model = models.CharField(max_length=100, blank=True, null=True)
+    nomenclature = models.CharField(max_length=100, blank=True, null=True)
+
+    esd_equipment_id = models.IntegerField(null=True) #??? master
+    ship_id = models.IntegerField(null=True) #??? master
+    universal_id_m_ship = models.IntegerField(null=True) #???
+    equipment_sr_no = models.IntegerField(null=True) #???
+
     status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
     created_on = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True)

@@ -153,4 +153,19 @@ urlpatterns = [
     path('global_sub_section_form_mapping', views.FormMappingGlobalSubSectionViews.as_view(), name = 'form_mapping_view_global_sub_section'),
     path('global_sub_sub_section_form_mapping', views.FormMappingGlobalSubSubSectionViews.as_view(), name = 'form_mapping_view_global_sub_sub_section'),
 
+
+
+    # Dockyard #
+    # path('dockyard_group', views.DockyardGroupViews.as_view(), name = 'dockyard_group_class'),
+    # path('dockyard_group/<int:pk>', views.DockyardGroupViews.as_view(), name = 'dockyard_group_class'),
+    # path('dockyard_group/details', views.DockyardGroupDetailViews.as_view(), name = 'add_dockyard_group_class'),
+
+
+    path('refit_type', views.RefitTypeViews.as_view(), name = 'view_refit_type'),
+    path('refit_type/<int:pk>', views.RefitTypeViews.as_view(), name = 'view_refit_type'),
+    path('refit_type/details', views.RefitTypeDetailViews.as_view(), name = 'add_refit_type'),
+
+    path('defect', views.DefectViews.as_view(), name = 'view_defect'),
+    path('defect/<int:pk>', views.DefectViews.as_view(), name = 'view_defect'),
+    path('defect/details', views.DefectDetailViews.as_view(), name = 'add_defect'),
 ]
