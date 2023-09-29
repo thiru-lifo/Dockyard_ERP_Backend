@@ -584,3 +584,39 @@ class DataAccessSerializer(serializers.ModelSerializer):
         #response['ships']=DataAccessShipSerializer(models.DataAccessShip.objects.filter(data_access_id=data_access_id),many=True).data
         response['sub_module']=DataAccessSubModuleSerializer(models.DataAccessSubModule.objects.filter(data_access_id=data_access_id),many=True).data
         return response
+
+
+#### DockYard ####
+
+class RefitTypeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.RefitType
+        fields = "__all__"       
+
+class ListRefitTypeSerializer(serializers.ModelSerializer):
+    
+    #class_id = ClassSerializer(read_only=True)
+    class Meta:
+        model = models.RefitType
+        fields = "__all__"
+
+
+class DefectSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.Defect
+        fields = "__all__"       
+
+class ListDefectSerializer(serializers.ModelSerializer):
+    
+    #class_id = ClassSerializer(read_only=True)
+    class Meta:
+        model = models.Defect
+        fields = "__all__" 
+
+    def to_representation(self, instance):        
+        response = super().to_representation(instance) 
+        refit_type_id = response['refit_type']
+        response['refit_type_det'] = models.RefitType.objects.values('id','name','code').filter(id=refit_type_id).first()
+        return response
