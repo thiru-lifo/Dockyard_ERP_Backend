@@ -113,6 +113,17 @@ class DockyardSerializer(serializers.ModelSerializer):
 #     class Meta:
 #         model = models.Class
 #         fields = "__all__" 
+class ListDockyardGroupSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.DockyardGroup
+        fields = "__all__" 
+
+class DockyardGroupSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.DockyardGroup
+        fields = "__all__"      
 
 class ProjectTypeSerializer(serializers.ModelSerializer):
     
