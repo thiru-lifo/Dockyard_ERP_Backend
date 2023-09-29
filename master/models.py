@@ -685,6 +685,15 @@ class Equipment(models.Model):
     global_sub_sub_section= models.ForeignKey(GlobalSubSubSection,null=True, on_delete= models.CASCADE)
     equipment_ship_id = models.IntegerField(null=True)
     sequence = models.IntegerField(null=True)
+
+    equipment_model = models.CharField(max_length=100, blank=True, null=True)
+    nomenclature = models.CharField(max_length=100, blank=True, null=True)
+
+    esd_equipment_id = models.IntegerField(null=True) #??? master
+    ship_id = models.IntegerField(null=True) #??? master
+    universal_id_m_ship = models.IntegerField(null=True) #???
+    equipment_sr_no = models.IntegerField(null=True) #???
+
     status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
     created_on = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
