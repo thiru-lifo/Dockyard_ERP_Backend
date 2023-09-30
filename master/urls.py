@@ -68,13 +68,11 @@ urlpatterns = [
     path('class/<int:pk>', views.ClassViews.as_view(), name = 'view_class'),
     path('class/details', views.ClassDetailViews.as_view(), name = 'add_class'),
 
-    path('dockyard', views.DockyardViews.as_view(), name = 'view_dockyard'),
-    path('dockyard/<int:pk>', views.DockyardViews.as_view(), name = 'view_dockyard'),
-    path('dockyard/details', views.DockyardDetailViews.as_view(), name = 'add_dockyard'),
 
-    path('dockyard_group', views.DockyardGroupViews.as_view(), name = 'view_dockyard_group'),
-    path('dockyard_group/<int:pk>', views.DockyardGroupViews.as_view(), name = 'view_dockyard_group'),
-    path('dockyard_group/details', views.DockyardGroupDetailViews.as_view(), name = 'add_dockyard_group'),
+
+    # path('dockyard_group', views.DockyardGroupViews.as_view(), name = 'view_dockyard_group'),
+    # path('dockyard_group/<int:pk>', views.DockyardGroupViews.as_view(), name = 'view_dockyard_group'),
+    # path('dockyard_group/details', views.DockyardGroupDetailViews.as_view(), name = 'add_dockyard_group'),
 
 
 
@@ -161,10 +159,18 @@ urlpatterns = [
 
 
     # Dockyard #
-    # path('dockyard_group', views.DockyardGroupViews.as_view(), name = 'dockyard_group_class'),
-    # path('dockyard_group/<int:pk>', views.DockyardGroupViews.as_view(), name = 'dockyard_group_class'),
-    # path('dockyard_group/details', views.DockyardGroupDetailViews.as_view(), name = 'add_dockyard_group_class'),
 
+    path('dockyard', views.DockyardViews.as_view(), name = 'view_dockyard'),
+    path('dockyard/<int:pk>', views.DockyardViews.as_view(), name = 'view_dockyard'),
+    path('dockyard/details', views.DockyardDetailViews.as_view(), name = 'add_dockyard'),
+
+    path('dockyard_group', views.DockyardGroupViews.as_view(), name = 'dockyard_group_class'),
+    path('dockyard_group/<int:pk>', views.DockyardGroupViews.as_view(), name = 'dockyard_group_class'),
+    path('dockyard_group/details', views.DockyardGroupDetailViews.as_view(), name = 'add_dockyard_group_class'),
+
+    path('dockyard_sub_group', views.DockyardSubGroupViews.as_view(), name = 'dockyard_sub_group_class'),
+    path('dockyard_sub_group/<int:pk>', views.DockyardSubGroupViews.as_view(), name = 'dockyard_sub_group_class'),
+    path('dockyard_sub_group/details', views.DockyardSubGroupDetailViews.as_view(), name = 'add_dockyard_sub_group_class'),
 
     path('refit_type', views.RefitTypeViews.as_view(), name = 'view_refit_type'),
     path('refit_type/<int:pk>', views.RefitTypeViews.as_view(), name = 'view_refit_type'),
@@ -174,17 +180,4 @@ urlpatterns = [
     path('defect/<int:pk>', views.DefectViews.as_view(), name = 'view_defect'),
     path('defect/details', views.DefectDetailViews.as_view(), name = 'add_defect'),
 
-    path('sub_module_time_keeping_attendance', views.SubModuleTimeKeepingAttendanceViews.as_view(), name = 'view_sub_module_time_keeping_attendance'),
-    path('sub_module_time_keeping_attendance/<int:pk>', views.SubModuleTimeKeepingAttendanceViews.as_view(), name = 'view_sub_module_time_keeping_attendance'),
-    path('sub_module_time_keeping_attendance/details', views.SubModuleTimeKeepingAttendanceCURD.as_view(), name = 'add_sub_module_time_keeping_attendance'),
-
-
-    path('sub_module/man_power_booking', views.SubModuleManPowerBookingViews.as_view(), name = 'view_man_power_booking'),
-    path('sub_module/man_power_booking/<int:pk>', views.SubModuleManPowerBookingViews.as_view(), name = 'man_power_booking'),
-    path('sub_module/man_power_booking/details', views.SubModuleManPowerBookingCURD.as_view(), name = 'man_power_booking'),
-
-
-    # path('sub_module/man_power_booking', views.SubModuleManPowerBookingViews.as_view(), name = 'view_man_power_booking'),
-    # path('sub_module/man_power_booking/<int:pk>', views.SubModuleManPowerBookingViews.as_view(), name = 'man_power_booking'),
-    # path('sub_module/man_power_booking/details', views.SubModuleManPowerBookingCURD.as_view(), name = 'man_power_booking'),
 ]
