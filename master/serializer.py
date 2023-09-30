@@ -77,9 +77,16 @@ class LookupSerializer(serializers.ModelSerializer):
 class ClassSerializer(serializers.ModelSerializer):
     
     class Meta:
-        model = models.Dockyard
+        model = models.Class
         fields = "__all__"       
         # fields = ['id','name']
+
+class ListClassSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.Class
+        fields = "__all__"
+
 class CommandSerializer(serializers.ModelSerializer):
     
     class Meta:
