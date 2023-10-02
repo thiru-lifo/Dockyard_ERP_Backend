@@ -180,4 +180,13 @@ urlpatterns = [
     path('defect/<int:pk>', views.DefectViews.as_view(), name = 'view_defect'),
     path('defect/details', views.DefectDetailViews.as_view(), name = 'add_defect'),
 
+
+    path('center', views.CenterViews.as_view(), name = 'view_center'),
+    path('center/<int:pk>', views.CenterViews.as_view(), name = 'view_center'),
+    path('center/details', views.CenterDetailViews.as_view(), name = 'add_center'),
+
+    path('shop_floor', views.ShopFloorViews.as_view(), name = 'view_shop_floor'),
+    path('shop_floor/<int:pk>', views.ShopFloorViews.as_view(), name = 'view_shop_floor'),
+    path('shop_floor/details', views.ShopFloorDetailViews.as_view(), name = 'add_shop_floor'),
+
 ]

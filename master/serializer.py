@@ -638,7 +638,7 @@ class ListDefectSerializer(serializers.ModelSerializer):
         model = models.Defect
         fields = "__all__" 
 
-    def to_representation(self, instance):        
+    def to_representation(self, instance):
         response = super().to_representation(instance) 
         refit_type_id = response['refit_type']
         response['refit_type_det'] = models.RefitType.objects.values('id','name','code').filter(id=refit_type_id).first()
@@ -668,3 +668,39 @@ class DockyardSubGroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.DockyardSubGroup
         fields = "__all__"
+
+class CenterSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.Center
+        fields = "__all__"
+
+class ListCenterSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.Center
+        fields = "__all__" 
+
+    def to_representation(self, instance):        
+        response = super().to_representation(instance) 
+        equipment_id = response['equipment']
+        response['equipment_det'] = models.Equipment.objects.values('id','name','code').filter(id=equipment_id).first()
+        return response
+
+class ShopfloorSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.Shopfloor
+        fields = "__all__"
+
+class ListShopfloorSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.Shopfloor
+        fields = "__all__" 
+
+    def to_representation(self, instance):        
+        response = super().to_representation(instance) 
+        center_id = response['center']
+        response['center_det'] = models.Center.objects.values('id','name','code').filter(id=center_id).first()
+        return response
