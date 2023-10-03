@@ -12,7 +12,7 @@ import phonenumbers
 from phonenumber_field.modelfields import PhoneNumberField
 from accounts.models import User
 #from master.models import Project
-from master.models import Project, Section, Unit, Compartment, System, Equipment, Module, SubModule, GlobalSection, GlobalSubSection, GlobalSubSubSection, Class, Command
+from master.models import Project, Section, Unit, Compartment, System, Equipment, Module, SubModule, GlobalSection, GlobalSubSection, GlobalSubSubSection, Class, Command, Department
 from access.models import AccessUserRoles,ProcessFlow
 
 
@@ -2167,3 +2167,174 @@ class GlobalTransactionShipDetail(models.Model):
         db_table = 'transaction.ship_details'
         verbose_name = 'transaction_ship_details'
         verbose_name_plural = 'transaction_ship_details'
+
+
+
+#### DOCK YARD #####
+
+
+class ExcelFileDefectUpload(models.Model):
+    excel_file_upload = models.FileField(upload_to="Excel/Defect/", null=True, blank=True)
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True)
+    
+
+    def __str__(self):
+        return self.excel_file_upload
+
+    class Meta:
+        db_table = 'defect.excel_file_upload'
+        verbose_name = 'Defect Excel File Upload'
+        verbose_name_plural = 'Defect Excel File Upload'
+
+
+
+class Dart(models.Model):
+
+    SrNo = models.CharField(max_length=100, blank=True, null=True)
+    ShipSrNo = models.CharField(max_length=100, blank=True, null=True)
+    DartDate = models.DateTimeField(auto_now=True, blank=True, null=True)
+    DepartmentID = models.ForeignKey(Department, on_delete=models.CASCADE, null=True)
+    ExDept = models.CharField(max_length=100, blank=True, null=True)
+    ExDeptID = models.CharField(max_length=100, blank=True, null=True)
+    EquipmentShipID = models.CharField(max_length=100, blank=True, null=True)
+    EquipmentCode = models.CharField(max_length=100, blank=True, null=True)
+    SeverityID = models.CharField(max_length=100, blank=True, null=True)
+    SeverityCode = models.CharField(max_length=100, blank=True, null=True)
+    DiagnosticID = models.CharField(max_length=100, blank=True, null=True)
+    DiagnosticCode = models.CharField(max_length=100, blank=True, null=True)
+    RectifiedDate = models.DateTimeField(auto_now=True, blank=True, null=True)
+    RepairID = models.CharField(max_length=100, blank=True, null=True)
+    RepairCode = models.CharField(max_length=100, blank=True, null=True)
+    RepairAgencyID = models.CharField(max_length=100, blank=True, null=True)
+    AgencyCode = models.CharField(max_length=100, blank=True, null=True)
+    DelayID = models.CharField(max_length=100, blank=True, null=True)
+    DelayCode = models.CharField(max_length=100, blank=True, null=True)
+    Remarks = models.TextField(null=True, blank=True)
+    OpdefSrNo = models.CharField(max_length=100, blank=True, null=True)
+    XdueRefitType = models.CharField(max_length=100, blank=True, null=True)
+    XdueRefitRemarks = models.TextField(null=True, blank=True)
+    CancelDate = models.DateTimeField(auto_now=True, blank=True, null=True)
+    NILDart = models.CharField(max_length=100, blank=True, null=True)
+    Active = models.CharField(max_length=100, blank=True, null=True)
+
+    CreatedBy = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    CreatedDate = models.DateTimeField(auto_now_add=True)
+    UpdatedBy = models.CharField(max_length=100, blank=True, null=True)
+    UpdatedDate = models.DateTimeField(auto_now_add=True)
+    Source = models.CharField(max_length=100, blank=True, null=True)
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_ip = models.GenericIPAddressField()
+
+    def __str__(self):
+        return self.SrNo
+
+    class Meta:
+        db_table = 'transaction.dart'
+        verbose_name = 'dart'
+        verbose_name_plural = 'dart'
+
+
+class RA(models.Model): # Request Assistance
+
+    SrNo = models.CharField(max_length=100, blank=True, null=True)
+    ShipSrNo = models.CharField(max_length=100, blank=True, null=True)
+    DartDate = models.DateTimeField(auto_now=True, blank=True, null=True)
+    DepartmentID = models.ForeignKey(Department, on_delete=models.CASCADE, null=True)
+    ExDept = models.CharField(max_length=100, blank=True, null=True)
+    ExDeptID = models.CharField(max_length=100, blank=True, null=True)
+    EquipmentShipID = models.CharField(max_length=100, blank=True, null=True)
+    EquipmentCode = models.CharField(max_length=100, blank=True, null=True)
+    SeverityID = models.CharField(max_length=100, blank=True, null=True)
+    SeverityCode = models.CharField(max_length=100, blank=True, null=True)
+    DiagnosticID = models.CharField(max_length=100, blank=True, null=True)
+    DiagnosticCode = models.CharField(max_length=100, blank=True, null=True)
+    RectifiedDate = models.DateTimeField(auto_now=True, blank=True, null=True)
+    RepairID = models.CharField(max_length=100, blank=True, null=True)
+    RepairCode = models.CharField(max_length=100, blank=True, null=True)
+    RepairAgencyID = models.CharField(max_length=100, blank=True, null=True)
+    AgencyCode = models.CharField(max_length=100, blank=True, null=True)
+    DelayID = models.CharField(max_length=100, blank=True, null=True)
+    DelayCode = models.CharField(max_length=100, blank=True, null=True)
+    Remarks = models.TextField(null=True, blank=True)
+    OpdefSrNo = models.CharField(max_length=100, blank=True, null=True)
+    XdueRefitType = models.CharField(max_length=100, blank=True, null=True)
+    XdueRefitRemarks = models.TextField(null=True, blank=True)
+    CancelDate = models.DateTimeField(auto_now=True, blank=True, null=True)
+    NILDart = models.CharField(max_length=100, blank=True, null=True)
+    Active = models.CharField(max_length=100, blank=True, null=True)
+
+    CreatedBy = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    CreatedDate = models.DateTimeField(auto_now_add=True)
+    UpdatedBy = models.CharField(max_length=100, blank=True, null=True)
+    UpdatedDate = models.DateTimeField(auto_now_add=True)
+    Source = models.CharField(max_length=100, blank=True, null=True)
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_ip = models.GenericIPAddressField()
+
+    def __str__(self):
+        return self.SrNo
+
+    class Meta:
+        db_table = 'transaction.ra'
+        verbose_name = 'ra'
+        verbose_name_plural = 'ra'
+
+
+class OPDEF(models.Model):
+
+    OpdefDate = models.DateTimeField(auto_now=True, blank=True, null=True)
+    OpdefNo = models.CharField(max_length=100, blank=True, null=True)
+    ShipID = models.CharField(max_length=100, blank=True, null=True)
+    Command = models.CharField(max_length=100, blank=True, null=True)
+    DepartmentId = models.CharField(max_length=100, blank=True, null=True)
+    DartNo = models.CharField(max_length=100, blank=True, null=True)
+    STA = models.CharField(max_length=100, blank=True, null=True)
+    EquipmentID = models.CharField(max_length=100, blank=True, null=True)
+    LocationCode = models.CharField(max_length=100, blank=True, null=True)
+    Unit = models.CharField(max_length=100, blank=True, null=True)
+    Defect = models.CharField(max_length=100, blank=True, null=True)
+    Severity = models.CharField(max_length=100, blank=True, null=True)
+    AssistanceRequired = models.CharField(max_length=100, blank=True, null=True)
+    EffectOnOperation = models.CharField(max_length=100, blank=True, null=True)
+    DowngradeDate = models.DateTimeField(auto_now=True, blank=True, null=True)
+    STADowngradeDate = models.DateTimeField(auto_now=True, blank=True, null=True)
+    STAUpgradeDate = models.DateTimeField(auto_now=True, blank=True, null=True)
+    CancelDtg = models.CharField(max_length=100, blank=True, null=True)
+    CancelDate = models.DateTimeField(auto_now=True, blank=True, null=True)
+    RepairDate = models.DateTimeField(auto_now=True, blank=True, null=True)
+    RepairID = models.CharField(max_length=100, blank=True, null=True)
+    RepairParts = models.CharField(max_length=100, blank=True, null=True)
+
+    HoldupCode = models.CharField(max_length=100, blank=True, null=True)
+    HoldupDetail = models.CharField(max_length=100, blank=True, null=True)
+    INSMAEffort = models.CharField(max_length=100, blank=True, null=True)
+    Refit = models.CharField(max_length=100, blank=True, null=True)
+    Active = models.CharField(max_length=100, blank=True, null=True)
+
+    CreatedBy = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    CreatedDate = models.DateTimeField(auto_now_add=True)
+    UpdatedBy = models.CharField(max_length=100, blank=True, null=True)
+    UpdatedDate = models.DateTimeField(auto_now_add=True)
+
+    Remarks = models.TextField(null=True, blank=True)
+    StoredemSrNo = models.CharField(max_length=100, blank=True, null=True)
+    OpDefStatus = models.CharField(max_length=100, blank=True, null=True)
+    EquipmentSerialNo = models.CharField(max_length=100, blank=True, null=True)
+
+    OfarDate = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_ip = models.GenericIPAddressField()
+
+    def __str__(self):
+        return self.SrNo
+
+    class Meta:
+        db_table = 'transaction.opdef'
+        verbose_name = 'opdef'
+        verbose_name_plural = 'opdef'

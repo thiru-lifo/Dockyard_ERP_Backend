@@ -179,6 +179,7 @@ urlpatterns = [
     path('defect', views.DefectViews.as_view(), name = 'view_defect'),
     path('defect/<int:pk>', views.DefectViews.as_view(), name = 'view_defect'),
     path('defect/details', views.DefectDetailViews.as_view(), name = 'add_defect'),
+    path('defect/excel', views.ImportExcelDefect.as_view(), name="Defect Excel"),
 
 
     path('center', views.CenterViews.as_view(), name = 'view_center'),

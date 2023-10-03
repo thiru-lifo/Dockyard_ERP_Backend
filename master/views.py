@@ -18,12 +18,20 @@ from .models import Countries, States, Cities,LookupType,Lookup,Region,Dockyard,
 
 from .serializer import Citiesserializer, Countriesserializer, ListCitiesserializer, Statesserializer,ListStatesserializer,LookupTypeSerializer,ListLookupSerializer,LookupSerializer,Regionserializer,ListRegionserializer,CommandSerializer,ListCommandSerializer,DockyardSerializer,ListDockyardSerializer
 
+
+from transaction import models as transactionModels
+
 from NavyTrials import language,error
 from access.views import Common
 from django.db.models import Count
 
 from . import models
 from . import serializer as cSerializer
+import pandas as pd
+import os
+import csv
+from django.core.files.storage import FileSystemStorage
+from NavyTrials import language,error,settings,common
 # from Glosys import error
            
 class CountriesViews(APIView):
@@ -7076,3 +7084,78 @@ class ShopFloorDetailViews(APIView):
                         return Response({"status" :error.context['error_code'], "message":error.serializerError(saveserialize)}, status = status.HTTP_200_OK)
             else: 
                 return Response({"status" : {"id" : ['id' +language.context[language.defaultLang]['missing']]}}, status=status.HTTP_200_OK)   
+
+
+
+class ImportExcelDefect(APIView):
+
+    # def get(self, request):
+    #     annexures_obj = models.Annexures.objects.all()
+    #     serializer = cSerializer.AnnexuresSerializer(annexures_obj, many=True)
+    #     df = pd.DataFrame(serializer.data) 
+    #     print(df)
+    #     df = df.to_csv(f"{settings.BASE_DIR}/media/Excel/BLS/{uuid.uuid4()}.csv", encoding="UTF-8", index=False)
+    #     return Response({'status':200})
+
+    def post(self,request, pk = None): 
+        
+        created_ip = Common.get_client_ip(request)
+        request_file = request.FILES['excel_file_upload']
+        created_by = request.data['created_by']
+
+        dir_storage='static/import_excel'
+        fs = FileSystemStorage(location=dir_storage)
+        filename = fs.save(request_file.name, request_file)
+        if os.path.splitext(request_file.name)[1] == ".xls" or  os.path.splitext(request_file.name)[1] == ".xlsx":
+            excel_folder = os.path.join(settings.BASE_DIR, 'media/Excel/Defect/')
+            read_file = pd.read_excel(request_file)
+            read_file.to_csv(excel_folder +'import_excel_file.csv')
+            fhand = open('media/Excel/Defect/import_excel_file.csv')
+        else:
+             return Response({"status":error.context['error_code'],"message" : "File format not supported (Xls and Xlsx only allowed)" })    
+        reader = csv.reader(fhand)
+        next(reader)
+        #print(reader)
+        
+        for row in reader:
+            #print(row[1])
+            if not request_file:
+                return Response({"status":error.context['error_code'],"message" : "Refit type is required" })
+
+            refit_type = models.RefitType.objects.filter(code=row[1]).first()            
+
+            if not refit_type:
+                refit_type = None
+            else:
+                refit_type = refit_type.id
+
+            request_data = {
+                'refit_type' : refit_type,
+                'name' : row[2],
+                'description' : row[3],
+                'code' : row[4],
+                'dl_1' : row[5],
+                'dl_2' : row[6],
+                'dl_3' : row[7],
+                'sdl' : row[8],
+                'awrf_1' : row[9],
+                'awrf_2' : row[10],
+                'awrf_3' : row[11],
+                'status' : row[12],
+                'created_ip': created_ip,
+                'created_by': created_by
+            }
+
+            saveserialize = cSerializer.DefectSerializer(data = request_data)
+            if saveserialize.is_valid():
+                saveserialize.save()
+
+        excel_upload_obj = transactionModels.ExcelFileDefectUpload.objects.create(
+        excel_file_upload = request.data['excel_file_upload'],
+        created_ip =  created_ip
+        )
+        
+        if excel_upload_obj:
+            return Response({"status" :error.context['success_code'], "message":"File imported successfully"}, status=status.HTTP_200_OK)
+        else:
+            return Response({"status" :error.context['error_code'],"message":error.serializerError(saveserialize)}, status = status.HTTP_200_OK)
