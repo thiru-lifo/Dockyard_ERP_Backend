@@ -7089,14 +7089,6 @@ class ShopFloorDetailViews(APIView):
 
 class ImportExcelDefect(APIView):
 
-    # def get(self, request):
-    #     annexures_obj = models.Annexures.objects.all()
-    #     serializer = cSerializer.AnnexuresSerializer(annexures_obj, many=True)
-    #     df = pd.DataFrame(serializer.data) 
-    #     print(df)
-    #     df = df.to_csv(f"{settings.BASE_DIR}/media/Excel/BLS/{uuid.uuid4()}.csv", encoding="UTF-8", index=False)
-    #     return Response({'status':200})
-
     def post(self,request, pk = None): 
         
         created_ip = Common.get_client_ip(request)
@@ -7120,7 +7112,7 @@ class ImportExcelDefect(APIView):
         for row in reader:
             #print(row[1])
             if not request_file:
-                return Response({"status":error.context['error_code'],"message" : "Refit type is required" })
+                return Response({"status":error.context['error_code'],"message" : "Upload file is required" })
 
             refit_type = models.RefitType.objects.filter(code=row[1]).first()            
 
@@ -7155,6 +7147,130 @@ class ImportExcelDefect(APIView):
         created_ip =  created_ip
         )
         
+        if excel_upload_obj:
+            return Response({"status" :error.context['success_code'], "message":"File imported successfully"}, status=status.HTTP_200_OK)
+        else:
+            return Response({"status" :error.context['error_code'],"message":error.serializerError(saveserialize)}, status = status.HTTP_200_OK)
+
+
+class ImportExcelShip(APIView):
+
+    def post(self,request, pk = None):
+
+        created_ip = Common.get_client_ip(request)
+        request_file = request.FILES['excel_file_upload']
+        created_by = request.data['created_by']
+
+        dir_storage='static/import_excel'
+        fs = FileSystemStorage(location=dir_storage)
+        filename = fs.save(request_file.name, request_file)
+        if os.path.splitext(request_file.name)[1] == ".xls" or  os.path.splitext(request_file.name)[1] == ".xlsx":
+            excel_folder = os.path.join(settings.BASE_DIR, 'media/Excel/Ship/')
+            read_file = pd.read_excel(request_file)
+            read_file.to_csv(excel_folder +'import_excel_file.csv')
+            fhand = open('media/Excel/Ship/import_excel_file.csv')
+        else:
+             return Response({"status":error.context['error_code'],"message" : "File format not supported (Xls and Xlsx only allowed)" })    
+        reader = csv.reader(fhand)
+        next(reader)
+        #print(reader)
+
+        for row in reader:
+            #print(row[1])
+            if not request_file:
+                return Response({"status":error.context['error_code'],"message" : "Upload file is required" })
+
+            command = models.Command.objects.filter(code=row[5]).first()
+
+            if not command:
+                command_id = None
+            else:
+                command_id = command.id
+
+            request_data = {
+                'id' : row[1],
+                'name' : row[2],
+                'description' : row[3],
+                'code' : row[4],
+                'command_id' : command_id,
+                'status' : 1,
+                'created_ip': created_ip,
+                'created_by': created_by
+            }
+
+            print(request_data,"")
+
+            saveserialize = cSerializer.ShipSerializer(data = request_data)
+            if saveserialize.is_valid():
+                saveserialize.save()
+
+        excel_upload_obj = transactionModels.ExcelFileShipUpload.objects.create(
+        excel_file_upload = request.data['excel_file_upload'],
+        created_ip =  created_ip
+        )
+
+        if excel_upload_obj:
+            return Response({"status" :error.context['success_code'], "message":"File imported successfully"}, status=status.HTTP_200_OK)
+        else:
+            return Response({"status" :error.context['error_code'],"message":error.serializerError(saveserialize)}, status = status.HTTP_200_OK)
+
+
+class ImportExcelEquipment(APIView):
+
+    def post(self,request, pk = None):
+
+        created_ip = Common.get_client_ip(request)
+        request_file = request.FILES['excel_file_upload']
+        created_by = request.data['created_by']
+
+        dir_storage='static/import_excel'
+        fs = FileSystemStorage(location=dir_storage)
+        filename = fs.save(request_file.name, request_file)
+        if os.path.splitext(request_file.name)[1] == ".xls" or  os.path.splitext(request_file.name)[1] == ".xlsx":
+            excel_folder = os.path.join(settings.BASE_DIR, 'media/Excel/Equipment/')
+            read_file = pd.read_excel(request_file)
+            read_file.to_csv(excel_folder +'import_excel_file.csv')
+            fhand = open('media/Excel/Equipment/import_excel_file.csv')
+        else:
+             return Response({"status":error.context['error_code'],"message" : "File format not supported (Xls and Xlsx only allowed)" })    
+        reader = csv.reader(fhand)
+        next(reader)
+        #print(reader)
+
+        for row in reader:
+            #print(row[1])
+            if not request_file:
+                return Response({"status":error.context['error_code'],"message" : "Upload file is required" })
+
+            command = models.Command.objects.filter(code=row[5]).first()
+
+            if not command:
+                command_id = None
+            else:
+                command_id = command.id
+
+            request_data = {
+                'id' : row[1],
+                'name' : row[2],
+                'description' : row[3],
+                'code' : row[4],
+                'command_id' : command_id,
+                'status' : 1,
+                'created_ip': created_ip,
+                'created_by': created_by
+            }
+
+            print(request_data,"")
+
+            saveserialize = cSerializer.ShipSerializer(data = request_data)
+            if saveserialize.is_valid():
+                saveserialize.save()
+
+        excel_upload_obj = transactionModels.ExcelFileShipUpload.objects.create(
+        excel_file_upload = request.data['excel_file_upload'],
+        created_ip =  created_ip
+        )
+
         if excel_upload_obj:
             return Response({"status" :error.context['success_code'], "message":"File imported successfully"}, status=status.HTTP_200_OK)
         else:

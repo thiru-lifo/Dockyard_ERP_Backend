@@ -2192,6 +2192,44 @@ class ExcelFileDefectUpload(models.Model):
         verbose_name_plural = 'Defect Excel File Upload'
 
 
+class ExcelFileShipUpload(models.Model):
+    excel_file_upload = models.FileField(upload_to="Excel/Ship/", null=True, blank=True)
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True)
+
+
+    def __str__(self):
+        return self.excel_file_upload
+
+    class Meta:
+        db_table = 'ship.excel_file_upload'
+        verbose_name = 'Ship Excel File Upload'
+        verbose_name_plural = 'Ship Excel File Upload'
+
+
+class ExcelFileEquipmentUpload(models.Model):
+    excel_file_upload = models.FileField(upload_to="Excel/Equipment/", null=True, blank=True)
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True)
+
+
+    def __str__(self):
+        return self.excel_file_upload
+
+    class Meta:
+        db_table = 'equipment.excel_file_upload'
+        verbose_name = 'Equipment Excel File Upload'
+        verbose_name_plural = 'Equipment Excel File Upload'
+
+
 
 class Dart(models.Model):
 

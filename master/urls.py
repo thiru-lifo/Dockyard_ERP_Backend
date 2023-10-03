@@ -79,6 +79,7 @@ urlpatterns = [
     path('ship', views.ShipViews.as_view(), name = 'view_ship'),
     path('ship/<int:pk>', views.ShipViews.as_view(), name = 'view_ship'),
     path('ship/details', views.ShipDetailViews.as_view(), name = 'add_ship'),
+    path('ship/excel', views.ImportExcelShip.as_view(), name="Ship Excel"),
 
 
     path('ships', views.ShipsViews.as_view(), name = 'view_ships'),
@@ -96,6 +97,7 @@ urlpatterns = [
     path('equipment', views.EquipmentViews.as_view(), name = 'view_equipment'),
     path('equipment/<int:pk>', views.EquipmentViews.as_view(), name = 'view_equipment'),
     path('equipment/details', views.EquipmentDetailViews.as_view(), name = 'add_equipment'),
+    path('equipment/excel', views.ImportExcelEquipment.as_view(), name="Equipment Excel"),
 
     path('status', views.GlobalStatusViews.as_view(), name = 'view_status'),
     path('status/<int:pk>', views.GlobalStatusViews.as_view(), name = 'view_status'),
