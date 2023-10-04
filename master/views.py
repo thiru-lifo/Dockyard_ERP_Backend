@@ -7242,25 +7242,39 @@ class ImportExcelEquipment(APIView):
             if not request_file:
                 return Response({"status":error.context['error_code'],"message" : "Upload file is required" })
 
-            command = models.Command.objects.filter(code=row[5]).first()
+            section = models.Section.objects.filter(code=row[4]).first()
+            ship = models.Ship.objects.filter(code=row[10]).first()
 
-            if not command:
-                command_id = None
+            if not section:
+                section_id = None
             else:
-                command_id = command.id
+                section_id = section.id
+
+            if not ship:
+                ship_id = None
+            else:
+                ship_id = ship.id
 
             request_data = {
                 'id' : row[1],
-                'name' : row[2],
-                'description' : row[3],
-                'code' : row[4],
-                'command_id' : command_id,
+                'code' : row[2],
+                'name' : row[3],
+                'section_id' : section_id,
+                'equipment_model' : row[5],
+                'nomenclature' : row[6],
+                'equipment_ship_id' : row[7],
+                'esd_equipment_id' : row[6],
+                'esd_equipment_code' : row[9],
+                'ship_id' : ship_id,
+                'universal_id_m_ship' : row[11],
+                'equipment_sr_no': row[12],
                 'status' : 1,
                 'created_ip': created_ip,
                 'created_by': created_by
             }
 
-            print(request_data,"")
+
+            #print(request_data,"")
 
             saveserialize = cSerializer.ShipSerializer(data = request_data)
             if saveserialize.is_valid():

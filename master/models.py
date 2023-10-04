@@ -688,7 +688,8 @@ class Equipment(models.Model):
     equipment_model = models.CharField(max_length=100, blank=True, null=True)
     nomenclature = models.CharField(max_length=100, blank=True, null=True)
     esd_equipment_id = models.CharField(max_length=100, blank=True, null=True) #??? master
-    ship_id = models.CharField(max_length=100, blank=True, null=True) #??? master
+    #ship_id = models.CharField(max_length=100, blank=True, null=True) #??? master
+    ship = models.ForeignKey(Ship, null=True, on_delete= models.CASCADE)
     universal_id_m_ship = models.CharField(max_length=100, blank=True, null=True) #???
     equipment_sr_no = models.CharField(max_length=100, blank=True, null=True) #???
     # New Fields
