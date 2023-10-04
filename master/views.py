@@ -7180,7 +7180,7 @@ class ImportExcelShip(APIView):
             if not request_file:
                 return Response({"status":error.context['error_code'],"message" : "Upload file is required" })
 
-            command = models.Command.objects.filter(code=row[5]).first()
+            command = models.Command.objects.filter(CommandID=row[5]).first()
 
             if not command:
                 command_id = None
@@ -7188,8 +7188,8 @@ class ImportExcelShip(APIView):
                 command_id = command.id
 
             request_data = {
-                'id' : row[1],
-                'name' : row[2],
+                'name' : row[1],
+                'ShipID' : row[2],
                 'description' : row[3],
                 'code' : row[4],
                 'command_id' : command_id,
@@ -7239,11 +7239,15 @@ class ImportExcelEquipment(APIView):
 
         for row in reader:
             #print(row[1])
+            #print(type(int(row[10])),"TYYGHHHHV", row[10])
             if not request_file:
                 return Response({"status":error.context['error_code'],"message" : "Upload file is required" })
 
             section = models.Section.objects.filter(code=row[4]).first()
-            ship = models.Ship.objects.filter(code=row[10]).first()
+            if row[10]!="":
+                ship = models.Ship.objects.filter(ShipID=int(float(row[10]))).first()
+            else:
+                ship = None
 
             if not section:
                 section_id = None
@@ -7256,7 +7260,7 @@ class ImportExcelEquipment(APIView):
                 ship_id = ship.id
 
             request_data = {
-                'id' : row[1],
+                'EquipmentID' : row[1],
                 'code' : row[2],
                 'name' : row[3],
                 'section_id' : section_id,

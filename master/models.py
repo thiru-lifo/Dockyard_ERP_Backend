@@ -295,6 +295,7 @@ class Defect(models.Model):
 
 
 class Command(models.Model):
+    CommandID = models.IntegerField(null=True)
     name = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
     code = models.CharField(max_length=15)
@@ -337,6 +338,7 @@ class Department(models.Model):
         verbose_name_plural = 'department'
 
 class Section(models.Model):
+    SectionID = models.IntegerField(null=True, blank=True)
     name = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
     code = models.CharField(max_length=15)    
@@ -451,6 +453,7 @@ class Authority(models.Model):
 
 
 class Ship(models.Model):
+    ShipID = models.IntegerField(null=True, blank=True)
     name = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
     code = models.CharField(max_length=15)
@@ -672,6 +675,7 @@ class System(models.Model):
 
 
 class Equipment(models.Model):
+    EquipmentID = models.IntegerField(null=True, blank=True)
     name = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
     code = models.CharField(max_length=15)
@@ -681,17 +685,20 @@ class Equipment(models.Model):
     #global_section = models.ForeignKey(GlobalSection,null=True, on_delete= models.CASCADE)
     #global_sub_section = models.ForeignKey(GlobalSubSection,null=True, on_delete= models.CASCADE)
     #global_sub_sub_section= models.ForeignKey(GlobalSubSubSection,null=True, on_delete= models.CASCADE)
-    equipment_ship_id = models.IntegerField(null=True)
+    #equipment_ship_id = models.IntegerField(null=True)
+    equipment_ship_id = models.CharField(max_length=100, blank=True, null=True)
     sequence = models.IntegerField(null=True)
 
     # New Fields
+    #equipment_model = models.CharField(max_length=100, blank=True, null=True)
     equipment_model = models.CharField(max_length=100, blank=True, null=True)
-    nomenclature = models.CharField(max_length=100, blank=True, null=True)
+    nomenclature = models.TextField(null=True, blank=True)
     esd_equipment_id = models.CharField(max_length=100, blank=True, null=True) #??? master
     #ship_id = models.CharField(max_length=100, blank=True, null=True) #??? master
     ship = models.ForeignKey(Ship, null=True, on_delete= models.CASCADE)
     universal_id_m_ship = models.CharField(max_length=100, blank=True, null=True) #???
-    equipment_sr_no = models.CharField(max_length=100, blank=True, null=True) #???
+    #equipment_sr_no = models.CharField(max_length=100, blank=True, null=True) #???
+    equipment_sr_no = models.TextField(null=True, blank=True)
     # New Fields
 
     status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
