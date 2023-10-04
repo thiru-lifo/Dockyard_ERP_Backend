@@ -7263,9 +7263,9 @@ class ImportExcelEquipment(APIView):
                 'equipment_model' : row[5],
                 'nomenclature' : row[6],
                 'equipment_ship_id' : row[7],
-                'esd_equipment_id' : row[6],
+                'esd_equipment_id' : row[8],
                 'esd_equipment_code' : row[9],
-                'ship_id' : ship_id,
+                'ship' : ship_id,
                 'universal_id_m_ship' : row[11],
                 'equipment_sr_no': row[12],
                 'status' : 1,
@@ -7274,13 +7274,15 @@ class ImportExcelEquipment(APIView):
             }
 
 
-            #print(request_data,"")
+            print(request_data,"GGGGG")
 
-            saveserialize = cSerializer.ShipSerializer(data = request_data)
+            saveserialize = cSerializer.EquipmentSerializer(data = request_data)
             if saveserialize.is_valid():
                 saveserialize.save()
+            else:
+                return Response({"status" :error.context['error_code'],"message":error.serializerError(saveserialize)}, status = status.HTTP_200_OK)
 
-        excel_upload_obj = transactionModels.ExcelFileShipUpload.objects.create(
+        excel_upload_obj = transactionModels.ExcelFileEquipmentUpload.objects.create(
         excel_file_upload = request.data['excel_file_upload'],
         created_ip =  created_ip
         )

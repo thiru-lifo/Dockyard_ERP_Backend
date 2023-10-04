@@ -675,7 +675,7 @@ class Equipment(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
     code = models.CharField(max_length=15)
-    equipment_type_name = models.CharField(max_length=15)
+    equipment_type_name = models.CharField(max_length=15, null=True, blank=True)
     system_id = models.ForeignKey(System, null=True, on_delete= models.CASCADE)
     section_id = models.ForeignKey(Section, null=True, on_delete= models.CASCADE)
     #global_section = models.ForeignKey(GlobalSection,null=True, on_delete= models.CASCADE)
