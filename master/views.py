@@ -7133,7 +7133,7 @@ class ImportExcelDefect(APIView):
                 'awrf_1' : row[9],
                 'awrf_2' : row[10],
                 'awrf_3' : row[11],
-                'status' : row[12],
+                'status' : 1,
                 'created_ip': created_ip,
                 'created_by': created_by
             }
