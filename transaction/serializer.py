@@ -3306,3 +3306,19 @@ class ShipDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.GlobalTransactionShipDetail
         fields = "__all__"        
+
+
+################### Dock Yard ###################
+
+class DartSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.Dart
+        fields = "__all__"
+
+class ListDartSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.Dart
+        fields = "__all__" 
+

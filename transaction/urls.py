@@ -383,8 +383,9 @@ urlpatterns = [
     path('test_excel_export', views.TestExcelExport.as_view(), name="test_excel_export"),
 
 
-    # Dockyard #
-    
+    # Dockyard #    
+    path('dart',views.DartList.as_view(), name = 'Dart List'),
+    path('dart/crud',views.DartCRUD.as_view(), name = 'Dart CRUD'),
     path('dart/excel', views.ImportExcelDart.as_view(), name="Dart Excel"),
 
 ]

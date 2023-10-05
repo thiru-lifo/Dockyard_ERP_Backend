@@ -2230,12 +2230,31 @@ class ExcelFileEquipmentUpload(models.Model):
         verbose_name_plural = 'Equipment Excel File Upload'
 
 
+class ExcelFileDartUpload(models.Model):
+    excel_file_upload = models.FileField(upload_to="Excel/Dart/", null=True, blank=True)
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True)
+
+
+    def __str__(self):
+        return self.excel_file_upload
+
+    class Meta:
+        db_table = 'dart.excel_file_upload'
+        verbose_name = 'Dart Excel File Upload'
+        verbose_name_plural = 'Dart Excel File Upload'
+
+
 
 class Dart(models.Model):
 
     SrNo = models.CharField(max_length=100, blank=True, null=True)
     ShipSrNo = models.CharField(max_length=100, blank=True, null=True)
-    DartDate = models.DateTimeField(auto_now=True, blank=True, null=True)
+    DartDate = models.DateTimeField(blank=True, null=True)
     DepartmentID = models.ForeignKey(Department, on_delete=models.CASCADE, null=True)
     ExDept = models.CharField(max_length=100, blank=True, null=True)
     ExDeptID = models.CharField(max_length=100, blank=True, null=True)
@@ -2245,7 +2264,7 @@ class Dart(models.Model):
     SeverityCode = models.CharField(max_length=100, blank=True, null=True)
     DiagnosticID = models.CharField(max_length=100, blank=True, null=True)
     DiagnosticCode = models.CharField(max_length=100, blank=True, null=True)
-    RectifiedDate = models.DateTimeField(auto_now=True, blank=True, null=True)
+    RectifiedDate = models.DateTimeField(blank=True, null=True)
     RepairID = models.CharField(max_length=100, blank=True, null=True)
     RepairCode = models.CharField(max_length=100, blank=True, null=True)
     RepairAgencyID = models.CharField(max_length=100, blank=True, null=True)
@@ -2256,7 +2275,7 @@ class Dart(models.Model):
     OpdefSrNo = models.CharField(max_length=100, blank=True, null=True)
     XdueRefitType = models.CharField(max_length=100, blank=True, null=True)
     XdueRefitRemarks = models.TextField(null=True, blank=True)
-    CancelDate = models.DateTimeField(auto_now=True, blank=True, null=True)
+    CancelDate = models.DateTimeField(blank=True, null=True)
     NILDart = models.CharField(max_length=100, blank=True, null=True)
     Active = models.CharField(max_length=100, blank=True, null=True)
 
