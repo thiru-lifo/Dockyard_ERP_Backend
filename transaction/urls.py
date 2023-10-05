@@ -388,4 +388,8 @@ urlpatterns = [
     path('dart/crud',views.DartCRUD.as_view(), name = 'Dart CRUD'),
     path('dart/excel', views.ImportExcelDart.as_view(), name="Dart Excel"),
 
+    path('ra',views.RAList.as_view(), name = 'RA List'),
+    path('ra/crud',views.RACRUD.as_view(), name = 'RA CRUD'),
+    path('ra/excel', views.ImportExcelRA.as_view(), name="RA Excel"),
+
 ]

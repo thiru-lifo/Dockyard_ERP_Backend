@@ -3322,3 +3322,14 @@ class ListDartSerializer(serializers.ModelSerializer):
         model = models.Dart
         fields = "__all__" 
 
+class RASerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.RA
+        fields = "__all__"
+
+class ListRASerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.RA
+        fields = "__all__" 
