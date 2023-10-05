@@ -382,4 +382,9 @@ urlpatterns = [
 
     path('test_excel_export', views.TestExcelExport.as_view(), name="test_excel_export"),
 
+
+    # Dockyard #
+    
+    path('dart/excel', views.ImportExcelDart.as_view(), name="Dart Excel"),
+
 ]

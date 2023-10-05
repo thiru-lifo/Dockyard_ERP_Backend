@@ -17497,3 +17497,94 @@ class TestExcelExport(APIView):
 #                 saveserialize.save()
                         
 #         return Response({"status" :error.context['success_code'], "message":"Form mapping" +language.context[language.defaultLang]['insert'], "data":saveserialize.data}, status=status.HTTP_200_OK)
+
+
+
+
+
+
+
+
+
+### Dock Yard ###
+
+class ImportExcelDart(APIView):
+
+    def post(self,request, pk = None):
+
+        created_ip = Common.get_client_ip(request)
+        request_file = request.FILES['excel_file_upload']
+        created_by = request.data['created_by']
+
+        dir_storage='static/import_excel'
+        fs = FileSystemStorage(location=dir_storage)
+        filename = fs.save(request_file.name, request_file)
+        if os.path.splitext(request_file.name)[1] == ".xls" or  os.path.splitext(request_file.name)[1] == ".xlsx":
+            excel_folder = os.path.join(settings.BASE_DIR, 'media/Excel/Dart/')
+            read_file = pd.read_excel(request_file)
+            read_file.to_csv(excel_folder +'import_excel_file.csv')
+            fhand = open('media/Excel/Dart/import_excel_file.csv')
+        else:
+             return Response({"status":error.context['error_code'],"message" : "File format not supported (Xls and Xlsx only allowed)" })    
+        reader = csv.reader(fhand)
+        next(reader)
+        #print(reader)
+
+        for row in reader:
+            #print(row[1])
+            #print(type(int(row[10])),"TYYGHHHHV", row[10])
+            if not request_file:
+                return Response({"status":error.context['error_code'],"message" : "Upload file is required" })
+
+            section = models.Section.objects.filter(code=row[4]).first()
+            if row[10]!="":
+                ship = models.Ship.objects.filter(ShipID=int(float(row[10]))).first()
+            else:
+                ship = None
+
+            if not section:
+                section_id = None
+            else:
+                section_id = section.id
+
+            if not ship:
+                ship_id = None
+            else:
+                ship_id = ship.id
+
+            request_data = {
+                'EquipmentID' : row[1],
+                'code' : row[2],
+                'name' : row[3],
+                'section_id' : section_id,
+                'equipment_model' : row[5],
+                'nomenclature' : row[6],
+                'equipment_ship_id' : row[7],
+                'esd_equipment_id' : row[8],
+                'esd_equipment_code' : row[9],
+                'ship' : ship_id,
+                'universal_id_m_ship' : row[11],
+                'equipment_sr_no': row[12],
+                'status' : 1,
+                'created_ip': created_ip,
+                'created_by': created_by
+            }
+
+
+            print(request_data,"GGGGG")
+
+            saveserialize = cSerializer.EquipmentSerializer(data = request_data)
+            if saveserialize.is_valid():
+                saveserialize.save()
+            else:
+                return Response({"status" :error.context['error_code'],"message":error.serializerError(saveserialize)}, status = status.HTTP_200_OK)
+
+        excel_upload_obj = transactionModels.ExcelFileEquipmentUpload.objects.create(
+        excel_file_upload = request.data['excel_file_upload'],
+        created_ip =  created_ip
+        )
+
+        if excel_upload_obj:
+            return Response({"status" :error.context['success_code'], "message":"File imported successfully"}, status=status.HTTP_200_OK)
+        else:
+            return Response({"status" :error.context['error_code'],"message":error.serializerError(saveserialize)}, status = status.HTTP_200_OK)
