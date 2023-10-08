@@ -18011,3 +18011,401 @@ class RACRUD(APIView):
                     return Response({"status" :error.context['success_code'], "message":"RA" +language.context[language.defaultLang]['update'], "data":''}, status=status.HTTP_200_OK)
                 else:
                     return Response({"status" :error.context['error_code'],"message":error.serializerError(saveserialize)}, status = status.HTTP_200_OK)
+
+
+# Work Instruction
+class WorkInstructionList(APIView):
+    
+    def get(self, request, pk = None):       
+        filter_values = dict(request.GET.items())
+        search_string=order_type=order_column=limit_start=limit_end=''
+        normal_values=dict()
+        array_values=dict()
+        if filter_values:
+            for key,values in filter_values.items():
+                if values.find("[") !=-1 and values.find("]") !=-1:
+                    res = values.strip('][').split(',')
+                    array_values[key]=(res)
+                else:
+                    normal_values[key]=(values)
+
+            strings = []
+            search_string = dict((k, normal_values[k]) for k in strings
+                                            if k in normal_values)  
+            order_column =  request.GET.get('order_column')
+            order_type = request.GET.get('order_type')  
+            limit_start = request.GET.get('limit_start')
+            limit_end = request.GET.get('limit_end')  
+
+
+            if order_column is not None:                                      
+                normal_values.pop('order_column')
+            if order_type is not None: 
+                normal_values.pop('order_type')  
+            if limit_start is not None: 
+                normal_values.pop('limit_start')
+            if limit_end is not None: 
+                normal_values.pop('limit_end')     
+
+            for key in strings:
+                if key in normal_values:
+                    normal_values.pop(key)
+
+            if search_string:       
+                filter_string = None
+                for field in search_string:
+                    q = Q(**{"%s__contains" % field: search_string[field] })
+                    if filter_string:
+                        filter_string = filter_string & q
+                    else:
+                        filter_string = q
+        try:
+            if pk:
+                list = models.WorkInstruction.objects.filter(pk=pk).exclude(status='3').get()
+                serializeobj = serializer.ListWorkInstructionSerializer(list)
+                return Response({"status":error.context['success_code'], "data": serializeobj.data}, status=status.HTTP_200_OK)
+       
+        except models.WorkInstruction.DoesNotExist:
+            return Response({"status" :error.context['error_code'], "message":"Initiation Notes" +language.context[language.defaultLang]['dataNotFound']}, status = status.HTTP_200_OK)
+
+        lists = models.WorkInstruction.objects.exclude(status='3')
+        if normal_values:
+            lists = lists.filter(reduce(operator.and_, 
+                               (Q(**d) for d in [dict([i]) for i in normal_values.items()])))
+        if array_values:
+            for key,values in array_values.items():
+                queries= [Q(**{"%s__contains" % key: value }) for value in values]
+                query=queries.pop()
+                for item in queries:
+                    query |= item
+                lists = lists.filter(query)
+
+        if search_string:
+            lists = lists.filter(filter_string)
+
+        if order_type is None: 
+            if order_column:
+                lists = lists.order_by(order_column)  
+
+        elif order_type in 'asc':
+            if order_column:
+                lists = lists.order_by(order_column)
+            else: 
+                lists = lists.order_by('id')   
+
+        elif order_type in 'desc':
+            if order_column:
+                order_column = '-' + str(order_column)
+                lists = lists.order_by(order_column)
+            else: 
+                lists = lists.order_by('-id') 
+
+        if limit_start and limit_end:
+                lists = lists[int(limit_start):int(limit_end)]
+
+        elif limit_start:
+                lists = lists[int(limit_start):]
+
+        elif limit_end:
+                lists = lists[0:int(limit_end)]           
+        
+        serializer = cSerializer.ListWorkInstructionSerializer(lists, many=True)
+        print('serializer serializer',serializer.data)
+        return Response({"status":error.context['success_code'], "data": serializer.data}, status=status.HTTP_200_OK)
+
+class WorkInstructionCRUD(APIView):
+    def get_object(self, pk):
+            try:
+                return models.WorkInstruction.objects.get(pk = pk)
+            except models.WorkInstruction.DoesNotExist:
+                raise Http404
+
+    def post(self,request, pk = None):
+
+        #print(request.data)
+        #pass
+        if 'id' not in request.data:
+            return Response({"status" : {"id" : ['id' +language.context[language.defaultLang]['missing']]}}, status=status.HTTP_200_OK)
+        else:
+            pk = request.data['id']
+            if not request.data['dart'] and request.data['status'] != 3:
+                return Response({"status":error.context['error_code'], "message": "Dart id missing"}, status=status.HTTP_200_OK)
+            if not pk:
+
+                request.data['created_ip'] = Common.get_client_ip(request)
+                saveserialize = cSerializer.WorkInstructionSerializer(data = request.data)
+
+                if saveserialize.is_valid():
+                    saveserialize.save()
+
+                    return Response({"status" : error.context['success_code'], "message":"Work instruction" +language.context[language.defaultLang]['insert'], "data":''}, status=status.HTTP_200_OK)
+                else:
+                    return Response({"status" :error.context['error_code'], "message":error.serializerError(saveserialize)}, status=status.HTTP_200_OK)
+            else:
+
+                request.data['modified_ip'] = Common.get_client_ip(request)
+                request.data['modified_by'] = request.user.id
+
+
+                list = self.get_object(pk)
+                
+                saveserialize = cSerializer.WorkInstructionSerializer(list, data = request.data, partial= True)                
+                if saveserialize.is_valid():
+                    saveserialize.save()
+
+                    return Response({"status" :error.context['success_code'], "message":"Work instruction" +language.context[language.defaultLang]['update'], "data":''}, status=status.HTTP_200_OK)
+                else:
+                    return Response({"status" :error.context['error_code'],"message":error.serializerError(saveserialize)}, status = status.HTTP_200_OK)
+
+class QCWorkInstructionCRUD(APIView):
+    def get_object(self, pk):
+            try:
+                return models.WorkInstructionQCCheck.objects.get(pk = pk)
+            except models.WorkInstructionQCCheck.DoesNotExist:
+                raise Http404
+
+    def post(self,request, pk = None):
+
+        #print(request.data)
+        #pass
+        if 'id' not in request.data:
+            return Response({"status" : {"id" : ['id' +language.context[language.defaultLang]['missing']]}}, status=status.HTTP_200_OK)
+        else:
+
+            request.data['work_instruction'] = request.data['id']
+            request.data['created_ip'] = Common.get_client_ip(request)
+            request.data['created_by'] = request.user.id
+            request.data['status'] = 1
+            saveserialize = cSerializer.WorkInstructionQCCheckSerializer(data = request.data)
+
+            if saveserialize.is_valid():
+                saveserialize.save()
+
+                return Response({"status" : error.context['success_code'], "message":"QC work instruction" +language.context[language.defaultLang]['insert'], "data":''}, status=status.HTTP_200_OK)
+            else:
+                return Response({"status" :error.context['error_code'], "message":error.serializerError(saveserialize)}, status=status.HTTP_200_OK)
+
+class QCWorkInstructionHistory(APIView):
+    def post(self, request, pk=None):
+        if "work_instruction_id" in request.data:
+            history = (
+                models.WorkInstructionQCCheck.objects.values(
+                    "id",
+                    "qc_status",
+                    "remarks",
+                    "created_on",
+                    "created_by__first_name",
+                    "created_by__last_name"
+                )
+                .filter(work_instruction_id=request.data["work_instruction_id"])
+                .order_by("id")
+            )
+            return Response(
+                {"status": error.context["success_code"], "data": history},
+                status=status.HTTP_200_OK,
+            )
+        else:
+            return Response(
+                {"status": error.context["success_code"], "data": "No data"},
+                status=status.HTTP_200_OK,
+            )
+
+
+
+# Job Card
+class JobCardList(APIView):
+    
+    def get(self, request, pk = None):       
+        filter_values = dict(request.GET.items())
+        search_string=order_type=order_column=limit_start=limit_end=''
+        normal_values=dict()
+        array_values=dict()
+        if filter_values:
+            for key,values in filter_values.items():
+                if values.find("[") !=-1 and values.find("]") !=-1:
+                    res = values.strip('][').split(',')
+                    array_values[key]=(res)
+                else:
+                    normal_values[key]=(values)
+
+            strings = []
+            search_string = dict((k, normal_values[k]) for k in strings
+                                            if k in normal_values)  
+            order_column =  request.GET.get('order_column')
+            order_type = request.GET.get('order_type')  
+            limit_start = request.GET.get('limit_start')
+            limit_end = request.GET.get('limit_end')  
+
+
+            if order_column is not None:                                      
+                normal_values.pop('order_column')
+            if order_type is not None: 
+                normal_values.pop('order_type')  
+            if limit_start is not None: 
+                normal_values.pop('limit_start')
+            if limit_end is not None: 
+                normal_values.pop('limit_end')     
+
+            for key in strings:
+                if key in normal_values:
+                    normal_values.pop(key)
+
+            if search_string:       
+                filter_string = None
+                for field in search_string:
+                    q = Q(**{"%s__contains" % field: search_string[field] })
+                    if filter_string:
+                        filter_string = filter_string & q
+                    else:
+                        filter_string = q
+        try:
+            if pk:
+                list = models.JobCard.objects.filter(pk=pk).exclude(status='3').get()
+                serializeobj = serializer.ListJobCardSerializer(list)
+                return Response({"status":error.context['success_code'], "data": serializeobj.data}, status=status.HTTP_200_OK)
+       
+        except models.JobCard.DoesNotExist:
+            return Response({"status" :error.context['error_code'], "message":"Job card" +language.context[language.defaultLang]['dataNotFound']}, status = status.HTTP_200_OK)
+
+        lists = models.JobCard.objects.exclude(status='3')
+        if normal_values:
+            lists = lists.filter(reduce(operator.and_, 
+                               (Q(**d) for d in [dict([i]) for i in normal_values.items()])))
+        if array_values:
+            for key,values in array_values.items():
+                queries= [Q(**{"%s__contains" % key: value }) for value in values]
+                query=queries.pop()
+                for item in queries:
+                    query |= item
+                lists = lists.filter(query)
+
+        if search_string:
+            lists = lists.filter(filter_string)
+
+        if order_type is None: 
+            if order_column:
+                lists = lists.order_by(order_column)  
+
+        elif order_type in 'asc':
+            if order_column:
+                lists = lists.order_by(order_column)
+            else: 
+                lists = lists.order_by('id')   
+
+        elif order_type in 'desc':
+            if order_column:
+                order_column = '-' + str(order_column)
+                lists = lists.order_by(order_column)
+            else: 
+                lists = lists.order_by('-id') 
+
+        if limit_start and limit_end:
+                lists = lists[int(limit_start):int(limit_end)]
+
+        elif limit_start:
+                lists = lists[int(limit_start):]
+
+        elif limit_end:
+                lists = lists[0:int(limit_end)]           
+        
+        serializer = cSerializer.ListJobCardSerializer(lists, many=True)
+        #print('serializer serializer',serializer.data)
+        return Response({"status":error.context['success_code'], "data": serializer.data}, status=status.HTTP_200_OK)
+
+class JobCardCRUD(APIView):
+    def get_object(self, pk):
+            try:
+                return models.JobCard.objects.get(pk = pk)
+            except models.JobCard.DoesNotExist:
+                raise Http404
+
+    def post(self,request, pk = None):
+
+        #print(request.data)
+        #pass
+        if 'id' not in request.data:
+            return Response({"status" : {"id" : ['id' +language.context[language.defaultLang]['missing']]}}, status=status.HTTP_200_OK)
+        else:
+            pk = request.data['id']
+            if not request.data['work_instruction'] and request.data['status'] != 3:
+                return Response({"status":error.context['error_code'], "message": "Work instruction id missing"}, status=status.HTTP_200_OK)
+            if not pk:
+
+                request.data['created_ip'] = Common.get_client_ip(request)
+                saveserialize = cSerializer.JobCardSerializer(data = request.data)
+
+                if saveserialize.is_valid():
+                    saveserialize.save()
+
+                    return Response({"status" : error.context['success_code'], "message":"Job card" +language.context[language.defaultLang]['insert'], "data":''}, status=status.HTTP_200_OK)
+                else:
+                    return Response({"status" :error.context['error_code'], "message":error.serializerError(saveserialize)}, status=status.HTTP_200_OK)
+            else:
+
+                request.data['modified_ip'] = Common.get_client_ip(request)
+                request.data['modified_by'] = request.user.id
+
+
+                list = self.get_object(pk)
+                
+                saveserialize = cSerializer.JobCardSerializer(list, data = request.data, partial= True)                
+                if saveserialize.is_valid():
+                    saveserialize.save()
+
+                    return Response({"status" :error.context['success_code'], "message":"Job card" +language.context[language.defaultLang]['update'], "data":''}, status=status.HTTP_200_OK)
+                else:
+                    return Response({"status" :error.context['error_code'],"message":error.serializerError(saveserialize)}, status = status.HTTP_200_OK)
+
+class QCJobCardCRUD(APIView):
+    def get_object(self, pk):
+            try:
+                return models.JobCardQCCheck.objects.get(pk = pk)
+            except models.JobCardQCCheck.DoesNotExist:
+                raise Http404
+
+    def post(self,request, pk = None):
+
+        #print(request.data)
+        #pass
+        if 'id' not in request.data:
+            return Response({"status" : {"id" : ['id' +language.context[language.defaultLang]['missing']]}}, status=status.HTTP_200_OK)
+        else:
+
+            request.data['job_card'] = request.data['id']
+            request.data['created_ip'] = Common.get_client_ip(request)
+            request.data['created_by'] = request.user.id
+            request.data['status'] = 1
+            saveserialize = cSerializer.JobCardQCCheckSerializer(data = request.data)
+
+            if saveserialize.is_valid():
+                saveserialize.save()
+
+                return Response({"status" : error.context['success_code'], "message":"QC job card" +language.context[language.defaultLang]['insert'], "data":''}, status=status.HTTP_200_OK)
+            else:
+                return Response({"status" :error.context['error_code'], "message":error.serializerError(saveserialize)}, status=status.HTTP_200_OK)
+
+
+class QCJobCardHistory(APIView):
+    def post(self, request, pk=None):
+        if "job_card_id" in request.data:
+            history = (
+                models.JobCardQCCheck.objects.values(
+                    "id",
+                    "qc_status",
+                    "remarks",
+                    "created_on",
+                    "created_by__first_name",
+                    "created_by__last_name"
+                )
+                .filter(job_card_id=request.data["job_card_id"])
+                .order_by("id")
+            )
+            return Response(
+                {"status": error.context["success_code"], "data": history},
+                status=status.HTTP_200_OK,
+            )
+        else:
+            return Response(
+                {"status": error.context["success_code"], "data": "No data"},
+                status=status.HTTP_200_OK,
+            )

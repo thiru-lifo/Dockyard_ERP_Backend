@@ -3333,3 +3333,56 @@ class ListRASerializer(serializers.ModelSerializer):
     class Meta:
         model = models.RA
         fields = "__all__" 
+
+
+class WorkInstructionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.WorkInstruction
+        fields = "__all__"
+
+class ListWorkInstructionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.WorkInstruction
+        fields = "__all__" 
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance) 
+        dart_id = response['dart']
+        refit_type_id = response['refit_type']
+        response['dart_det'] = models.Dart.objects.values('id','SrNo').filter(id=dart_id).first()
+        response['refit_type_det'] = masterModels.RefitType.objects.values('id','name').filter(id=refit_type_id).first()
+        return response
+
+class WorkInstructionQCCheckSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.WorkInstructionQCCheck
+        fields = "__all__"
+
+
+
+class JobCardSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.JobCard
+        fields = "__all__"
+
+class ListJobCardSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.JobCard
+        fields = "__all__" 
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance) 
+        work_instruction_id = response['work_instruction']
+        response['work_instruction_id_det'] = models.WorkInstruction.objects.values('id','name').filter(id=work_instruction_id).first()
+        return response
+
+class JobCardQCCheckSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.JobCardQCCheck
+        fields = "__all__"

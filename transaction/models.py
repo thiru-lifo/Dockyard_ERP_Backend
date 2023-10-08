@@ -12,7 +12,7 @@ import phonenumbers
 from phonenumber_field.modelfields import PhoneNumberField
 from accounts.models import User
 #from master.models import Project
-from master.models import Project, Section, Unit, Compartment, System, Equipment, Module, SubModule, GlobalSection, GlobalSubSection, GlobalSubSubSection, Class, Command, Department
+from master.models import Project, Section, Unit, Compartment, System, Equipment, Module, SubModule, GlobalSection, GlobalSubSection, GlobalSubSubSection, Class, Command, Department, RefitType
 from access.models import AccessUserRoles,ProcessFlow
 
 
@@ -2413,3 +2413,103 @@ class OPDEF(models.Model):
         db_table = 'transaction.opdef'
         verbose_name = 'opdef'
         verbose_name_plural = 'opdef'
+
+
+class WorkInstruction(models.Model): # WI
+
+    name = models.CharField(max_length=100, blank=True, null=True)
+    dart = models.ForeignKey(Dart, on_delete=models.CASCADE, null=True)
+    man_days = models.IntegerField(null=True)
+    start_date = models.DateTimeField(blank=True, null=True)
+    end_date = models.DateTimeField(blank=True, null=True)
+
+    status_description = models.TextField(null=True, blank=True)
+    WI_close_date = models.DateTimeField(blank=True, null=True)
+    refit_type = models.ForeignKey(RefitType, on_delete=models.CASCADE, null=True)
+    qc_status = models.SmallIntegerField(choices=((1,'Accept'),(2,'Reject'),(3,'Recommend')))
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True)
+
+    def __str__(self):
+        return self.dart
+
+    class Meta:
+        db_table = 'transaction.work_instruction'
+        verbose_name = 'work_instruction'
+        verbose_name_plural = 'work_instruction'
+
+class WorkInstructionQCCheck(models.Model):
+
+    work_instruction = models.ForeignKey(WorkInstruction, on_delete=models.CASCADE, null=True)
+    remarks = models.TextField(null=True, blank=True)
+    qc_status = models.SmallIntegerField(choices=((1,'Accept'),(2,'Reject'),(3,'Recommend')))
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True)
+
+    def __str__(self):
+        return self.work_instruction
+
+    class Meta:
+        db_table = 'transaction.work_instruction_qc_check'
+        verbose_name = 'work_instruction_qc_check'
+        verbose_name_plural = 'work_instruction_qc_check'
+
+
+
+class JobCard(models.Model):
+
+    name = models.CharField(max_length=100, blank=True, null=True)
+    work_instruction = models.ForeignKey(WorkInstruction, on_delete=models.CASCADE, null=True)
+    man_days = models.IntegerField(null=True)
+    start_date = models.DateTimeField(blank=True, null=True)
+    end_date = models.DateTimeField(blank=True, null=True)
+
+    instruction = models.TextField(null=True, blank=True)
+    job_card_close_date = models.DateTimeField(blank=True, null=True)
+    qc_status = models.SmallIntegerField(choices=((1,'Accept'),(2,'Reject'),(3,'Recommend')))
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True)
+
+    def __str__(self):
+        return self.work_instruction
+
+    class Meta:
+        db_table = 'transaction.job_card'
+        verbose_name = 'job_card'
+        verbose_name_plural = 'job_card'
+
+class JobCardQCCheck(models.Model):
+
+    job_card = models.ForeignKey(JobCard, on_delete=models.CASCADE, null=True)
+    remarks = models.TextField(null=True, blank=True)
+    qc_status = models.SmallIntegerField(choices=((1,'Accept'),(2,'Reject'),(3,'Recommend')))
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True)
+
+    def __str__(self):
+        return self.job_card
+
+    class Meta:
+        db_table = 'transaction.job_card_qc_check'
+        verbose_name = 'job_card_qc_check'
+        verbose_name_plural = 'job_card_qc_check'

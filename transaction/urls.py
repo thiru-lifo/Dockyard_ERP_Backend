@@ -392,4 +392,17 @@ urlpatterns = [
     path('ra/crud',views.RACRUD.as_view(), name = 'RA CRUD'),
     path('ra/excel', views.ImportExcelRA.as_view(), name="RA Excel"),
 
+    path('wi',views.WorkInstructionList.as_view(), name = 'WI List'),
+    path('wi/crud',views.WorkInstructionCRUD.as_view(), name = 'WI CRUD'),
+
+    path('wi/qc',views.QCWorkInstructionHistory.as_view(), name = 'QC WI List'),
+    path('wi/qc/crud',views.QCWorkInstructionCRUD.as_view(), name = 'QC WI CRUD'),
+
+
+    path('job-card',views.JobCardList.as_view(), name = 'Job Card List'),
+    path('job-card/crud',views.JobCardCRUD.as_view(), name = 'Job Card CRUD'),
+
+    path('job-card/qc',views.QCJobCardHistory.as_view(), name = 'QC Job Card List'),
+    path('job-card/qc/crud',views.QCJobCardCRUD.as_view(), name = 'QC Job Card CRUD'),
+
 ]
