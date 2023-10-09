@@ -2267,6 +2267,24 @@ class ExcelFileRAUpload(models.Model):
         verbose_name_plural = 'RA Excel File Upload'
 
 
+class ExcelFileOPDEFUpload(models.Model):
+    excel_file_upload = models.FileField(upload_to="Excel/RA/", null=True, blank=True)
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True)
+
+
+    def __str__(self):
+        return self.excel_file_upload
+
+    class Meta:
+        db_table = 'opdef.excel_file_upload'
+        verbose_name = 'OPDEF Excel File Upload'
+        verbose_name_plural = 'OPDEF Excel File Upload'
+
 
 class Dart(models.Model):
 
@@ -2362,11 +2380,11 @@ class RA(models.Model): # Request Assistance
 
 class OPDEF(models.Model):
 
-    OpdefDate = models.DateTimeField(auto_now=True, blank=True, null=True)
+    OpdefDate = models.DateTimeField(blank=True, null=True)
     OpdefNo = models.CharField(max_length=100, blank=True, null=True)
     ShipID = models.CharField(max_length=100, blank=True, null=True)
     Command = models.CharField(max_length=100, blank=True, null=True)
-    DepartmentId = models.CharField(max_length=100, blank=True, null=True)
+    DepartmentID = models.ForeignKey(Department, on_delete=models.CASCADE, null=True)
     DartNo = models.CharField(max_length=100, blank=True, null=True)
     STA = models.CharField(max_length=100, blank=True, null=True)
     EquipmentID = models.CharField(max_length=100, blank=True, null=True)
@@ -2376,12 +2394,12 @@ class OPDEF(models.Model):
     Severity = models.CharField(max_length=100, blank=True, null=True)
     AssistanceRequired = models.CharField(max_length=100, blank=True, null=True)
     EffectOnOperation = models.CharField(max_length=100, blank=True, null=True)
-    DowngradeDate = models.DateTimeField(auto_now=True, blank=True, null=True)
-    STADowngradeDate = models.DateTimeField(auto_now=True, blank=True, null=True)
-    STAUpgradeDate = models.DateTimeField(auto_now=True, blank=True, null=True)
+    DowngradeDate = models.DateTimeField(blank=True, null=True)
+    STADowngradeDate = models.DateTimeField(blank=True, null=True)
+    STAUpgradeDate = models.DateTimeField(blank=True, null=True)
     CancelDtg = models.CharField(max_length=100, blank=True, null=True)
-    CancelDate = models.DateTimeField(auto_now=True, blank=True, null=True)
-    RepairDate = models.DateTimeField(auto_now=True, blank=True, null=True)
+    CancelDate = models.DateTimeField(blank=True, null=True)
+    RepairDate = models.DateTimeField(blank=True, null=True)
     RepairID = models.CharField(max_length=100, blank=True, null=True)
     RepairParts = models.CharField(max_length=100, blank=True, null=True)
 
@@ -2401,7 +2419,7 @@ class OPDEF(models.Model):
     OpDefStatus = models.CharField(max_length=100, blank=True, null=True)
     EquipmentSerialNo = models.CharField(max_length=100, blank=True, null=True)
 
-    OfarDate = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    OfarDate = models.DateTimeField(blank=True, null=True)
 
     status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
     created_ip = models.GenericIPAddressField()

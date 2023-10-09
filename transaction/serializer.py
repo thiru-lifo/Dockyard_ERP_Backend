@@ -3334,6 +3334,17 @@ class ListRASerializer(serializers.ModelSerializer):
         model = models.RA
         fields = "__all__" 
 
+class OPDEFSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.OPDEF
+        fields = "__all__"
+
+class ListOPDEFSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.OPDEF
+        fields = "__all__" 
 
 class WorkInstructionSerializer(serializers.ModelSerializer):
 
@@ -3360,8 +3371,6 @@ class WorkInstructionQCCheckSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.WorkInstructionQCCheck
         fields = "__all__"
-
-
 
 class JobCardSerializer(serializers.ModelSerializer):
 

@@ -17700,6 +17700,98 @@ class ImportExcelRA(APIView):
         else:
             return Response({"status" :error.context['error_code'],"message":error.serializerError(saveserialize)}, status = status.HTTP_200_OK)
 
+class ImportExcelOPDEF(APIView):
+
+    def post(self,request, pk = None):
+
+        from pathlib import Path
+        BASE_DIR = Path(__file__).resolve().parent.parent
+        created_ip = Common.get_client_ip(request)
+        request_file = request.FILES['excel_file_upload']
+        created_by = request.data['created_by']
+
+        dir_storage='static/import_excel'
+        fs = FileSystemStorage(location=dir_storage)
+        filename = fs.save(request_file.name, request_file)
+        if os.path.splitext(request_file.name)[1] == ".xls" or  os.path.splitext(request_file.name)[1] == ".xlsx":
+            excel_folder = os.path.join(BASE_DIR, 'media/Excel/OPDEF/')
+            read_file = pd.read_excel(request_file)
+            read_file.to_csv(excel_folder +'import_excel_file.csv')
+            fhand = open('media/Excel/OPDEF/import_excel_file.csv')
+        else:
+             return Response({"status":error.context['error_code'],"message" : "File format not supported (Xls and Xlsx only allowed)" })    
+        reader = csv.reader(fhand)
+        next(reader)
+        #print(reader)
+
+
+        for row in reader:
+            #print(row[1])
+            #print(type(int(row[10])),"TYYGHHHHV", row[10])
+            if not request_file:
+                return Response({"status":error.context['error_code'],"message" : "Upload file is required" })
+
+            department = masterModels.Department.objects.filter(code=row[5]).first()
+
+            if not department:
+                department_id = None
+            else:
+                department_id = department.id
+
+            request_data = {
+                'OpdefDate' : pd.to_datetime(row[1]),
+                'OpdefNo' : row[2],
+                'ShipID' : row[3],
+                'Command':row[4],
+                'DepartmentID' : department_id,
+                'DartNo' : row[6],
+                'STA' : row[7],
+                'EquipmentID' : row[8],
+                'LocationCode' : row[9],
+                'Unit' : row[10],
+                'Defect' : row[11],
+                'Severity' : row[12],
+                'AssistanceRequired': row[13],
+                'EffectOnOperation': row[14],
+                'DowngradeDate' : pd.to_datetime(row[15]),
+                'STADowngradeDate' : pd.to_datetime(row[16]),
+                'STAUpgradeDate' : pd.to_datetime(row[17]),
+                'CancelDtg' : row[18],
+                'CancelDate' : pd.to_datetime(row[19]),
+                'RepairDate' : pd.to_datetime(row[20]),
+                'RepairID' : row[21],
+                'RepairParts': row[22],
+                'HoldupCode' : row[23],
+                'HoldupDetail' : row[24],
+                'INSMAEffort' : row[25],
+                'Refit' : row[26],
+                'Active': row[27],
+                'Remarks' : row[28],
+                'StoredemSrNo' : row[29],
+                'OpDefStatus': row[30],
+                'EquipmentSerialNo' : row[31],
+                'OfarDate' : pd.to_datetime(row[32]),
+                'status' : 1,
+                'created_ip': created_ip,
+            }
+
+            #print(request_data,"GGGGG")
+
+            saveserialize = cSerializer.OPDEFSerializer(data = request_data)
+            if saveserialize.is_valid():
+                saveserialize.save()
+            else:
+                return Response({"status" :error.context['error_code'],"message":error.serializerError(saveserialize)}, status = status.HTTP_200_OK)
+
+        excel_upload_obj = models.ExcelFileOPDEFUpload.objects.create(
+        excel_file_upload = request.data['excel_file_upload'],
+        created_ip =  created_ip
+        )
+
+        if excel_upload_obj:
+            return Response({"status" :error.context['success_code'], "message":"File imported successfully"}, status=status.HTTP_200_OK)
+        else:
+            return Response({"status" :error.context['error_code'],"message":error.serializerError(saveserialize)}, status = status.HTTP_200_OK)
 
 # Dart
 class DartList(APIView):
@@ -17827,7 +17919,7 @@ class DartCRUD(APIView):
                 if saveserialize.is_valid():
                     saveserialize.save()
 
-                    return Response({"status" : error.context['success_code'], "message":"Dart notes" +language.context[language.defaultLang]['insert'], "data":''}, status=status.HTTP_200_OK)
+                    return Response({"status" : error.context['success_code'], "message":"Dart" +language.context[language.defaultLang]['insert'], "data":''}, status=status.HTTP_200_OK)
                 else:
                     return Response({"status" :error.context['error_code'], "message":error.serializerError(saveserialize)}, status=status.HTTP_200_OK)
             else:
@@ -17983,7 +18075,7 @@ class RACRUD(APIView):
                 if saveserialize.is_valid():
                     saveserialize.save()
 
-                    return Response({"status" : error.context['success_code'], "message":"RA notes" +language.context[language.defaultLang]['insert'], "data":''}, status=status.HTTP_200_OK)
+                    return Response({"status" : error.context['success_code'], "message":"RA" +language.context[language.defaultLang]['insert'], "data":''}, status=status.HTTP_200_OK)
                 else:
                     return Response({"status" :error.context['error_code'], "message":error.serializerError(saveserialize)}, status=status.HTTP_200_OK)
             else:
@@ -18009,6 +18101,161 @@ class RACRUD(APIView):
                     #     )
 
                     return Response({"status" :error.context['success_code'], "message":"RA" +language.context[language.defaultLang]['update'], "data":''}, status=status.HTTP_200_OK)
+                else:
+                    return Response({"status" :error.context['error_code'],"message":error.serializerError(saveserialize)}, status = status.HTTP_200_OK)
+
+
+# OPDEF
+class OPDEFList(APIView):
+    
+    def get(self, request, pk = None):       
+        filter_values = dict(request.GET.items())
+        search_string=order_type=order_column=limit_start=limit_end=''
+        normal_values=dict()
+        array_values=dict()
+        if filter_values:
+            for key,values in filter_values.items():
+                if values.find("[") !=-1 and values.find("]") !=-1:
+                    res = values.strip('][').split(',')
+                    array_values[key]=(res)
+                else:
+                    normal_values[key]=(values)
+
+            strings = []
+            search_string = dict((k, normal_values[k]) for k in strings
+                                            if k in normal_values)  
+            order_column =  request.GET.get('order_column')
+            order_type = request.GET.get('order_type')  
+            limit_start = request.GET.get('limit_start')
+            limit_end = request.GET.get('limit_end')  
+
+
+            if order_column is not None:                                      
+                normal_values.pop('order_column')
+            if order_type is not None: 
+                normal_values.pop('order_type')  
+            if limit_start is not None: 
+                normal_values.pop('limit_start')
+            if limit_end is not None: 
+                normal_values.pop('limit_end')     
+
+            for key in strings:
+                if key in normal_values:
+                    normal_values.pop(key)
+
+            if search_string:       
+                filter_string = None
+                for field in search_string:
+                    q = Q(**{"%s__contains" % field: search_string[field] })
+                    if filter_string:
+                        filter_string = filter_string & q
+                    else:
+                        filter_string = q
+        try:
+            if pk:
+                list = models.OPDEF.objects.filter(pk=pk).exclude(status='3').get()
+                serializeobj = serializer.ListOPDEFSerializer(list)
+                return Response({"status":error.context['success_code'], "data": serializeobj.data}, status=status.HTTP_200_OK)
+       
+        except models.OPDEF.DoesNotExist:
+            return Response({"status" :error.context['error_code'], "message":"OPDEF" +language.context[language.defaultLang]['dataNotFound']}, status = status.HTTP_200_OK)
+
+        lists = models.OPDEF.objects.exclude(status='3')
+        if normal_values:
+            lists = lists.filter(reduce(operator.and_, 
+                               (Q(**d) for d in [dict([i]) for i in normal_values.items()])))
+        if array_values:
+            for key,values in array_values.items():
+                queries= [Q(**{"%s__contains" % key: value }) for value in values]
+                query=queries.pop()
+                for item in queries:
+                    query |= item
+                lists = lists.filter(query)
+
+        if search_string:
+            lists = lists.filter(filter_string)
+
+        if order_type is None: 
+            if order_column:
+                lists = lists.order_by(order_column)  
+
+        elif order_type in 'asc':
+            if order_column:
+                lists = lists.order_by(order_column)
+            else: 
+                lists = lists.order_by('id')   
+
+        elif order_type in 'desc':
+            if order_column:
+                order_column = '-' + str(order_column)
+                lists = lists.order_by(order_column)
+            else: 
+                lists = lists.order_by('-id') 
+
+        if limit_start and limit_end:
+                lists = lists[int(limit_start):int(limit_end)]
+
+        elif limit_start:
+                lists = lists[int(limit_start):]
+
+        elif limit_end:
+                lists = lists[0:int(limit_end)]           
+        
+        serializer = cSerializer.ListOPDEFSerializer(lists, many=True)
+        print('serializer serializer',serializer.data)
+        return Response({"status":error.context['success_code'], "data": serializer.data}, status=status.HTTP_200_OK)
+
+class OPDEFCRUD(APIView):
+    def get_object(self, pk):
+            try:
+                return models.OPDEF.objects.get(pk = pk)
+            except models.OPDEF.DoesNotExist:
+                raise Http404
+
+    def post(self,request, pk = None):
+
+        #print(request.data)
+        #pass
+        if 'id' not in request.data:
+            return Response({"status" : {"id" : ['id' +language.context[language.defaultLang]['missing']]}}, status=status.HTTP_200_OK)
+        else:
+            pk = request.data['id']
+            if not request.data['DepartmentID'] and request.data['status'] != 3:
+                return Response({"status":error.context['error_code'], "message": "Department ID missing"}, status=status.HTTP_200_OK)
+            if not pk:
+
+                request.data['created_ip'] = Common.get_client_ip(request)
+                saveserialize = cSerializer.OPDEFSerializer(data = request.data)
+
+                if saveserialize.is_valid():
+                    saveserialize.save()
+
+                    return Response({"status" : error.context['success_code'], "message":"OPDEF" +language.context[language.defaultLang]['insert'], "data":''}, status=status.HTTP_200_OK)
+                else:
+                    return Response({"status" :error.context['error_code'], "message":error.serializerError(saveserialize)}, status=status.HTTP_200_OK)
+            else:
+
+                request.data['modified_ip'] = Common.get_client_ip(request)
+                request.data['modified_by'] = request.user.id
+
+
+                list = self.get_object(pk)
+                
+                saveserialize = cSerializer.OPDEFSerializer(list, data = request.data, partial= True)                
+                if saveserialize.is_valid():
+                    saveserialize.save()
+                    # logData=request.data
+
+                    # if 'approved_status' in request.data:
+                    #     models.ProjectModuleStatus.objects.filter(project_id=request.data['project'], project_module_master_id=1).delete()
+
+                    #     models.ProjectModuleStatus.objects.create(
+                    #         project_module_master_id = 1,
+                    #         project_id = request.data['project'],
+                    #         status  = request.data['approved_status']
+                    #     )
+
+                    return Response({"status" :error.context['success_code'], "message":"OPDEF" +language.context[language.defaultLang]['update'], "data":''}, status=status.HTTP_200_OK)
                 else:
                     return Response({"status" :error.context['error_code'],"message":error.serializerError(saveserialize)}, status = status.HTTP_200_OK)
 
@@ -18211,7 +18458,6 @@ class QCWorkInstructionHistory(APIView):
             )
 
 
-
 # Job Card
 class JobCardList(APIView):
     
@@ -18383,7 +18629,6 @@ class QCJobCardCRUD(APIView):
                 return Response({"status" : error.context['success_code'], "message":"QC job card" +language.context[language.defaultLang]['insert'], "data":''}, status=status.HTTP_200_OK)
             else:
                 return Response({"status" :error.context['error_code'], "message":error.serializerError(saveserialize)}, status=status.HTTP_200_OK)
-
 
 class QCJobCardHistory(APIView):
     def post(self, request, pk=None):
