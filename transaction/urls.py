@@ -408,4 +408,8 @@ urlpatterns = [
     path('job-card/qc',views.QCJobCardHistory.as_view(), name = 'QC Job Card List'),
     path('job-card/qc/crud',views.QCJobCardCRUD.as_view(), name = 'QC Job Card CRUD'),
 
+    path('attendance',views.AttendanceList.as_view(), name = 'Attendance List'),
+    path('attendance/crud',views.AttendanceCRUD.as_view(), name = 'Attendance CRUD'),
+    path('attendance/check_in_out',views.CheckInOut.as_view(), name = 'Attendance Check In and Out')
+
 ]

@@ -92,6 +92,7 @@ class User(AbstractBaseUser):
     )
     process =models.ForeignKey(Process,on_delete=models.CASCADE,null=True,blank=True,default=1)
     desig = models.ForeignKey('master.Unit', on_delete = models.CASCADE, null = True)
+    design = models.ForeignKey('master.Designation', on_delete = models.CASCADE, null = True)
     is_active = models.BooleanField(default=True)
     staff = models.BooleanField(default=False) # a admin user; non super-user
     admin = models.BooleanField(default=False) # a superuser
