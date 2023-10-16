@@ -28,6 +28,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
 
+    #path('', include('pages.urls')),
     path('admin/', admin.site.urls),
     path('master/', include('master.urls')),
     path('notification/', include('notification.urls')),

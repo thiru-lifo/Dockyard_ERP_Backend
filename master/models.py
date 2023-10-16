@@ -275,7 +275,7 @@ class Defect(models.Model):
     awrf_2 = models.CharField(max_length=15, blank=True, null=True)
     awrf_3 = models.CharField(max_length=15, blank=True, null=True)
 
-    refit_type = models.ForeignKey(RefitType, on_delete= models.CASCADE)
+    refit_type = models.ForeignKey(RefitType, on_delete= models.CASCADE, blank=True, null=True)
     sequence = models.IntegerField(null=True)
     status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
     created_on = models.DateTimeField(auto_now_add=True)
@@ -292,6 +292,21 @@ class Defect(models.Model):
         db_table = 'master.defect_list'
         verbose_name = 'defect_list'
         verbose_name_plural = 'defect_list'
+
+
+
+class DefectListRefitType(models.Model):
+
+    defect = models.ForeignKey(Defect, on_delete= models.CASCADE)
+    refit_type = models.ForeignKey(RefitType, on_delete= models.CASCADE)
+
+    def __str__(self):
+        return self.defect
+
+    class Meta:
+        db_table = 'master.defect_list_refit_type'
+        verbose_name = 'defect_list_refit_type'
+        verbose_name_plural = 'defect_list_refit_type'
 
 
 class Command(models.Model):

@@ -95,6 +95,7 @@ urlpatterns = [
     path('system/details', views.SystemDetailViews.as_view(), name = 'add_system'),
 
     path('equipment', views.EquipmentViews.as_view(), name = 'view_equipment'),
+    path('equipment_list', views.EquipmentList.as_view(), name = 'equipment_list'),
     path('equipment/<int:pk>', views.EquipmentViews.as_view(), name = 'view_equipment'),
     path('equipment/details', views.EquipmentDetailViews.as_view(), name = 'add_equipment'),
     path('equipment/excel', views.ImportExcelEquipment.as_view(), name="Equipment Excel"),
@@ -183,6 +184,7 @@ urlpatterns = [
     path('defect/details', views.DefectDetailViews.as_view(), name = 'add_defect'),
     path('defect/excel', views.ImportExcelDefect.as_view(), name="Defect Excel"),
 
+    path('get_defect_detail', views.GetDefectDetail.as_view(), name="Get Defect Detail"),
 
     path('center', views.CenterViews.as_view(), name = 'view_center'),
     path('center/<int:pk>', views.CenterViews.as_view(), name = 'view_center'),

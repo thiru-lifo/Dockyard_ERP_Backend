@@ -14,7 +14,7 @@ from functools import reduce
 import operator
 from django.db.models import Q
 
-from .models import Countries, States, Cities,LookupType,Lookup,Region,Dockyard,Command
+from .models import Countries, States, Cities,LookupType,Lookup,Region,Dockyard,Command, DefectListRefitType
 
 from .serializer import Citiesserializer, Countriesserializer, ListCitiesserializer, Statesserializer,ListStatesserializer,LookupTypeSerializer,ListLookupSerializer,LookupSerializer,Regionserializer,ListRegionserializer,CommandSerializer,ListCommandSerializer,DockyardSerializer,ListDockyardSerializer
 
@@ -3732,6 +3732,23 @@ class EquipmentDetailViews(APIView):
                 return Response({"status" : {"id" : ['id' +language.context[language.defaultLang]['missing']]}}, status=status.HTTP_200_OK)
 
 
+
+class EquipmentList(APIView):
+    def get(self, request, pk = None):
+        equipment = (
+            models.Equipment.objects.values(
+                "id",
+                "name"
+            )
+            .filter(status=1)
+            .order_by("id")
+        )
+        return Response(
+            {"status": error.context["success_code"], "data": equipment},
+            status=status.HTTP_200_OK,
+        )
+
+
 class GlobalStatusViews(APIView):
 
     def get(self, request, pk = None):
@@ -6687,7 +6704,7 @@ class DefectViews(APIView):
         serializer = cSerializer.ListDefectSerializer(lists, many=True)
         return Response({"status":error.context['success_code'] , "data": serializer.data}, status=status.HTTP_200_OK)
 
-class DefectDetailViews(APIView):
+class DefectDetailViews_test(APIView):
 
     def get_object(self,pk):
 
@@ -6752,6 +6769,87 @@ class DefectDetailViews(APIView):
                         return Response({"status" :error.context['error_code'], "message":error.serializerError(saveserialize)}, status = status.HTTP_200_OK)
             else: 
                 return Response({"status" : {"id" : ['id' +language.context[language.defaultLang]['missing']]}}, status=status.HTTP_200_OK)   
+
+
+class DefectDetailViews(APIView):
+
+
+    def get_object(self,pk):
+
+        try:
+            return models.Defect.objects.get(pk = pk)
+        except Defect.DoesNotExist:
+            raise Http404
+
+    def post(self,request, pk = None):
+
+        #print(request.data)
+        if 'name' not in request.data:
+            return Response({"status":error.context['error_code'], "message" : "Name" +language.context[language.defaultLang]['missing']},status=status.HTTP_200_OK)
+
+        else:
+            #if 'name' in request.data:
+            if 'id' in request.data:
+                pk = request.data['id']
+                created_ip = Common.get_client_ip(request)
+                created_id = request.user.id
+
+
+                if not pk: 
+                    saveserialize = cSerializer.DefectSerializer(data={
+                        'name':request.data["name"],
+                        'code':request.data["code"],
+                        'status':1,
+                        'created_ip':created_ip,
+                        'created_by':created_id
+                        })
+
+                    if saveserialize.is_valid():
+                        saveserialize.save()
+                        running_id = saveserialize.data['id']
+
+                    for recommender in request.data['recommender']:
+
+                        models.DefectListRefitType.objects.create(
+                            defect_id = running_id,
+                            refit_type_id = recommender['recommender']
+                        )
+
+                    return Response({"status" : error.context['success_code'], "message":"Defect" +language.context[language.defaultLang]['insert'], "data":''}, status=status.HTTP_200_OK)
+                else:
+
+                    list = self.get_object(pk)
+                    saveserialize = cSerializer.DefectSerializer(list, data = request.data, partial= True)
+                    if saveserialize.is_valid():
+                        saveserialize.save()
+
+                        running_id = saveserialize.data['id']
+
+                        models.DefectListRefitType.objects.filter(defect_id = running_id).delete()
+
+                        for recommender in request.data['recommender']:
+
+                            models.DefectListRefitType.objects.create(
+                                defect_id = running_id,
+                                refit_type_id = recommender['recommender']
+                            )
+
+                        return Response({"status" :error.context['success_code'], "message":"Defect" +language.context[language.defaultLang]['update'], "data":saveserialize.data}, status=status.HTTP_200_OK)
+
+
+
+class GetDefectDetail(APIView):
+
+    def get(self, request, pk = None):
+
+        if 'id' in request.GET:
+
+            response = {}
+            id = request.GET.get('id')
+
+            response['recommender'] = models.DefectListRefitType.objects.values('id', 'defect_id', 'refit_type_id').filter(defect_id=id)
+
+            return Response({"status":error.context['success_code'] , "data": response}, status=status.HTTP_200_OK)
 
 
 

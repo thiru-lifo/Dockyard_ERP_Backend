@@ -396,7 +396,7 @@ class EquipmentSerializer(serializers.ModelSerializer):
 
 class ListEquipmentSerializer(serializers.ModelSerializer):
     
-    system_id = SystemSerializer(read_only=True)
+    #system_id = SystemSerializer(read_only=True)
     # global_section = GlobalSectionSerializer(read_only=True)
     # global_sub_section = GlobalSubSectionSerializer(read_only=True)
     # global_sub_sub_section = GlobalSubSectionSerializer(read_only=True)
