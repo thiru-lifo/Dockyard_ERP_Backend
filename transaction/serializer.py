@@ -4,6 +4,7 @@ from django.db.models import F
 from rest_framework import serializers
 from access.serializer import AccessUserRoleserializer
 from accounts.models import User
+from accounts import models as masterAccounts
 from . import models
 from accounts.serializer import Userserializer
 from master.serializer import projectSerializer, ClassSerializer, ListProjectSerializer, UnitSerializer
@@ -3395,3 +3396,24 @@ class JobCardQCCheckSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.JobCardQCCheck
         fields = "__all__"
+
+
+class AttendanceSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.Attendance
+        fields = "__all__"
+
+class ListAttendanceSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.Attendance
+        fields = "__all__" 
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance) 
+        user_id = response['user']
+        center_id = response['center']
+        response['user_det'] = masterAccounts.User.objects.values('id','loginname').filter(id=user_id).first()
+        response['center_det'] = models.Center.objects.values('id','name').filter(id=center_id).first()
+        return response

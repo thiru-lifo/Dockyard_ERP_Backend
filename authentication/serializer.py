@@ -154,8 +154,8 @@ class UserListSerializer(serializers.ModelSerializer):
     def to_representation(self, instance, appointment_id=None):        
         response = super().to_representation(instance)
         response['roles']=UserRoleMappingSerializer(UserRoleMapping.objects.filter(user_id=response['id']),many=True).data
-        #response['designation'] = DesigationSerializer(Designation.objects.filter(id=response['desig']),many=True).data
-        response['designation'] = UnitSerializer(Unit.objects.filter(id=response['desig']),many=True).data
+        response['designation'] = DesignationSerializer(Designation.objects.filter(id=response['design']),many=True).data
+        #response['designation'] = UnitSerializer(Unit.objects.filter(id=response['desig']),many=True).data
         
         response['data_access']=DataAccessFormSerializer(transactionModels.DataAccessForms.objects.filter(user_id=response['id']),many=True).data  
         return response

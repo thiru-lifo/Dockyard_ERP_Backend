@@ -331,7 +331,10 @@ class usersCRUD(APIView):
             return Response({"status":error.context['error_code'],"message" : "Last name" +language.context[language.defaultLang]['missing'] },status=status.HTTP_200_OK)
         elif ('password' not in request.data or not request.data['password']) and request.data['status'] != 3 and request.data['id'] == '':  
             return Response({"status":error.context['error_code'],"message" : "Password" +language.context[language.defaultLang]['missing'] },status=status.HTTP_200_OK)
-        elif ('desig' not in request.data or not request.data['desig']) and request.data['status'] != 3:  
+        # elif ('desig' not in request.data or not request.data['desig']) and request.data['status'] != 3:  
+        #     return Response({"status":error.context['error_code'],"message" : "Desgnations" +language.context[language.defaultLang]['missing'] },status=status.HTTP_200_OK)
+
+        elif ('design' not in request.data or not request.data['design']) and request.data['status'] != 3:  
             return Response({"status":error.context['error_code'],"message" : "Desgnations" +language.context[language.defaultLang]['missing'] },status=status.HTTP_200_OK)
 
         elif ('user_role_id' not in request.data or not request.data['user_role_id']) and request.data['status'] != 3:  
@@ -353,8 +356,10 @@ class usersCRUD(APIView):
                     # user.set_password(request.data['password'])
                     # user.save()
 
+                    # Old ************
+                    # User.objects.filter(id=request.data['id']).update(loginname=request.data['loginname'],email=request.data['email'],first_name=request.data['first_name'],last_name=request.data['last_name'],desig=request.data['desig'])
 
-                    User.objects.filter(id=request.data['id']).update(loginname=request.data['loginname'],email=request.data['email'],first_name=request.data['first_name'],last_name=request.data['last_name'],desig=request.data['desig'])
+                    User.objects.filter(id=request.data['id']).update(loginname=request.data['loginname'],email=request.data['email'],first_name=request.data['first_name'],last_name=request.data['last_name'],design=request.data['design'])
 
                     # User.objects.filter(id=request.data['id']).update(loginname=request.data['loginname'],email=request.data['email'],first_name=request.data['first_name'],last_name=request.data['last_name'],process_id=request.data['process'],department_id=request.data['department'], desig=request.data['desig'])
                     if request.data['user_role_id']:

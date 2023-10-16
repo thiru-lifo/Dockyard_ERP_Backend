@@ -12,7 +12,7 @@ import phonenumbers
 from phonenumber_field.modelfields import PhoneNumberField
 from accounts.models import User
 #from master.models import Project
-from master.models import Project, Section, Unit, Compartment, System, Equipment, Module, SubModule, GlobalSection, GlobalSubSection, GlobalSubSubSection, Class, Command, Department, RefitType
+from master.models import Project, Section, Unit, Compartment, System, Equipment, Module, SubModule, GlobalSection, GlobalSubSection, GlobalSubSubSection, Class, Command, Department, RefitType, Center
 from access.models import AccessUserRoles,ProcessFlow
 
 
@@ -2531,3 +2531,28 @@ class JobCardQCCheck(models.Model):
         db_table = 'transaction.job_card_qc_check'
         verbose_name = 'job_card_qc_check'
         verbose_name_plural = 'job_card_qc_check'
+
+
+class Attendance(models.Model):
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    center = models.ForeignKey(Center, on_delete=models.CASCADE, null=True)
+    attendance_date = models.DateTimeField(blank=True, null=True)
+    check_in = models.DateTimeField(blank=True, null=True)
+    check_out = models.DateTimeField(blank=True, null=True)
+    attendance_status = models.SmallIntegerField(choices=((1,'Present'),(2,'Absent')))
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='a_user')
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True)
+
+    def __str__(self):
+        return self.user
+
+    class Meta:
+        db_table = 'transaction.attendance'
+        verbose_name = 'attendance'
+        verbose_name_plural = 'attendance'
