@@ -704,3 +704,27 @@ class ListShopfloorSerializer(serializers.ModelSerializer):
         center_id = response['center']
         response['center_det'] = models.Center.objects.values('id','name','code').filter(id=center_id).first()
         return response
+
+class CategoryTypeSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.CategoryType
+        fields = "__all__"       
+
+class ListCategoryTypeSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.CategoryType
+        fields = "__all__" 
+
+class PayScaleSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.PayScale
+        fields = "__all__"       
+
+class ListPayScaleSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.PayScale
+        fields = "__all__" 
