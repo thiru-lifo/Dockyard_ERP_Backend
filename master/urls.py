@@ -194,4 +194,12 @@ urlpatterns = [
     path('shop_floor/<int:pk>', views.ShopFloorViews.as_view(), name = 'view_shop_floor'),
     path('shop_floor/details', views.ShopFloorDetailViews.as_view(), name = 'add_shop_floor'),
 
+    path('category_type', views.CategoryTypeViews.as_view(), name = 'view_category_type'),
+    path('category_type/<int:pk>', views.CategoryTypeViews.as_view(), name = 'view_category_type'),
+    path('category_type/details', views.CategoryTypeDetailViews.as_view(), name = 'add_category_type'),
+
+    path('pay_scale', views.PayScaleViews.as_view(), name = 'view_pay_scale'),
+    path('pay_scale/<int:pk>', views.PayScaleViews.as_view(), name = 'view_pay_scale'),
+    path('pay_scale/details', views.PayScaleDetailViews.as_view(), name = 'add_pay_scale'),
+
 ]
