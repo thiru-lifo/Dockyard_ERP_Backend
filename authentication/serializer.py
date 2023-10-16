@@ -21,12 +21,12 @@ from access.views import Common
 from log.models import UserLogin
 from datetime import datetime
 from access.models import RolesPermissions,AccessUserRoles,UserRoleMapping
-from master.models import Designation, Unit, DataAccess
+from master.models import Designation, Unit, DataAccess, CategoryType, PayScale
 from django.template import Context, Template
 from django.shortcuts import render
 import requests
 from access.serializer import UserRoleMappingSerializer,Processserializer
-from master.serializer import DesignationSerializer, UnitSerializer, DataAccessSerializer
+from master.serializer import DesignationSerializer, UnitSerializer, DataAccessSerializer, PayScaleSerializer, CategoryTypeSerializer
 from NavyTrials.encryption import AESify
 aes = AESify(block_len=16, salt_len=4)
 from transaction import models as transactionModels
@@ -150,12 +150,14 @@ class UserListSerializer(serializers.ModelSerializer):
     #designation = DesignationSerializer(read_only=True)
     class Meta:
         model = User
-        fields = "__all__"        
+        fields = "__all__"
 
     def to_representation(self, instance, appointment_id=None):        
         response = super().to_representation(instance)
         response['roles']=UserRoleMappingSerializer(UserRoleMapping.objects.filter(user_id=response['id']),many=True).data
         response['designation'] = DesignationSerializer(Designation.objects.filter(id=response['design']),many=True).data
+        response['category_type'] = CategoryTypeSerializer(CategoryType.objects.filter(id=response['category_type']),many=True).data
+        response['pay_scale'] = PayScaleSerializer(PayScale.objects.filter(id=response['pay_scale']),many=True).data
         #response['designation'] = UnitSerializer(Unit.objects.filter(id=response['desig']),many=True).data
         
         response['data_access']=DataAccessFormSerializer(transactionModels.DataAccessForms.objects.filter(user_id=response['id']),many=True).data  

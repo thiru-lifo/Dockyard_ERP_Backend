@@ -359,7 +359,7 @@ class usersCRUD(APIView):
                     # Old ************
                     # User.objects.filter(id=request.data['id']).update(loginname=request.data['loginname'],email=request.data['email'],first_name=request.data['first_name'],last_name=request.data['last_name'],desig=request.data['desig'])
 
-                    User.objects.filter(id=request.data['id']).update(loginname=request.data['loginname'],email=request.data['email'],first_name=request.data['first_name'],last_name=request.data['last_name'],design=request.data['design'])
+                    User.objects.filter(id=request.data['id']).update(loginname=request.data['loginname'],email=request.data['email'],first_name=request.data['first_name'],last_name=request.data['last_name'],design=request.data['design'],category_type=request.data['category_type'],pay_scale=request.data['pay_scale'])
 
                     # User.objects.filter(id=request.data['id']).update(loginname=request.data['loginname'],email=request.data['email'],first_name=request.data['first_name'],last_name=request.data['last_name'],process_id=request.data['process'],department_id=request.data['department'], desig=request.data['desig'])
                     if request.data['user_role_id']:
