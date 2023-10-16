@@ -81,7 +81,8 @@ class MyTokenObtainSerializer(TokenObtainPairSerializer):
 
         list=UserRoleMapping.objects.filter(user_id=self.user.id)
         roleSerializer=UserRoleMappingSerializer(list, many=True)
-        designation=masterModels.Unit.objects.values('id','name','code').filter(id=self.user.desig_id)
+        #designation=masterModels.Unit.objects.values('id','name','code').filter(id=self.user.desig_id)
+        designation=masterModels.Designation.objects.values('id','name','code').filter(id=self.user.design_id)
         data['refresh'] = str(refresh)
         data['access'] = str(refresh.access_token)
         data['user_id'] = self.user.id
