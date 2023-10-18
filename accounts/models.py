@@ -95,6 +95,7 @@ class User(AbstractBaseUser):
     design = models.ForeignKey('master.Designation', on_delete = models.CASCADE, null = True)
     category_type = models.ForeignKey('master.CategoryType', on_delete = models.CASCADE, null = True)
     pay_scale = models.ForeignKey('master.PayScale', on_delete = models.CASCADE, null = True)
+    center = models.ForeignKey('master.Center', on_delete = models.CASCADE, null = True)
     is_active = models.BooleanField(default=True)
     staff = models.BooleanField(default=False) # a admin user; non super-user
     admin = models.BooleanField(default=False) # a superuser
