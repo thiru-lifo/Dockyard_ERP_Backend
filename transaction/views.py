@@ -28,6 +28,7 @@ from collections import namedtuple
 
 from django.template import Template, Context
 from datetime import datetime
+from datetime import date
 import time
 from django.template import loader
 from django.http import HttpResponse
@@ -18803,7 +18804,7 @@ class AttendanceCRUD(APIView):
 
 
 
-class CheckInOut(APIView):
+class CheckInOutOLD(APIView):
     def post(self, request, pk=None):
         if "attendance_id" in request.data:
 
@@ -18826,5 +18827,79 @@ class CheckInOut(APIView):
         else:
             return Response(
                 {"status": error.context["error_code"], "message": "Attendance id missing"},
+                status=status.HTTP_200_OK,
+            )
+
+
+class CheckInOut(APIView):
+    def post(self, request, pk=None):
+        if "check_type" in request.data:
+
+            check_type = request.data['check_type']
+            ipAddress = Common.get_client_ip(request)
+
+            center = models.User.objects.values('center').filter(id=request.user.id)
+
+            if check_type == 'check_in':
+
+                models.Attendance.objects.create(
+                    user_id = request.user.id,
+                    center_id = center[0]['center'],
+                    attendance_date = datetime.now(),
+                    check_in = datetime.now(), 
+                    attendance_status = 1,
+                    status = 1,
+                    created_ip = ipAddress,
+                    created_by_id = request.user.id
+                )
+
+                return Response(
+                    {"status": error.context["success_code"], "message": "Checked in successfully"},
+                    status=status.HTTP_200_OK,
+                )
+
+            if check_type == 'check_out':
+                
+                models.Attendance.objects.filter(user_id=request.user.id).update(
+                    check_out = datetime.now(), 
+                    modified_ip = ipAddress,
+                    modified_by = request.user.id,
+                    modified_on = datetime.now(),
+                    )
+
+                return Response(
+                    {"status": error.context["success_code"], "message": "Checked out successfully"},
+                    status=status.HTTP_200_OK,
+                )
+
+        else:
+            return Response(
+                {"status": error.context["error_code"], "message": "Check type is missing"},
+                status=status.HTTP_200_OK,
+            )
+
+
+class getAttendance(APIView):
+    def post(self, request, pk=None):
+        if request.user.id:
+            attendance =  models.Attendance.objects.values(
+                    "id",
+                    "user_id",
+                    "center_id",
+                    "attendance_date",
+                    "check_in",
+                    "check_out",
+                    "attendance_status",
+                    "center",
+                    "status"
+                ).filter(user_id=request.user.id, attendance_date=date.today())
+            
+            return Response(
+                {"status": error.context["success_code"], "data": attendance},
+                status=status.HTTP_200_OK,
+            )
+        else:
+            return Response(
+                {"status": error.context["success_code"], "data": "Not logged in"},
                 status=status.HTTP_200_OK,
             )

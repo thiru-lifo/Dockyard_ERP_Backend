@@ -359,7 +359,7 @@ class usersCRUD(APIView):
                     # Old ************
                     # User.objects.filter(id=request.data['id']).update(loginname=request.data['loginname'],email=request.data['email'],first_name=request.data['first_name'],last_name=request.data['last_name'],desig=request.data['desig'])
 
-                    User.objects.filter(id=request.data['id']).update(loginname=request.data['loginname'],email=request.data['email'],first_name=request.data['first_name'],last_name=request.data['last_name'],design=request.data['design'],category_type=request.data['category_type'],pay_scale=request.data['pay_scale'])
+                    User.objects.filter(id=request.data['id']).update(loginname=request.data['loginname'],email=request.data['email'],first_name=request.data['first_name'],last_name=request.data['last_name'],design=request.data['design'],category_type=request.data['category_type'],pay_scale=request.data['pay_scale'], center=request.data['center'])
 
                     # User.objects.filter(id=request.data['id']).update(loginname=request.data['loginname'],email=request.data['email'],first_name=request.data['first_name'],last_name=request.data['last_name'],process_id=request.data['process'],department_id=request.data['department'], desig=request.data['desig'])
                     if request.data['user_role_id']:
@@ -632,3 +632,28 @@ class userListHierarchy(APIView):
             response['user_approver'] = User.objects.values('id','loginname').filter(id__in=approver_formList_ids, status=1).order_by('loginname')
 
             return Response({"status":error.context['success_code'], "data": response}, status=status.HTTP_200_OK)
+
+
+
+class getUser(APIView):
+    def post(self, request, pk=None):
+        if request.user.id:
+            user = User.objects.values(
+                    "id",
+                    "loginname",
+                    "email",
+                    "first_name",
+                    "last_name",
+                    "design__name",
+                    "center__name"
+                ).filter(id=request.user.id).order_by("id")
+            
+            return Response(
+                {"status": error.context["success_code"], "data": user},
+                status=status.HTTP_200_OK,
+            )
+        else:
+            return Response(
+                {"status": error.context["success_code"], "data": "Not logged in"},
+                status=status.HTTP_200_OK,
+            )
