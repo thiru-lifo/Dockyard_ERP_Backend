@@ -15,4 +15,5 @@ urlpatterns = [
     path('users/import_excel', views.userImport.as_view(), name='User Import'),
 
     path('user/get_user', views.getUser.as_view(), name='Get User'),
+    path('user/get_all_user', views.getAllUser.as_view(), name='Get All User'),
 ]

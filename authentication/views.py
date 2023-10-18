@@ -657,3 +657,54 @@ class getUser(APIView):
                 {"status": error.context["success_code"], "data": "Not logged in"},
                 status=status.HTTP_200_OK,
             )
+
+# class ApprovalHistory(APIView):
+#     def post(self, request, pk=None):
+#         trans_id = request.data["trans_id"]
+#         lists = (
+#             models.ApprovalHistory.objects.values(
+#                 "id",
+#                 "transaction_id",
+#                 "notes",
+#                 "created_on",
+#                 "approved_config_id",
+#                 "created_by_id",
+#                 "modified_by_id",
+#                 "status",
+#             )
+#             .filter(transaction_id=trans_id)
+#             .exclude(status=3)
+#         )
+#         return Response(
+#             {
+#                 "status": error.context["success_code"],
+#                 "data": lists,
+#             },
+#             status=status.HTTP_200_OK,
+#         )
+
+
+class getAllUser(APIView):
+    def post(self, request, pk=None):
+        if request.user.id:
+            user = (
+                User.objects.values(
+                    "id",
+                    "loginname",
+                    "email",
+                    "first_name",
+                    "last_name",
+                    "design__name",
+                    "center__name"
+                ).order_by("id")
+            )
+            
+            return Response(
+                {"status": error.context["success_code"], "data": user},
+                status=status.HTTP_200_OK,
+            )
+        else:
+            return Response(
+                {"status": error.context["success_code"], "data": "Not logged in"},
+                status=status.HTTP_200_OK,
+            )
