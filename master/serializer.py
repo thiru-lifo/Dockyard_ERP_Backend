@@ -756,3 +756,27 @@ class ListItemsMasterSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.ItemsMaster
         fields = "__all__" 
+
+class AllowancesMasterSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.AllowancesMaster
+        fields = "__all__"       
+
+class ListAllowancesMasterSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.AllowancesMaster
+        fields = "__all__" 
+
+class DeductionsMasterSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.DeductionsMaster
+        fields = "__all__"       
+
+class ListDeductionsMasterSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.DeductionsMaster
+        fields = "__all__" 
