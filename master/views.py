@@ -7724,4 +7724,324 @@ class PayScaleDetailViews(APIView):
                         return Response({"status" :error.context['error_code'], "message":error.serializerError(saveserialize)}, status = status.HTTP_200_OK)
             else: 
                 return Response({"status" : {"id" : ['id' +language.context[language.defaultLang]['missing']]}}, status=status.HTTP_200_OK)
+#demandmaster
+class DemandMasterViews(APIView):
+
+    def get(self, request, pk = None):
+        filter_values = dict(request.GET.items())
+        search_string=order_type=order_column=limit_start=limit_end=''
+        normal_values=dict()
+        array_values=dict()
+        if filter_values:
+            for key,values in filter_values.items():
+                if values.find("[") !=-1 and values.find("]") !=-1:
+                    res = values.strip('][').split(',')
+                    array_values[key]=(res)
+                else:
+                    normal_values[key]=(values)
+
+            strings = ['code']
+            search_string = dict((k, normal_values[k]) for k in strings
+                                            if k in normal_values)  
+            order_column =  request.GET.get('order_column')
+            order_type = request.GET.get('order_type')  
+            limit_start = request.GET.get('limit_start')
+            limit_end = request.GET.get('limit_end')  
+
+            if order_column is not None:                                      
+                normal_values.pop('order_column')
+            if order_type is not None: 
+                normal_values.pop('order_type') 
+            if limit_start is not None: 
+                normal_values.pop('limit_start')
+            if limit_end is not None: 
+                normal_values.pop('limit_end')      
+
+            for key in strings:
+                if key in normal_values:
+                    normal_values.pop(key)
+
+            if search_string:       
+                filter_string = None
+                for field in search_string:
+                    q = Q(**{"%s__contains" % field: search_string[field] })
+                    if filter_string:
+                        filter_string = filter_string & q
+                    else:
+                        filter_string = q
+        try:
+
+            if pk:
+                list = models.DemandMaster.objects.filter(pk=pk).exclude(status='3').get()
+                serializeobj = cSerializer.ListDemandMasterSerializer(list)
+                return Response({"status": error.context['success_code'], "data": serializeobj.data}, status=status.HTTP_200_OK)
+       
+        except models.DemandMaster.DoesNotExist:
+            return Response({"status" : error.context['error_code'], "message":"Status" +language.context[language.defaultLang]['dataNotFound'] }, status = status.HTTP_200_OK)
+
+        lists = models.DemandMaster.objects.exclude(status='3')
+        if normal_values:
+            lists = lists.filter(reduce(operator.and_, 
+                               (Q(**d) for d in [dict([i]) for i in normal_values.items()])))
+        if array_values:
+            for key,values in array_values.items():
+                queries= [Q(**{"%s__contains" % key: value }) for value in values]
+                query=queries.pop()
+                for item in queries:
+                    query |= item
+                lists = lists.filter(query)
+
+        if search_string:
+            lists = lists.filter(filter_string)
+
+        if order_type is None: 
+            if order_column:
+                lists = lists.order_by(order_column)  
+
+        elif order_type in 'asc':
+            if order_column:
+                lists = lists.order_by(order_column)
+            else: 
+                lists = lists.order_by('id')   
+
+        elif order_type in 'desc':
+            if order_column:
+                order_column = '-' + str(order_column)
+                lists = lists.order_by(order_column)
+            else: 
+                lists = lists.order_by('-id') 
+
+        if limit_start and limit_end:
+                lists = lists[int(limit_start):int(limit_end)]
+
+        elif limit_start:
+                lists = lists[int(limit_start):]
+
+        elif limit_end:
+                lists = lists[0:int(limit_end)]          
+    
+        serializer = cSerializer.ListDemandMasterSerializer(lists, many=True)
+        return Response({"status":error.context['success_code'] , "data": serializer.data}, status=status.HTTP_200_OK)
+
+
+class DemandMasterDetailViews(APIView):
+
+    def get_object(self,pk):
+
+        try:
+            return models.DemandMaster.objects.get(pk = pk)
+        except DemandMaster.DoesNotExist:
+            raise Http404
+
+
+    def post(self,request, pk = None):
+
+        if 'code' not in request.data and request.data['status'] != 3:
+            return Response({"status":error.context['error_code'], "message" : "Code" +language.context[language.defaultLang]['missing']},status=status.HTTP_200_OK)
+       
+        else: 
+
+            if 'code' in request.data:
+                request.data['code']=(request.data['code']).upper()
+            if 'sequence' in request.data:
+                request.data['sequence']=request.data['sequence'] if(request.data['sequence']!='')  else 0
+            if 'id' in request.data:
+                pk = request.data['id']
+                created_ip = Common.get_client_ip(request)
+                request.data['created_ip'] = created_ip  
+               
+                if not pk: 
+                    duplicate_code = models.DemandMaster.objects.values('code').filter(code=request.data['code']).exclude(status=3)
+                    
+                    if duplicate_code:            
+                        return Response({"status" :error.context['error_code'], "message":language.context[language.defaultLang]['exit code'] },status=status.HTTP_200_OK)                    
+                    
+                   
+                    else:
+                
+                        saveserialize = cSerializer.DemandMasterSerializer(data = request.data)
+                        if saveserialize.is_valid():
+                            saveserialize.save()
+                            return Response({"status" :error.context['success_code'], "message":"New DemandMaster" +language.context[language.defaultLang]['insert'], "data":saveserialize.data}, status=status.HTTP_200_OK)
+                        else:
+                            return Response({"status" :error.context['error_code'], "message": error.serializerError(saveserialize)}, status=status.HTTP_200_OK)
+
+                else:
+                    if request.data['status'] != 3:
+                        duplicate_code = models.DemandMaster.objects.values('code').filter(code=request.data['code']).exclude(Q(id=request.data['id']) | Q(status=3))
+                       
+                        if duplicate_code:            
+                            return Response({"status" :error.context['error_code'], "message":language.context[language.defaultLang]['exit code'] },status=status.HTTP_200_OK)                    
+                        
+                    list = self.get_object(pk)
+
+                    saveserialize = cSerializer.DemandMasterSerializer(list, data = request.data, partial= True)
+                    if saveserialize.is_valid():
+                        saveserialize.save()
+                        return Response({"status" :error.context['success_code'], "message":"DemandMaster" +language.context[language.defaultLang]['update'], "data":saveserialize.data}, status=status.HTTP_200_OK)
+                    else:
+                        return Response({"status" :error.context['error_code'], "message":error.serializerError(saveserialize)}, status = status.HTTP_200_OK)
+            else: 
+                return Response({"status" : {"id" : ['id' +language.context[language.defaultLang]['missing']]}}, status=status.HTTP_200_OK)
+
+#itemsmaster
+
+class ItemsMasterViews(APIView):
+
+    def get(self, request, pk = None):
+        filter_values = dict(request.GET.items())
+        search_string=order_type=order_column=limit_start=limit_end=''
+        normal_values=dict()
+        array_values=dict()
+        if filter_values:
+            for key,values in filter_values.items():
+                if values.find("[") !=-1 and values.find("]") !=-1:
+                    res = values.strip('][').split(',')
+                    array_values[key]=(res)
+                else:
+                    normal_values[key]=(values)
+
+            strings = ['code']
+            search_string = dict((k, normal_values[k]) for k in strings
+                                            if k in normal_values)  
+            order_column =  request.GET.get('order_column')
+            order_type = request.GET.get('order_type')  
+            limit_start = request.GET.get('limit_start')
+            limit_end = request.GET.get('limit_end')  
+
+            if order_column is not None:                                      
+                normal_values.pop('order_column')
+            if order_type is not None: 
+                normal_values.pop('order_type') 
+            if limit_start is not None: 
+                normal_values.pop('limit_start')
+            if limit_end is not None: 
+                normal_values.pop('limit_end')      
+
+            for key in strings:
+                if key in normal_values:
+                    normal_values.pop(key)
+
+            if search_string:       
+                filter_string = None
+                for field in search_string:
+                    q = Q(**{"%s__contains" % field: search_string[field] })
+                    if filter_string:
+                        filter_string = filter_string & q
+                    else:
+                        filter_string = q
+        try:
+
+            if pk:
+                list = models.ItemsMaster.objects.filter(pk=pk).exclude(status='3').get()
+                serializeobj = cSerializer.ListItemsMasterSerializer(list)
+                return Response({"status": error.context['success_code'], "data": serializeobj.data}, status=status.HTTP_200_OK)
+       
+        except models.ItemsMaster.DoesNotExist:
+            return Response({"status" : error.context['error_code'], "message":"Status" +language.context[language.defaultLang]['dataNotFound'] }, status = status.HTTP_200_OK)
+
+        lists = models.ItemsMaster.objects.exclude(status='3')
+        if normal_values:
+            lists = lists.filter(reduce(operator.and_, 
+                               (Q(**d) for d in [dict([i]) for i in normal_values.items()])))
+        if array_values:
+            for key,values in array_values.items():
+                queries= [Q(**{"%s__contains" % key: value }) for value in values]
+                query=queries.pop()
+                for item in queries:
+                    query |= item
+                lists = lists.filter(query)
+
+        if search_string:
+            lists = lists.filter(filter_string)
+
+        if order_type is None: 
+            if order_column:
+                lists = lists.order_by(order_column)  
+
+        elif order_type in 'asc':
+            if order_column:
+                lists = lists.order_by(order_column)
+            else: 
+                lists = lists.order_by('id')   
+
+        elif order_type in 'desc':
+            if order_column:
+                order_column = '-' + str(order_column)
+                lists = lists.order_by(order_column)
+            else: 
+                lists = lists.order_by('-id') 
+
+        if limit_start and limit_end:
+                lists = lists[int(limit_start):int(limit_end)]
+
+        elif limit_start:
+                lists = lists[int(limit_start):]
+
+        elif limit_end:
+                lists = lists[0:int(limit_end)]          
+    
+        serializer = cSerializer.ListItemsMasterSerializer(lists, many=True)
+        return Response({"status":error.context['success_code'] , "data": serializer.data}, status=status.HTTP_200_OK)
+
+
+class ItemsMasterDetailViews(APIView):
+
+    def get_object(self,pk):
+
+        try:
+            return models.ItemsMaster.objects.get(pk = pk)
+        except ItemsMaster.DoesNotExist:
+            raise Http404
+
+
+    def post(self,request, pk = None):
+
+        if 'code' not in request.data and request.data['status'] != 3:
+            return Response({"status":error.context['error_code'], "message" : "code" +language.context[language.defaultLang]['missing']},status=status.HTTP_200_OK)
+       
+        else: 
+
+            if 'code' in request.data:
+                request.data['code']=(request.data['code']).upper()
+            if 'sequence' in request.data:
+                request.data['sequence']=request.data['sequence'] if(request.data['sequence']!='')  else 0
+            if 'id' in request.data:
+                pk = request.data['id']
+                created_ip = Common.get_client_ip(request)
+                request.data['created_ip'] = created_ip  
+               
+                if not pk: 
+                    duplicate_code = models.ItemsMaster.objects.values('code').filter(code=request.data['code']).exclude(status=3)
+                    
+                    if duplicate_code:            
+                        return Response({"status" :error.context['error_code'], "message":language.context[language.defaultLang]['exit code'] },status=status.HTTP_200_OK)                    
+                    
+                   
+                    else:
+                
+                        saveserialize = cSerializer.ItemsMasterSerializer(data = request.data)
+                        if saveserialize.is_valid():
+                            saveserialize.save()
+                            return Response({"status" :error.context['success_code'], "message":"New ItemsMaster" +language.context[language.defaultLang]['insert'], "data":saveserialize.data}, status=status.HTTP_200_OK)
+                        else:
+                            return Response({"status" :error.context['error_code'], "message": error.serializerError(saveserialize)}, status=status.HTTP_200_OK)
+
+                else:
+                    if request.data['status'] != 3:
+                        duplicate_code = models.ItemsMaster.objects.values('code').filter(code=request.data['code']).exclude(Q(id=request.data['id']) | Q(status=3))
+                       
+                        if duplicate_code:            
+                            return Response({"status" :error.context['error_code'], "message":language.context[language.defaultLang]['exit code'] },status=status.HTTP_200_OK)                    
+                        
+                    list = self.get_object(pk)
+
+                    saveserialize = cSerializer.ItemsMasterSerializer(list, data = request.data, partial= True)
+                    if saveserialize.is_valid():
+                        saveserialize.save()
+                        return Response({"status" :error.context['success_code'], "message":"ItemsMaster" +language.context[language.defaultLang]['update'], "data":saveserialize.data}, status=status.HTTP_200_OK)
+                    else:
+                        return Response({"status" :error.context['error_code'], "message":error.serializerError(saveserialize)}, status = status.HTTP_200_OK)
+            else: 
+                return Response({"status" : {"id" : ['id' +language.context[language.defaultLang]['missing']]}}, status=status.HTTP_200_OK)
 
