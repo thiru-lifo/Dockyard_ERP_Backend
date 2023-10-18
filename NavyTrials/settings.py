@@ -66,7 +66,8 @@ INSTALLED_APPS = [
     'xhtml2pdf',
 	'configuration',
     'django_user_agents',
-    'transaction',
+    'transaction.apps.TransactionConfig',
+   
 
    
 ]
@@ -74,6 +75,7 @@ AUTH_USER_MODEL = 'accounts.User'
 
 CENTER_MODEL='master.Center'
 
+WorkInstruction_MODEL = 'transaction.WorkInstruction'
 
 pdf_settings = {
     'page-size': 'Letter',
@@ -147,7 +149,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         #'NAME': 'acquisition_live_final',
-        'NAME': 'acq_4',
+        'NAME': 'doc-db1',
         'USER': 'postgres',
         'PASSWORD': 'lifo@123',
         'HOST': 'localhost',

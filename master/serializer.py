@@ -5,6 +5,7 @@ from rest_framework import serializers
 from .models import Countries, States, Cities,LookupType,Lookup,Region,Dockyard,Command
 from access.serializer import AccessUserRoleserializer
 from . import models
+from NavyTrials import settings
 
 class Countriesserializer(serializers.ModelSerializer):
 
@@ -728,17 +729,21 @@ class ListPayScaleSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.PayScale
         fields = "__all__" 
-# class DemandMasterSerializer(serializers.ModelSerializer):
+class DemandMasterSerializer(serializers.ModelSerializer):
     
-#     class Meta:
-#         model = models.DemandMaster
-#         fields = "__all__"       
+    class Meta:
+        model = models.DemandMaster
+        fields = "__all__"       
 
-# class ListDemandMasterSerializer(serializers.ModelSerializer):
-    
-#     class Meta:
-#         model = models.DemandMaster
-#         fields = "__all__" 
+class ListDemandMasterSerializer(serializers.ModelSerializer):
+     
+    # Center_id = CenterSerializer(read_only=True)
+    # WI_id = WorkInstructionSerializer(read_only=True)
+
+
+    class Meta:
+        model = models.DemandMaster
+        fields = "__all__" 
 
 class ItemsMasterSerializer(serializers.ModelSerializer):
     
