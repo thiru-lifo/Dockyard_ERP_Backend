@@ -1031,7 +1031,7 @@ class Center(models.Model):
     sequence = models.IntegerField(null=True)
     status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
     created_on = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True, related_name="c_user_name")
     created_ip = models.GenericIPAddressField()
     modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
     modified_by = models.CharField(max_length=100, blank=True, null=True)
