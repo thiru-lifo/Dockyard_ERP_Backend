@@ -2537,7 +2537,8 @@ class Attendance(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     center = models.ForeignKey(Center, on_delete=models.CASCADE, null=True)
-    attendance_date = models.DateTimeField(blank=True, null=True)
+    #attendance_date = models.DateTimeField(blank=True, null=True)
+    attendance_date = models.DateField(blank=True, null=True)
     check_in = models.DateTimeField(blank=True, null=True)
     check_out = models.DateTimeField(blank=True, null=True)
     attendance_status = models.SmallIntegerField(choices=((1,'Present'),(2,'Absent')))
@@ -2545,7 +2546,7 @@ class Attendance(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='a_user')
     created_ip = models.GenericIPAddressField()
-    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_on = models.DateTimeField(blank=True, null=True)
     modified_by = models.CharField(max_length=100, blank=True, null=True)
     modified_ip = models.GenericIPAddressField(blank=True, null=True)
 

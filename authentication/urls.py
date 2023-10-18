@@ -13,4 +13,6 @@ urlpatterns = [
     path('users_hierarchy', views.userListHierarchy.as_view(), name='User List Hierarchy'),
     path('users/crud', views.usersCRUD.as_view(), name='User CRUD'),
     path('users/import_excel', views.userImport.as_view(), name='User Import'),
+
+    path('user/get_user', views.getUser.as_view(), name='Get User'),
 ]
