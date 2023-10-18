@@ -202,4 +202,13 @@ urlpatterns = [
     path('pay_scale/<int:pk>', views.PayScaleViews.as_view(), name = 'view_pay_scale'),
     path('pay_scale/details', views.PayScaleDetailViews.as_view(), name = 'add_pay_scale'),
 
+    # path('demand_master', views.DemandMasterViews.as_view(), name = 'view_demand_master'),
+    # path('demand_master/<int:pk>', views.DemandMasterViews.as_view(), name = 'view_demand_master'),
+    # path('demand_master/details', views.DemandMasterDetailViews.as_view(), name = 'add_demand_master'),
+
+    path('items_master', views.ItemsMasterViews.as_view(), name = 'view_items_master'),
+    path('items_master/<int:pk>', views.ItemsMasterViews.as_view(), name = 'view_items_master'),
+    path('items_master/details', views.ItemsMasterDetailViews.as_view(), name = 'add_items_master'),
+
+
 ]

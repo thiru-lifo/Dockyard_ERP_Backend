@@ -728,3 +728,26 @@ class ListPayScaleSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.PayScale
         fields = "__all__" 
+# class DemandMasterSerializer(serializers.ModelSerializer):
+    
+#     class Meta:
+#         model = models.DemandMaster
+#         fields = "__all__"       
+
+# class ListDemandMasterSerializer(serializers.ModelSerializer):
+    
+#     class Meta:
+#         model = models.DemandMaster
+#         fields = "__all__" 
+
+class ItemsMasterSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.ItemsMaster
+        fields = "__all__"       
+
+class ListItemsMasterSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.ItemsMaster
+        fields = "__all__" 

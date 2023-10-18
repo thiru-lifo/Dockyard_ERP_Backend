@@ -6,8 +6,7 @@ import phonenumbers
 from phonenumber_field.modelfields import PhoneNumberField
 from accounts.models import User
 from access.models import AccessUserRoles
-
-# # Create your models here.
+from NavyTrials import settings
 
 class Countries(models.Model):
     name = models.CharField(max_length=100)
@@ -1069,6 +1068,7 @@ class Shopfloor(models.Model):
         db_table = 'master.shopfloor'
         verbose_name = 'shopfloor'
         verbose_name_plural = 'shopfloor'
+        
 class CategoryType(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
@@ -1108,4 +1108,53 @@ class PayScale(models.Model):
         db_table = 'master.payscale'
         verbose_name = 'payscale'
         verbose_name_plural = 'payscale'
+
+
+# class DemandMaster(models.Model):
+#     qty = models.CharField(max_length=100)
+#     code = models.CharField(max_length=15)
+#     # code = models.CharField(max_length=15) 
+#     demand_date = models.DateTimeField(null=True)
+#     center_no = models.ForeignKey(Center, on_delete= models.CASCADE)
+#     # wi_number =models.ForeignKey(settings.WorkInstruction_MODEL,on_delete=models.CASCADE,null=True)
+#     # wi_number = models.ForeignKey(WorkInstruction, on_delete=models.CASCADE, null=True,  related_name='dm_work_instruction')
+#     status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+#     created_on = models.DateTimeField(auto_now_add=True)
+#     created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+#     created_ip = models.GenericIPAddressField()
+#     modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+#     modified_by = models.CharField(max_length=100, blank=True, null=True)
+#     modified_ip = models.GenericIPAddressField(blank=True, null=True) 
+
+#     def __str__(self):
+#         return self.name
+
+#     class Meta:
+#         db_table = 'master.demand_master'
+#         verbose_name = 'demand_master'
+#         verbose_name_plural = 'demand_master'
+
+class ItemsMaster(models.Model):
+    code = models.CharField(max_length=15)
+    description = models.TextField(null=True, blank=True)
+    item_type_id = models.CharField(max_length=15, blank=True)
+    min_stock_level = models.CharField(max_length=15, blank=True)
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True) 
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = 'master.items_master'
+        verbose_name = 'items_master'
+        verbose_name_plural = 'items_master'
+
+
+
 
