@@ -210,5 +210,15 @@ urlpatterns = [
     path('items_master/<int:pk>', views.ItemsMasterViews.as_view(), name = 'view_items_master'),
     path('items_master/details', views.ItemsMasterDetailViews.as_view(), name = 'add_items_master'),
 
+    path('allowances_master', views.AllowancesMasterViews.as_view(), name = 'view_allowances_master'),
+    path('allowances_master/<int:pk>', views.AllowancesMasterViews.as_view(), name = 'view_allowances_master'),
+    path('allowances_master/details', views.AllowancesMasterDetailViews.as_view(), name = 'add_allowances_master'),
+
+    path('deductions_master', views.DeductionsMasterViews.as_view(), name = 'view_deductions_master'),
+    path('deductions_master/<int:pk>', views.DeductionsMasterViews.as_view(), name = 'view_deductions_master'),
+    path('deductions_master/details', views.DeductionsMasterDetailViews.as_view(), name = 'add_deductions_master'),
+
+
+
 
 ]
