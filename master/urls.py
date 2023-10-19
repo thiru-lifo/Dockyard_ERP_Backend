@@ -218,6 +218,14 @@ urlpatterns = [
     path('deductions_master/<int:pk>', views.DeductionsMasterViews.as_view(), name = 'view_deductions_master'),
     path('deductions_master/details', views.DeductionsMasterDetailViews.as_view(), name = 'add_deductions_master'),
 
+    path('pay_grade', views.PayGradeViews.as_view(), name = 'view_pay_grade'),
+    path('pay_grade/<int:pk>', views.PayGradeViews.as_view(), name = 'view_pay_grade'),
+    path('pay_grade/details', views.PayGradeDetailViews.as_view(), name = 'add_pay_grade'),
+
+    path('personnel_type', views. PersonnelTypeViews.as_view(), name = 'view_personnel_type'),
+    path('personnel_type/<int:pk>', views. PersonnelTypeViews.as_view(), name = 'view_personnel_type'),
+    path('personnel_type/details', views. PersonnelTypeDetailViews.as_view(), name = 'add_personnel_type'),
+
 
 
 
