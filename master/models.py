@@ -1245,8 +1245,6 @@ class PersonnelType(models.Model):
         verbose_name_plural = 'personnel_type'
 
 
-
-
 class Rank(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)

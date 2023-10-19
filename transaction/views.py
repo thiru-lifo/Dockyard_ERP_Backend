@@ -18859,13 +18859,29 @@ class CheckInOut(APIView):
                 )
 
             if check_type == 'check_out':
+
+
+                lists = models.Attendance.objects.values('id', 'user_id', 'check_in').filter(user_id=request.user.id, attendance_date=datetime.now()).first()
+
+                # #print(lists['check_in'],"asdasd")
+
+                # delta = datetime.now() - lists['check_in']
+                # hours = delta.total_seconds() / 3600
+
+                # print(hours,"HHHHHHHHHHHHHhh")
                 
-                models.Attendance.objects.filter(user_id=request.user.id).update(
+                models.Attendance.objects.filter(user_id=request.user.id, attendance_date=datetime.now()).update(
                     check_out = datetime.now(), 
                     modified_ip = ipAddress,
                     modified_by = request.user.id,
                     modified_on = datetime.now(),
                     )
+
+                # start_time = datetime.strptime(lists['check_in'], "%Y-%m-%d %H:%M:%S").astimezone(timezone.utc)
+                # end_time = datetime.strptime(datetime.now(), "%Y-%m-%d %H:%M:%S").astimezone(timezone.utc)
+
+                # print( (end_time - start_time).seconds / 3600 )
+
 
                 return Response(
                     {"status": error.context["success_code"], "message": "Checked out successfully"},
