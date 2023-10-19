@@ -18905,7 +18905,12 @@ class getAttendance(APIView):
             )
 
 #monthlysalary
-class MonthlySalaryList(APIView):
+# class MonthlySalaryList(APIView):
+
+
+
+# Monthly Credits Debits
+class MonthlyCreditsDebitsList(APIView):
     
     def get(self, request, pk = None):       
         filter_values = dict(request.GET.items())
@@ -18960,6 +18965,14 @@ class MonthlySalaryList(APIView):
             return Response({"status" :error.context['error_code'], "message":"MonthlySalary" +language.context[language.defaultLang]['dataNotFound']}, status = status.HTTP_200_OK)
 
         lists = models.MonthlySalary.objects.exclude(status='3')
+                list = models.MonthlyCreditsDebits.objects.filter(pk=pk).exclude(status='3').get()
+                serializeobj = serializer.ListMonthlyCreditsDebitsSerializer(list)
+                return Response({"status":error.context['success_code'], "data": serializeobj.data}, status=status.HTTP_200_OK)
+       
+        except models.MonthlyCreditsDebits.DoesNotExist:
+            return Response({"status" :error.context['error_code'], "message":"Monthly credits debits" +language.context[language.defaultLang]['dataNotFound']}, status = status.HTTP_200_OK)
+
+        lists = models.MonthlyCreditsDebits.objects.exclude(status='3')
         if normal_values:
             lists = lists.filter(reduce(operator.and_, 
                                (Q(**d) for d in [dict([i]) for i in normal_values.items()])))
@@ -19004,12 +19017,21 @@ class MonthlySalaryList(APIView):
         print('serializer serializer',serializer.data)
         return Response({"status":error.context['success_code'], "data": serializer.data}, status=status.HTTP_200_OK)
 
-class MonthlySalaryCRUD(APIView):
+# class MonthlySalaryCRUD(APIView):
 
+#     def get_object(self, pk):
+#             try:
+#                 return models.MonthlySalary.objects.get(pk = pk)
+#             except models.MonthlySalary.DoesNotExist:
+#         serializer = cSerializer.ListMonthlyCreditsDebitsSerializer(lists, many=True)
+#         print('serializer serializer',serializer.data)
+#         return Response({"status":error.context['success_code'], "data": serializer.data}, status=status.HTTP_200_OK)
+
+class MonthlyCreditsDebitsCRUD(APIView):
     def get_object(self, pk):
             try:
-                return models.MonthlySalary.objects.get(pk = pk)
-            except models.MonthlySalary.DoesNotExist:
+                return models.MonthlyCreditsDebits.objects.get(pk = pk)
+            except models.MonthlyCreditsDebits.DoesNotExist:
                 raise Http404
 
     def post(self,request, pk = None):
@@ -19026,11 +19048,13 @@ class MonthlySalaryCRUD(APIView):
 
                 request.data['created_ip'] = Common.get_client_ip(request)
                 saveserialize = cSerializer.MonthlySalarySerializer(data = request.data)
+                saveserialize = cSerializer.MonthlyCreditsDebitsSerializer(data = request.data)
 
                 if saveserialize.is_valid():
                     saveserialize.save()
 
                     return Response({"status" : error.context['success_code'], "message":"MonthlySalary" +language.context[language.defaultLang]['insert'], "data":''}, status=status.HTTP_200_OK)
+                    return Response({"status" : error.context['success_code'], "message":"MonthlyCreditsDebits" +language.context[language.defaultLang]['insert'], "data":''}, status=status.HTTP_200_OK)
                 else:
                     return Response({"status" :error.context['error_code'], "message":error.serializerError(saveserialize)}, status=status.HTTP_200_OK)
             else:
@@ -19050,3 +19074,10 @@ class MonthlySalaryCRUD(APIView):
                     return Response({"status" :error.context['error_code'],"message":error.serializerError(saveserialize)}, status = status.HTTP_200_OK)
 
 
+                saveserialize = cSerializer.MonthlyCreditsDebitsSerializer(list, data = request.data, partial= True)                
+                if saveserialize.is_valid():
+                    saveserialize.save()
+
+                    return Response({"status" :error.context['success_code'], "message":"MonthlyCreditsDebits" +language.context[language.defaultLang]['update'], "data":''}, status=status.HTTP_200_OK)
+                else:
+                    return Response({"status" :error.context['error_code'],"message":error.serializerError(saveserialize)}, status = status.HTTP_200_OK)

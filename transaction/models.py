@@ -12,7 +12,7 @@ import phonenumbers
 from phonenumber_field.modelfields import PhoneNumberField
 from accounts.models import User
 #from master.models import Project
-from master.models import Project, Section, Unit, Compartment, System, Equipment, Module, SubModule, GlobalSection, GlobalSubSection, GlobalSubSubSection, Class, Command, Department, RefitType, Center
+from master.models import Project, Section, Unit, Compartment, System, Equipment, Module, SubModule, GlobalSection, GlobalSubSection, GlobalSubSubSection, Class, Command, Department, RefitType, Center, AllowancesMaster, DeductionsMaster
 from access.models import AccessUserRoles,ProcessFlow
 
 
@@ -2569,6 +2569,27 @@ class MonthlySalary(models.Model):
     status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
     created_on = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='ms_user')
+    
+    def __str__(self):
+        return self.user
+     
+     
+    class Meta:
+        db_table = 'transaction.monthly_salary'
+        verbose_name = 'monthly_salary'
+        verbose_name_plural = 'monthly_salary'
+
+class MonthlyCreditsDebits(models.Model):
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    for_month = models.DateField(blank=True, null=True)
+    allowance = models.ForeignKey(AllowancesMaster, on_delete=models.CASCADE, null=True)
+    allowance_amount = models.DecimalField(max_digits=6, decimal_places=2)
+    deduction = models.ForeignKey(DeductionsMaster, on_delete=models.CASCADE, null=True)
+    deduction_amount = models.DecimalField(max_digits=6, decimal_places=2)
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='mcd_user')
     created_ip = models.GenericIPAddressField()
     modified_on = models.DateTimeField(blank=True, null=True)
     modified_by = models.CharField(max_length=100, blank=True, null=True)
@@ -2578,6 +2599,6 @@ class MonthlySalary(models.Model):
         return self.user
 
     class Meta:
-        db_table = 'transaction.monthly_salary'
-        verbose_name = 'monthly_salary'
-        verbose_name_plural = 'monthly_salary'
+        db_table = 'transaction.monthly_credits_debits'
+        verbose_name = 'monthly_credits_debits'
+        verbose_name_plural = 'monthly_credits_debits'

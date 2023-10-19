@@ -411,10 +411,12 @@ urlpatterns = [
     path('attendance',views.AttendanceList.as_view(), name = 'Attendance List'),
     path('attendance/crud',views.AttendanceCRUD.as_view(), name = 'Attendance CRUD'),
     path('attendance/check_in_out',views.CheckInOut.as_view(), name = 'Attendance Check In and Out'),
-
     path('attendance/get_attendance', views.getAttendance.as_view(), name='Get Attendance'),
 
     path('monthly_salary',views.MonthlySalaryList.as_view(), name = 'MonthlySalary List'),
     path('monthly_salary/crud',views.MonthlySalaryCRUD.as_view(), name = 'MonthlySalary CRUD'),
+
+    path('monthly-credits-debits',views.MonthlyCreditsDebitsList.as_view(), name = 'Monthly Credits Debits List'),
+    path('monthly-credits-debits/crud',views.MonthlyCreditsDebitsCRUD.as_view(), name = 'Monthly Credits Debits CRUD'),
 
 ]

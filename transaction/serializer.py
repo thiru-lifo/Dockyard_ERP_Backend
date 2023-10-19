@@ -3436,3 +3436,26 @@ class ListMonthlySalarySerializer(serializers.ModelSerializer):
         user_id = response['user']
         response['user_det'] = masterAccounts.User.objects.values('id','loginname').filter(id=user_id).first()
         return response
+
+class MonthlyCreditsDebitsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.MonthlyCreditsDebits
+        fields = "__all__"
+
+
+class ListMonthlyCreditsDebitsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.MonthlyCreditsDebits
+        fields = "__all__" 
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        user_id = response['user']
+        allowance_id = response['allowance']
+        deduction_id = response['deduction']
+        response['user_det'] = masterAccounts.User.objects.values('id','loginname').filter(id=user_id).first()
+        response['allowance_det'] = models.AllowancesMaster.objects.values('id','name').filter(id=allowance_id).first()
+        response['deduction_det'] = models.DeductionsMaster.objects.values('id','name').filter(id=deduction_id).first()
+        return response
