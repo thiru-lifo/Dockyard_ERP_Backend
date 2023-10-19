@@ -412,6 +412,7 @@ urlpatterns = [
     path('attendance/crud',views.AttendanceCRUD.as_view(), name = 'Attendance CRUD'),
     path('attendance/check_in_out',views.CheckInOut.as_view(), name = 'Attendance Check In and Out'),
     path('attendance/get_attendance', views.getAttendance.as_view(), name='Get Attendance'),
+    path('attendance/report', views.getAttendanceReport.as_view(), name='Get Attendance Report'),
 
 
     path('monthly-credits-debits',views.MonthlyCreditsDebitsList.as_view(), name = 'Monthly Credits Debits List'),

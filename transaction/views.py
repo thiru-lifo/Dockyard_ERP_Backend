@@ -18905,8 +18905,6 @@ class getAttendance(APIView):
             )
 
 
-
-
 # Monthly Credits Debits
 class MonthlyCreditsDebitsList(APIView):
     
@@ -19050,3 +19048,69 @@ class MonthlyCreditsDebitsCRUD(APIView):
                     return Response({"status" :error.context['success_code'], "message":"MonthlyCreditsDebits" +language.context[language.defaultLang]['update'], "data":''}, status=status.HTTP_200_OK)
                 else:
                     return Response({"status" :error.context['error_code'],"message":error.serializerError(saveserialize)}, status = status.HTTP_200_OK)
+
+
+class getAttendanceReport(APIView):
+    
+    def post(self, request, pk=None):
+
+        if 'start_date' not in request.data:
+            return Response({"status":error.context['error_code'], "message" : "Start date" +language.context[language.defaultLang]['missing']},status=status.HTTP_200_OK)
+        
+        elif 'end_date' not in request.data:
+            return Response({"status":error.context['error_code'], "message" : "End date" +language.context[language.defaultLang]['missing']},status=status.HTTP_200_OK)
+
+        elif request.data['start_date'] > request.data['end_date']:
+
+            return Response({"status":error.context['error_code'], "message" : "Start date is greater than End date"},status=status.HTTP_200_OK)
+
+        else:
+            attendance =  models.Attendance.objects.values(
+                    "id",
+                    "user_id__loginname",
+                    "center_id__name",
+                    "attendance_date",
+                    "check_in",
+                    "check_out",
+                    "attendance_status",
+                    "center",
+                    "status"
+                ).filter(attendance_date__range=(request.data['start_date'], request.data['end_date']))
+            
+            return Response(
+                {"status": error.context["success_code"], "data": attendance},
+                status=status.HTTP_200_OK,
+            )
+
+
+# class getAttendanceReport(APIView):
+#     def get(self, request, pk = None):
+
+#         print(request.GET.get('start_date'),"GGGGGGGGGGGGgg")
+#         #if not request.GET.get('start_date') and request.GET.get('end_date'):
+
+#         start_date = request.GET.get('start_date')
+#         end_date = request.GET.get('end_date')
+#         attendance =  models.Attendance.objects.values(
+#                 "id",
+#                 "user_id",
+#                 "center_id",
+#                 "attendance_date",
+#                 "check_in",
+#                 "check_out",
+#                 "attendance_status",
+#                 "center",
+#                 "status"
+#             ).filter(attendance_date__range=(start_date, end_date))
+
+#         print(attendance.query,"GGGGGGGGGGGGGGGGGGGGGTTTT")
+        
+#         return Response(
+#             {"status": error.context["success_code"], "data": attendance},
+#             status=status.HTTP_200_OK,
+#         )
+#         # else:
+#         #     return Response(
+#         #         {"status": error.context["success_code"], "data": "Date range not selected"},
+#         #         status=status.HTTP_200_OK,
+#         #     )
