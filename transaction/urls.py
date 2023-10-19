@@ -414,4 +414,7 @@ urlpatterns = [
 
     path('attendance/get_attendance', views.getAttendance.as_view(), name='Get Attendance'),
 
+    path('monthly_salary',views.MonthlySalaryList.as_view(), name = 'MonthlySalary List'),
+    path('monthly_salary/crud',views.MonthlySalaryCRUD.as_view(), name = 'MonthlySalary CRUD'),
+
 ]

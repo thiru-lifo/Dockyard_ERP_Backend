@@ -2557,3 +2557,27 @@ class Attendance(models.Model):
         db_table = 'transaction.attendance'
         verbose_name = 'attendance'
         verbose_name_plural = 'attendance'
+
+class MonthlySalary(models.Model):
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    for_month = models.DateField(blank=True,null=True)
+    total_credits = models.DecimalField(max_digits=6, decimal_places=2)
+    total_debits = models.DecimalField(max_digits=6, decimal_places=2)
+    gross_salary = models.DecimalField(max_digits=6, decimal_places=2)
+    net_salary = models.DecimalField(max_digits=6, decimal_places=2)
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='ms_user')
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True)
+
+    def __str__(self):
+        return self.user
+
+    class Meta:
+        db_table = 'transaction.monthly_salary'
+        verbose_name = 'monthly_salary'
+        verbose_name_plural = 'monthly_salary'
