@@ -3418,6 +3418,24 @@ class ListAttendanceSerializer(serializers.ModelSerializer):
         response['center_det'] = models.Center.objects.values('id','name').filter(id=center_id).first()
         return response
 
+class MonthlySalarySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.MonthlySalary
+        fields = "__all__"
+
+class ListMonthlySalarySerializer(serializers.ModelSerializer):
+      
+    class Meta:
+        model = models.MonthlySalary
+        fields = "__all__" 
+
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance) 
+        user_id = response['user']
+        response['user_det'] = masterAccounts.User.objects.values('id','loginname').filter(id=user_id).first()
+        return response
 
 class MonthlyCreditsDebitsSerializer(serializers.ModelSerializer):
 

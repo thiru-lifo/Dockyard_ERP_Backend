@@ -1159,6 +1159,10 @@ class AllowancesMaster(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
     code = models.CharField(max_length=15)
+    on_per_of_basic_pay = models.SmallIntegerField( choices = ((1,'Yes'),(2,'No')))
+    on_fixed_amount = models.DecimalField(max_digits=6, decimal_places=2)
+    per_of_basic_pay = models.SmallIntegerField( choices = ((1,'Yes'),(2,'No')))
+    amount_of_allowance = models.DecimalField(max_digits=6, decimal_places=2)
     status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
     created_on = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
@@ -1194,6 +1198,52 @@ class DeductionsMaster(models.Model):
         db_table = 'master.deductions_master'
         verbose_name = 'deductions_master'
         verbose_name_plural = 'deductions_master'
+
+
+class PayGrade(models.Model):
+    name = models.CharField(max_length=100)
+    code = models.CharField(max_length=15)
+    description = models.TextField(null=True, blank=True)
+    pg_band = models.TextField(null=True, blank=True)
+    pg_band_range = models.TextField(null=True, blank=True)
+    pg_id = models.CharField(max_length=15, blank=True)
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True) 
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = 'master.pay_grade'
+        verbose_name = 'pay_grade'
+        verbose_name_plural = 'pay_grade'
+
+
+class PersonnelType(models.Model):
+    name = models.CharField(max_length=100)
+    code = models.CharField(max_length=15)
+    description = models.TextField(null=True, blank=True)
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True) 
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = 'master.personnel_type'
+        verbose_name = 'personnel_type'
+        verbose_name_plural = 'personnel_type'
+
 
 
 

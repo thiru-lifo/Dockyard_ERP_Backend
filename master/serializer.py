@@ -780,3 +780,27 @@ class ListDeductionsMasterSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.DeductionsMaster
         fields = "__all__" 
+
+class PayGradeSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.PayGrade
+        fields = "__all__"       
+
+class ListPayGradeSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.PayGrade
+        fields = "__all__" 
+
+class PersonnelTypeSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.PersonnelType
+        fields = "__all__"       
+
+class ListPersonnelTypeSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.PersonnelType
+        fields = "__all__" 
