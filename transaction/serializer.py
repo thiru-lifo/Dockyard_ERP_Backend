@@ -3425,7 +3425,7 @@ class MonthlySalarySerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class ListMonthlySalarySerializer(serializers.ModelSerializer):
-
+      
     class Meta:
         model = models.MonthlySalary
         fields = "__all__" 
