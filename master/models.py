@@ -786,30 +786,6 @@ class GlobalStatus(models.Model):
         verbose_name_plural = 'global_status'
 
 
-class Designation(models.Model):
-    name = models.CharField(max_length=100)
-    description = models.TextField(null=True, blank=True)
-    code = models.CharField(max_length=15)
-    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
-    created_on = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
-    created_ip = models.GenericIPAddressField()
-    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
-    modified_by = models.CharField(max_length=100, blank=True, null=True)
-    modified_ip = models.GenericIPAddressField(blank=True, null=True) 
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        db_table = 'master.designation'
-        verbose_name = 'designation'
-        verbose_name_plural = 'designation'
-
-
-
-
-
 
 
 class Template(models.Model):
@@ -1225,6 +1201,7 @@ class PayGrade(models.Model):
 
 
 class PersonnelType(models.Model):
+    # designation = models.ForeignKey(Designation, on_delete= models.CASCADE)
     name = models.CharField(max_length=100)
     code = models.CharField(max_length=15)
     description = models.TextField(null=True, blank=True)
@@ -1243,6 +1220,30 @@ class PersonnelType(models.Model):
         db_table = 'master.personnel_type'
         verbose_name = 'personnel_type'
         verbose_name_plural = 'personnel_type'
+
+
+class Designation(models.Model):
+    personnel_type = models.ForeignKey(PersonnelType, on_delete=models.CASCADE,null=True)
+    name = models.CharField(max_length=100)
+    description = models.TextField(null=True, blank=True)
+    code = models.CharField(max_length=15)
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True) 
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = 'master.designation'
+        verbose_name = 'designation'
+        verbose_name_plural = 'designation'
+
+
 
 
 
