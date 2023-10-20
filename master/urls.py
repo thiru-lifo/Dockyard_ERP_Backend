@@ -231,5 +231,12 @@ urlpatterns = [
     path('status/details', views. StatusDetailViews.as_view(), name = 'add_status'),
 
 
+    path('rank', views. RankViews.as_view(), name = 'view_rank'),
+    path('rank/<int:pk>', views. RankViews.as_view(), name = 'view_rank'),
+    path('rank/details', views. RankDetailViews.as_view(), name = 'add_rank'),
+
+
+
+
 
 ]

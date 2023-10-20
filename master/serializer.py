@@ -838,9 +838,9 @@ class ListRankSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):        
         response = super().to_representation(instance) 
         pay_grade_id = response['pay_grade']
-        personnel_type = response['personnel_type']
-        response['pay_grade_det'] = models.PayGrade.objects.values('id','name','code').filter(id=pay_grade_id).first()
-        response['personnel_type_det'] = models.PersonnelType.objects.values('id','name','code').filter(id=personnel_type_id).first()
+        personnel_type_id = response['personnel_type']
+        response['pay_grade_det'] = models.PayGrade.objects.values('id','name',).filter(id=pay_grade_id).first()
+        response['personnel_type_det'] = models.PersonnelType.objects.values('id','name',).filter(id=personnel_type_id).first()
         return response
 
 
