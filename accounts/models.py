@@ -100,6 +100,7 @@ class User(AbstractBaseUser):
     shop_floor = models.ForeignKey('master.Shopfloor', on_delete = models.CASCADE, null = True)
     pay_grade = models.ForeignKey('master.PayGrade', on_delete = models.CASCADE, null = True)
     current_basic_salary = models.DecimalField(max_digits = 6, decimal_places = 2, null=True, blank=True)    
+    rank = models.ForeignKey('master.Rank', on_delete = models.CASCADE, null = True)
     is_active = models.BooleanField(default=True)
     staff = models.BooleanField(default=False) # a admin user; non super-user
     admin = models.BooleanField(default=False) # a superuser

@@ -363,7 +363,8 @@ class usersCRUD(APIView):
                         icard_number=request.data['icard_number'],
                         shop_floor=request.data['shop_floor'],
                         pay_grade=request.data['pay_grade'],
-                        current_basic_salary=request.data['current_basic_salary']
+                        current_basic_salary=request.data['current_basic_salary'],
+                        rank=request.data['rank'],
                         )
 
                     # User.objects.filter(id=request.data['id']).update(loginname=request.data['loginname'],email=request.data['email'],first_name=request.data['first_name'],last_name=request.data['last_name'],process_id=request.data['process'],department_id=request.data['department'], desig=request.data['desig'])
