@@ -27,7 +27,7 @@ from access.views import Common
 from collections import namedtuple
 
 from django.template import Template, Context
-from datetime import datetime
+from datetime import datetime, timezone
 from datetime import date
 import time
 from django.template import loader
@@ -18863,24 +18863,20 @@ class CheckInOut(APIView):
 
                 lists = models.Attendance.objects.values('id', 'user_id', 'check_in').filter(user_id=request.user.id, attendance_date=datetime.now()).first()
 
-                # #print(lists['check_in'],"asdasd")
+                check_out = datetime.now(timezone.utc)
+                check_in = lists['check_in']
+                diff = check_out-check_in
+                diff_hours = diff.seconds / 3600
 
-                # delta = datetime.now() - lists['check_in']
-                # hours = delta.total_seconds() / 3600
+                total_work = round(diff_hours,2)
 
-                # print(hours,"HHHHHHHHHHHHHhh")
-                
                 models.Attendance.objects.filter(user_id=request.user.id, attendance_date=datetime.now()).update(
                     check_out = datetime.now(), 
+                    total_work = total_work,
                     modified_ip = ipAddress,
                     modified_by = request.user.id,
                     modified_on = datetime.now(),
                     )
-
-                # start_time = datetime.strptime(lists['check_in'], "%Y-%m-%d %H:%M:%S").astimezone(timezone.utc)
-                # end_time = datetime.strptime(datetime.now(), "%Y-%m-%d %H:%M:%S").astimezone(timezone.utc)
-
-                # print( (end_time - start_time).seconds / 3600 )
 
 
                 return Response(
@@ -19090,8 +19086,9 @@ class getAttendanceReport(APIView):
                     "check_out",
                     "attendance_status",
                     "center",
+                    "total_work",
                     "status"
-                ).filter(attendance_date__range=(request.data['start_date'], request.data['end_date']))
+                ).filter(attendance_date__range=(request.data['start_date'], request.data['end_date'])).order_by('attendance_date')
             
             return Response(
                 {"status": error.context["success_code"], "data": attendance},
