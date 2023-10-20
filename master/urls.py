@@ -226,6 +226,9 @@ urlpatterns = [
     path('personnel_type/<int:pk>', views. PersonnelTypeViews.as_view(), name = 'view_personnel_type'),
     path('personnel_type/details', views. PersonnelTypeDetailViews.as_view(), name = 'add_personnel_type'),
 
+    path('status', views. StatusViews.as_view(), name = 'view_status'),
+    path('status/<int:pk>', views. StatusViews.as_view(), name = 'view_status'),
+    path('status/details', views. StatusDetailViews.as_view(), name = 'add_status'),
 
 
 
