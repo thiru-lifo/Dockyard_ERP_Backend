@@ -811,3 +811,36 @@ class ListPersonnelTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.PersonnelType
         fields = "__all__" 
+
+class StatusSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.Status
+        fields = "__all__"       
+
+class ListStatusSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.Status
+        fields = "__all__" 
+
+class RankSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.Rank
+        fields = "__all__"       
+
+class ListRankSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.Rank
+        fields = "__all__" 
+    def to_representation(self, instance):        
+        response = super().to_representation(instance) 
+        pay_grade_id = response['pay_grade']
+        personnel_type = response['personnel_type']
+        response['pay_grade_det'] = models.PayGrade.objects.values('id','name','code').filter(id=pay_grade_id).first()
+        response['personnel_type_det'] = models.PersonnelType.objects.values('id','name','code').filter(id=personnel_type_id).first()
+        return response
+
+

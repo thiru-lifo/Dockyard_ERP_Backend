@@ -1117,7 +1117,7 @@ class ItemsMaster(models.Model):
     min_stock_level = models.CharField(max_length=15, blank=True)
     status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
     created_on = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True ,)
     created_ip = models.GenericIPAddressField()
     modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
     modified_by = models.CharField(max_length=100, blank=True, null=True)
@@ -1243,3 +1243,47 @@ class Designation(models.Model):
         db_table = 'master.designation'
         verbose_name = 'designation'
         verbose_name_plural = 'designation'
+
+
+class Status(models.Model):
+    name = models.CharField(max_length=100)
+    code = models.CharField(max_length=15)
+    description = models.TextField(null=True, blank=True)
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True,related_name='st_user')
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True) 
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = 'master.status'
+        verbose_name = 'status'
+        verbose_name_plural = 'status'
+
+class Rank(models.Model):
+    name = models.CharField(max_length=100)
+    code = models.CharField(max_length=15)
+    description = models.TextField(null=True, blank=True)
+    pay_grade =models.ForeignKey(PayGrade,on_delete=models.CASCADE,null=True)
+    personnel_type =models.ForeignKey(PersonnelType,on_delete=models.CASCADE,null=True)
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True,related_name='rk_user')
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True) 
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = 'master.rank'
+        verbose_name = 'rank'
+        verbose_name_plural = 'rank'
+
