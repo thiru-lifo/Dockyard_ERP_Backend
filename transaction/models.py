@@ -2607,3 +2607,5 @@ class MonthlyCreditsDebits(models.Model):
         db_table = 'transaction.monthly_credits_debits'
         verbose_name = 'monthly_credits_debits'
         verbose_name_plural = 'monthly_credits_debits'
+
+
