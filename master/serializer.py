@@ -812,17 +812,17 @@ class ListPersonnelTypeSerializer(serializers.ModelSerializer):
         model = models.PersonnelType
         fields = "__all__" 
 
-class StatusSerializer(serializers.ModelSerializer):
+class StatusMasterSerializer(serializers.ModelSerializer):
     
     class Meta:
-        model = models.Status
+        model = models.StatusMaster
         fields = "__all__"       
 
-class ListStatusSerializer(serializers.ModelSerializer):
+class ListStatusMasterSerializer(serializers.ModelSerializer):
     
     class Meta:
-        model = models.Status
-        fields = "__all__" 
+        model = models.StatusMaster
+        fields = "__all__"
 
 class RankSerializer(serializers.ModelSerializer):
     

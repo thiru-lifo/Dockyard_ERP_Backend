@@ -1245,13 +1245,13 @@ class Designation(models.Model):
         verbose_name_plural = 'designation'
 
 
-class Status(models.Model):
+class StatusMaster(models.Model):
     name = models.CharField(max_length=100)
     code = models.CharField(max_length=15)
     description = models.TextField(null=True, blank=True)
     status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
     created_on = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True,related_name='st_user')
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True,related_name='sm_user')
     created_ip = models.GenericIPAddressField()
     modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
     modified_by = models.CharField(max_length=100, blank=True, null=True)
@@ -1261,9 +1261,9 @@ class Status(models.Model):
         return self.name
 
     class Meta:
-        db_table = 'master.status'
-        verbose_name = 'status'
-        verbose_name_plural = 'status'
+        db_table = 'master.status_master'
+        verbose_name = 'status_master'
+        verbose_name_plural = 'status_master'
 
 class Rank(models.Model):
     name = models.CharField(max_length=100)
