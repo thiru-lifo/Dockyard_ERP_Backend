@@ -18866,9 +18866,11 @@ class CheckInOut(APIView):
                 check_out = datetime.now(timezone.utc)
                 check_in = lists['check_in']
                 diff = check_out-check_in
-                diff_hours = diff.seconds / 3600
+                diff_hours = diff.total_seconds() / 3600
 
                 total_work = round(diff_hours,2)
+
+                print(diff_hours,'DDD',total_work)
 
                 models.Attendance.objects.filter(user_id=request.user.id, attendance_date=datetime.now()).update(
                     check_out = datetime.now(), 
