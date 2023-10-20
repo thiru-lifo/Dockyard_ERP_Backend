@@ -92,10 +92,14 @@ class User(AbstractBaseUser):
     )
     process =models.ForeignKey(Process,on_delete=models.CASCADE,null=True,blank=True,default=1)
     #desig = models.ForeignKey('master.Unit', on_delete = models.CASCADE, null = True)
+    icard_number = models.CharField(max_length=100, null=True, blank=True)
     design = models.ForeignKey('master.Designation', on_delete = models.CASCADE, null = True)
     category_type = models.ForeignKey('master.CategoryType', on_delete = models.CASCADE, null = True)
     pay_scale = models.ForeignKey('master.PayScale', on_delete = models.CASCADE, null = True)
     center = models.ForeignKey('master.Center', on_delete = models.CASCADE, null = True)
+    shop_floor = models.ForeignKey('master.Shopfloor', on_delete = models.CASCADE, null = True)
+    pay_grade = models.ForeignKey('master.PayGrade', on_delete = models.CASCADE, null = True)
+    current_basic_salary = models.DecimalField(max_digits = 6, decimal_places = 2, null=True, blank=True)    
     is_active = models.BooleanField(default=True)
     staff = models.BooleanField(default=False) # a admin user; non super-user
     admin = models.BooleanField(default=False) # a superuser
