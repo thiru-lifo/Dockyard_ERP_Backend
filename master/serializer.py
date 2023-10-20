@@ -432,6 +432,13 @@ class ListDesignationSerializer(serializers.ModelSerializer):
         fields = "__all__" 
 
 
+    def to_representation(self, instance):        
+        response = super().to_representation(instance) 
+        personnel_type_id = response['personnel_type']
+        response['personnel_type_det'] = models.PersonnelType.objects.values('id','name','code').filter(id=personnel_type_id).first()
+        return response
+
+
 
 
 class TemplateSerializer(serializers.ModelSerializer):
