@@ -1110,11 +1110,33 @@ class DemandMaster(models.Model):
         verbose_name = 'demand_master'
         verbose_name_plural = 'demand_master'
 
+class ItemType(models.Model):
+    name = models.CharField(max_length=100)
+    code = models.CharField(max_length=15)
+    description = models.TextField(null=True, blank=True)
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True,related_name='it_user')
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True) 
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = 'master.item_type'
+        verbose_name = 'item_type'
+        verbose_name_plural = 'item_type'
+
 class ItemsMaster(models.Model):
     code = models.CharField(max_length=15)
     description = models.TextField(null=True, blank=True)
-    item_type_id = models.CharField(max_length=15, blank=True)
+    item_type = models.ForeignKey(ItemType, on_delete= models.CASCADE)
     min_stock_level = models.CharField(max_length=15, blank=True)
+    availlable_qty = models.CharField(max_length=100,blank=True, null=True)
+    bar_code = models.CharField(max_length=15)
     status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
     created_on = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True ,)
@@ -1287,13 +1309,14 @@ class Rank(models.Model):
         verbose_name = 'rank'
         verbose_name_plural = 'rank'
 
-class ItemType(models.Model):
+
+class StorageLocation(models.Model):
     name = models.CharField(max_length=100)
     code = models.CharField(max_length=15)
     description = models.TextField(null=True, blank=True)
     status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
     created_on = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True,related_name='it_user')
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True,related_name='sl_user')
     created_ip = models.GenericIPAddressField()
     modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
     modified_by = models.CharField(max_length=100, blank=True, null=True)
@@ -1303,8 +1326,57 @@ class ItemType(models.Model):
         return self.name
 
     class Meta:
-        db_table = 'master.item_type'
-        verbose_name = 'item_type'
-        verbose_name_plural = 'item_type'
+        db_table = 'master.storage_location'
+        verbose_name = 'storage_location'
+        verbose_name_plural = 'storage_location'
+
+class Issue(models.Model):
+    demand = models.ForeignKey(DemandMaster,on_delete=models.CASCADE,null=True)
+    issued_qty = models.CharField(max_length=15,null=True, blank=True)
+    issued_dt = models.DateTimeField(null=True)
+    name = models.CharField(max_length=100)
+    code = models.CharField(max_length=15)
+    description = models.TextField(null=True, blank=True)
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True,related_name='i_user')
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True) 
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = 'master.issue'
+        verbose_name = 'issue'
+        verbose_name_plural = 'issue'
+
+class Course(models.Model):
+    name = models.CharField(max_length=100)
+    code = models.CharField(max_length=15)
+    course_st_date = models.DateTimeField(auto_now_add=True)
+    course_end_date = models.DateTimeField(null=True)
+    rank = models.ForeignKey(Rank,on_delete=models.CASCADE,null=True)
+    qualification_course_id = models.CharField(max_length=50,blank=True, null=True)
+    qualification_course_marks = models.CharField(max_length=15,blank=True, null=True)
+    course_selection_marks = models.CharField(max_length=15,blank=True, null=True)
+    course_selection_seniority = models.CharField(max_length=15,blank=True, null=True)
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True,related_name='c_user')
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True) 
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = 'master.course'
+        verbose_name = 'course'
+        verbose_name_plural = 'course'
 
 

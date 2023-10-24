@@ -766,6 +766,13 @@ class ListItemsMasterSerializer(serializers.ModelSerializer):
         model = models.ItemsMaster
         fields = "__all__" 
 
+    def to_representation(self, instance):        
+        response = super().to_representation(instance) 
+        item_type_id = response['item_type']
+        
+        response['item_type_det'] = models.ItemType.objects.values('id','name',).filter(id=item_type_id).first()
+        return response
+
 class AllowancesMasterSerializer(serializers.ModelSerializer):
     
     class Meta:
@@ -857,4 +864,49 @@ class ListItemTypeSerializer(serializers.ModelSerializer):
         model = models.ItemType
         fields = "__all__"
 
+        
+
+class StorageLocationSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.StorageLocation
+        fields = "__all__"       
+
+class ListStorageLocationSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.StorageLocation
+        fields = "__all__"
+
+class IssueSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.Issue
+        fields = "__all__"       
+
+class ListIssueSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.Issue
+        fields = "__all__"
+
+    def to_representation(self, instance):        
+        response = super().to_representation(instance) 
+        
+        demand_id= response['demand']
+        
+        response['demand_master_det'] = models.DemandMaster.objects.values('id','qty',).filter(id=demand_id).first()
+        return response
+
+class CourseSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.Course
+        fields = "__all__"       
+
+class ListCourseSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.Course
+        fields = "__all__"
 
