@@ -236,6 +236,12 @@ urlpatterns = [
     path('rank/details', views. RankDetailViews.as_view(), name = 'add_rank'),
 
 
+   
+    path('item_type', views. ItemTypeViews.as_view(), name = 'view_item_type'),
+    path('item_type/<int:pk>', views. ItemTypeViews.as_view(), name = 'view_item_type'),
+    path('item_type/details', views. ItemTypeDetailViews.as_view(), name = 'add_item_type'),
+
+
 
 
 

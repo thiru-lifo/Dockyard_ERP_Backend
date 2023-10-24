@@ -752,6 +752,8 @@ class ListDemandMasterSerializer(serializers.ModelSerializer):
         model = models.DemandMaster
         fields = "__all__" 
 
+
+
 class ItemsMasterSerializer(serializers.ModelSerializer):
     
     class Meta:
@@ -842,5 +844,17 @@ class ListRankSerializer(serializers.ModelSerializer):
         response['pay_grade_det'] = models.PayGrade.objects.values('id','name',).filter(id=pay_grade_id).first()
         response['personnel_type_det'] = models.PersonnelType.objects.values('id','name',).filter(id=personnel_type_id).first()
         return response
+
+class ItemTypeSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.ItemType
+        fields = "__all__"       
+
+class ListItemTypeSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.ItemType
+        fields = "__all__"
 
 
