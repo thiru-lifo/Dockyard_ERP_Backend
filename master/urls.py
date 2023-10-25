@@ -236,6 +236,31 @@ urlpatterns = [
     path('rank/details', views. RankDetailViews.as_view(), name = 'add_rank'),
 
 
+   
+    path('item_type', views. ItemTypeViews.as_view(), name = 'view_item_type'),
+    path('item_type/<int:pk>', views. ItemTypeViews.as_view(), name = 'view_item_type'),
+    path('item_type/details', views. ItemTypeDetailViews.as_view(), name = 'add_item_type'),
+
+    path('storage_location', views. StorageLocationViews.as_view(), name = 'view_storage_location'),
+    path('storage_location/<int:pk>', views. StorageLocationViews.as_view(), name = 'view_storage_location'),
+    path('storage_location/details', views. StorageLocationDetailViews.as_view(), name = 'add_storage_location'),
+
+
+    path('issue', views. IssueViews.as_view(), name = 'view_issue'),
+    path('issue/<int:pk>', views. IssueViews.as_view(), name = 'view_issue'),
+    path('issue/details', views. IssueDetailViews.as_view(), name = 'add_issue'),
+
+
+    path('course', views. CourseViews.as_view(), name = 'view_course'),
+    path('course/<int:pk>', views. CourseViews.as_view(), name = 'view_course'),
+    path('course/details', views. CourseDetailViews.as_view(), name = 'add_course'),
+
+
+
+
+
+
+
 
 
 
