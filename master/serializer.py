@@ -910,3 +910,15 @@ class ListCourseSerializer(serializers.ModelSerializer):
         model = models.Course
         fields = "__all__"
 
+
+class OverTimeSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.OverTime
+        fields = "__all__"       
+
+class ListOverTimeSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.OverTime
+        fields = "__all__"

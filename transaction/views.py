@@ -18865,7 +18865,7 @@ class CheckInOut(APIView):
 
             if check_type == 'check_out':
 
-                lists = models.Attendance.objects.values('id', 'user_id', 'check_in').filter(user_id=request.user.id, attendance_date=datetime.now()).first()
+                lists = models.Attendance.objects.values('id', 'user_id', 'check_in').filter(user_id=request.user.id, attendance_date=datetime.now(original_tz)).first()
 
                 #check_out = datetime.now(timezone.utc)
                 check_out = datetime.now(original_tz)
