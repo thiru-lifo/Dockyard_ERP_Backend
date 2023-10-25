@@ -1133,7 +1133,7 @@ class ItemType(models.Model):
 class ItemsMaster(models.Model):
     code = models.CharField(max_length=15)
     description = models.TextField(null=True, blank=True)
-    item_type = models.ForeignKey(ItemType, on_delete= models.CASCADE)
+    item_type = models.ForeignKey(ItemType, on_delete= models.CASCADE,blank=True, null=True)
     min_stock_level = models.CharField(max_length=15, blank=True)
     availlable_qty = models.CharField(max_length=100,blank=True, null=True)
     bar_code = models.CharField(max_length=15)
