@@ -18833,6 +18833,8 @@ class CheckInOutOLD(APIView):
 
 class CheckInOut(APIView):
     def post(self, request, pk=None):
+
+        import pytz
         if "check_type" in request.data:
 
             check_type = request.data['check_type']
@@ -18861,16 +18863,35 @@ class CheckInOut(APIView):
             if check_type == 'check_out':
 
 
+
+
+                # giving the format of datetime
+                format = "%Y-%m-%d %H:%M:%S %Z%z"
+
+                # getting the standard UTC time
+                original_tz = pytz.timezone('Asia/Kolkata')
+
+                # giving the timezone to which it is to be converted
+                #converted_tz = pytz.timezone('US/Eastern')
+
+                # Getting the current time in the Asia/Kolkata Time Zone
+                #datetime_object = datetime.now(original_tz)
+
+
+
+
+
                 lists = models.Attendance.objects.values('id', 'user_id', 'check_in').filter(user_id=request.user.id, attendance_date=datetime.now()).first()
 
-                check_out = datetime.now(timezone.utc)
+                #check_out = datetime.now(timezone.utc)
+                check_out = datetime.now(original_tz)
                 check_in = lists['check_in']
                 diff = check_out-check_in
                 diff_hours = diff.total_seconds() / 3600
 
                 total_work = round(diff_hours,2)
 
-                print(diff_hours,'DDD',total_work)
+                #print(diff_hours,'DDD',total_work)
 
                 models.Attendance.objects.filter(user_id=request.user.id, attendance_date=datetime.now()).update(
                     check_out = datetime.now(), 
