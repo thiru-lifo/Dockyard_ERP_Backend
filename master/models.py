@@ -1397,30 +1397,30 @@ class Batch(models.Model):
         verbose_name = 'batch'
         verbose_name_plural = 'batch'
 
-# class StockRegister(models.Model):
-#     name = models.CharField(max_length=100 ,null=True)
-#     code = models.ForeignKey(ItemsMaster,on_delete=models.CASCADE,null=True)
-#     stock_qty = models.CharField(max_length=15,null=True, blank=True)
-#     last_updt_on = models.DateTimeField(auto_now=True, blank=True, null=True)
-#     unit_cost = models.DecimalField(max_digits=6, decimal_places=2)
-#     batch = models.ForeignKey(Batch,on_delete=models.CASCADE,null=True)
-#     storage_location = models.ForeignKey(StorageLocation,on_delete=models.CASCADE,null=True)
-#     available_qty = models.CharField(max_length=15,null=True, blank=True)
-#     status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
-#     created_on = models.DateTimeField(auto_now_add=True)
-#     created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True,related_name='sr_user')
-#     created_ip = models.GenericIPAddressField()
-#     modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
-#     modified_by = models.CharField(max_length=100, blank=True, null=True)
-#     modified_ip = models.GenericIPAddressField(blank=True, null=True) 
+class StockRegister(models.Model):
+    name = models.CharField(max_length=100 ,null=True)
+    code = models.ForeignKey(ItemsMaster,on_delete=models.CASCADE,null=True)
+    stock_qty = models.CharField(max_length=15,null=True, blank=True)
+    last_updt_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    unit_cost = models.DecimalField(max_digits=6, decimal_places=2)
+    batch = models.ForeignKey(Batch,on_delete=models.CASCADE,null=True)
+    storage_location = models.ForeignKey(StorageLocation,on_delete=models.CASCADE,null=True)
+    available_qty = models.CharField(max_length=15,null=True, blank=True)
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True,related_name='sr_user')
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True) 
 
-#     def __str__(self):
-#         return self.name
+    def __str__(self):
+        return self.name
 
-#     class Meta:
-#         db_table = 'master.stock_register'
-#         verbose_name = 'stock_register'
-#         verbose_name_plural = 'stock_register'
+    class Meta:
+        db_table = 'master.stock_register'
+        verbose_name = 'stock_register'
+        verbose_name_plural = 'stock_register'
 
 class OverTime(models.Model):
     name = models.CharField(max_length=100)

@@ -947,3 +947,15 @@ class ListHolidaySerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Holiday
         fields = "__all__"
+
+class StockRegisterSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.StockRegister
+        fields = "__all__"       
+
+class ListStockRegisterSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.StockRegister
+        fields = "__all__"

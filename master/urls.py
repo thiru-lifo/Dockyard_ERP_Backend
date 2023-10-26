@@ -270,4 +270,10 @@ urlpatterns = [
     path('holiday/<int:pk>', views.HolidayViews.as_view(), name = 'view_holiday'),
     path('holiday/details', views.HolidayDetailViews.as_view(), name = 'add_holiday'),
 
+
+    path('stock_register', views.StockRegisterViews.as_view(), name = 'view_stock_register'),
+    path('stock_register/<int:pk>', views.StockRegisterViews.as_view(), name = 'view_stock_register'),
+    path('stock_register/details', views.StockRegisterDetailViews.as_view(), name = 'add_stock_register'),
+
+
 ]
