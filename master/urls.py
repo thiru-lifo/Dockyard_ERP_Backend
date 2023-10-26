@@ -255,6 +255,11 @@ urlpatterns = [
     path('course/<int:pk>', views. CourseViews.as_view(), name = 'view_course'),
     path('course/details', views. CourseDetailViews.as_view(), name = 'add_course'),
 
+    
+    path('batch', views. BatchViews.as_view(), name = 'view_batch'),
+    path('batch/<int:pk>', views. BatchViews.as_view(), name = 'view_batch'),
+    path('batch/details', views. BatchDetailViews.as_view(), name = 'add_batch'),
+
 
 
 
