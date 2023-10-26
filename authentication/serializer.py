@@ -21,7 +21,7 @@ from access.views import Common
 from log.models import UserLogin
 from datetime import datetime
 from access.models import RolesPermissions,AccessUserRoles,UserRoleMapping
-from master.models import Designation, Unit, DataAccess, CategoryType, PayScale, Center, Shopfloor, PayGrade, Rank
+from master.models import Designation, Unit, DataAccess, CategoryType, PayScale, Center, Shopfloor, PayGrade, Rank, PersonnelType
 from django.template import Context, Template
 from django.shortcuts import render
 import requests
@@ -163,6 +163,7 @@ class UserListSerializer(serializers.ModelSerializer):
         response['shop_floor'] = ShopfloorSerializer(Shopfloor.objects.filter(id=response['shop_floor']),many=True).data
         response['pay_grade'] = PayGradeSerializer(PayGrade.objects.filter(id=response['pay_grade']),many=True).data
         response['rank'] = RankSerializer(Rank.objects.filter(id=response['rank']),many=True).data
+        response['personnel_type'] = RankSerializer(PersonnelType.objects.filter(id=response['personnel_type']),many=True).data
         #response['designation'] = UnitSerializer(Unit.objects.filter(id=response['desig']),many=True).data
         
         response['data_access']=DataAccessFormSerializer(transactionModels.DataAccessForms.objects.filter(user_id=response['id']),many=True).data  
