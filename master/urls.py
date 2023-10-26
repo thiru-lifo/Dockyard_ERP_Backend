@@ -222,38 +222,43 @@ urlpatterns = [
     path('pay_grade/<int:pk>', views.PayGradeViews.as_view(), name = 'view_pay_grade'),
     path('pay_grade/details', views.PayGradeDetailViews.as_view(), name = 'add_pay_grade'),
 
-    path('personnel_type', views. PersonnelTypeViews.as_view(), name = 'view_personnel_type'),
-    path('personnel_type/<int:pk>', views. PersonnelTypeViews.as_view(), name = 'view_personnel_type'),
-    path('personnel_type/details', views. PersonnelTypeDetailViews.as_view(), name = 'add_personnel_type'),
+    path('personnel_type', views.PersonnelTypeViews.as_view(), name = 'view_personnel_type'),
+    path('personnel_type/<int:pk>', views.PersonnelTypeViews.as_view(), name = 'view_personnel_type'),
+    path('personnel_type/details', views.PersonnelTypeDetailViews.as_view(), name = 'add_personnel_type'),
 
-    path('status_master', views. StatusMasterViews.as_view(), name = 'view_status_master'),
-    path('status_master/<int:pk>', views. StatusMasterViews.as_view(), name = 'view_status_master'),
-    path('status_master/details', views. StatusMasterDetailViews.as_view(), name = 'add_status_master'),
+    path('status_master', views.StatusMasterViews.as_view(), name = 'view_status_master'),
+    path('status_master/<int:pk>', views.StatusMasterViews.as_view(), name = 'view_status_master'),
+    path('status_master/details', views.StatusMasterDetailViews.as_view(), name = 'add_status_master'),
 
 
-    path('rank', views. RankViews.as_view(), name = 'view_rank'),
-    path('rank/<int:pk>', views. RankViews.as_view(), name = 'view_rank'),
-    path('rank/details', views. RankDetailViews.as_view(), name = 'add_rank'),
+    path('rank', views.RankViews.as_view(), name = 'view_rank'),
+    path('rank/<int:pk>', views.RankViews.as_view(), name = 'view_rank'),
+    path('rank/details', views.RankDetailViews.as_view(), name = 'add_rank'),
 
 
    
-    path('item_type', views. ItemTypeViews.as_view(), name = 'view_item_type'),
-    path('item_type/<int:pk>', views. ItemTypeViews.as_view(), name = 'view_item_type'),
-    path('item_type/details', views. ItemTypeDetailViews.as_view(), name = 'add_item_type'),
+    path('item_type', views.ItemTypeViews.as_view(), name = 'view_item_type'),
+    path('item_type/<int:pk>', views.ItemTypeViews.as_view(), name = 'view_item_type'),
+    path('item_type/details', views.ItemTypeDetailViews.as_view(), name = 'add_item_type'),
 
-    path('storage_location', views. StorageLocationViews.as_view(), name = 'view_storage_location'),
-    path('storage_location/<int:pk>', views. StorageLocationViews.as_view(), name = 'view_storage_location'),
-    path('storage_location/details', views. StorageLocationDetailViews.as_view(), name = 'add_storage_location'),
-
-
-    path('issue', views. IssueViews.as_view(), name = 'view_issue'),
-    path('issue/<int:pk>', views. IssueViews.as_view(), name = 'view_issue'),
-    path('issue/details', views. IssueDetailViews.as_view(), name = 'add_issue'),
+    path('storage_location', views.StorageLocationViews.as_view(), name = 'view_storage_location'),
+    path('storage_location/<int:pk>', views.StorageLocationViews.as_view(), name = 'view_storage_location'),
+    path('storage_location/details', views.StorageLocationDetailViews.as_view(), name = 'add_storage_location'),
 
 
-    path('course', views. CourseViews.as_view(), name = 'view_course'),
-    path('course/<int:pk>', views. CourseViews.as_view(), name = 'view_course'),
-    path('course/details', views. CourseDetailViews.as_view(), name = 'add_course'),
+    path('issue', views.IssueViews.as_view(), name = 'view_issue'),
+    path('issue/<int:pk>', views.IssueViews.as_view(), name = 'view_issue'),
+    path('issue/details', views.IssueDetailViews.as_view(), name = 'add_issue'),
+
+
+    path('course', views.CourseViews.as_view(), name = 'view_course'),
+    path('course/<int:pk>', views.CourseViews.as_view(), name = 'view_course'),
+    path('course/details', views.CourseDetailViews.as_view(), name = 'add_course'),
+
+    
+    path('batch', views.BatchViews.as_view(), name = 'view_batch'),
+    path('batch/<int:pk>', views.BatchViews.as_view(), name = 'view_batch'),
+    path('batch/details', views.BatchDetailViews.as_view(), name = 'add_batch'),
 
 
     path('over-time', views.OverTimeViews.as_view(), name = 'view_over_time'),

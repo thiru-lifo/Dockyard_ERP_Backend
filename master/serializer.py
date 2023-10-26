@@ -760,6 +760,19 @@ class ItemsMasterSerializer(serializers.ModelSerializer):
         model = models.ItemsMaster
         fields = "__all__"       
 
+
+class ItemTypeSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.ItemType
+        fields = "__all__"       
+
+class ListItemTypeSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.ItemType
+        fields = "__all__"
+
 class ListItemsMasterSerializer(serializers.ModelSerializer):
     
     class Meta:
@@ -852,19 +865,6 @@ class ListRankSerializer(serializers.ModelSerializer):
         response['personnel_type_det'] = models.PersonnelType.objects.values('id','name',).filter(id=personnel_type_id).first()
         return response
 
-class ItemTypeSerializer(serializers.ModelSerializer):
-    
-    class Meta:
-        model = models.ItemType
-        fields = "__all__"       
-
-class ListItemTypeSerializer(serializers.ModelSerializer):
-    
-    class Meta:
-        model = models.ItemType
-        fields = "__all__"
-
-        
 
 class StorageLocationSerializer(serializers.ModelSerializer):
     
@@ -908,6 +908,18 @@ class ListCourseSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = models.Course
+        fields = "__all__"
+
+class BatchSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.Batch
+        fields = "__all__"       
+
+class ListBatchSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.Batch
         fields = "__all__"
 
 

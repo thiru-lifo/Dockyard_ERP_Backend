@@ -9398,7 +9398,7 @@ class IssueViews(APIView):
                 else:
                     normal_values[key]=(values)
 
-            strings = ['code','name']
+            strings = ['code']
             search_string = dict((k, normal_values[k]) for k in strings
                                             if k in normal_values)  
             order_column =  request.GET.get('order_column')
@@ -9715,11 +9715,8 @@ class CourseDetailViews(APIView):
             else: 
                 return Response({"status" : {"id" : ['id' +language.context[language.defaultLang]['missing']]}}, status=status.HTTP_200_OK)
 
-
-
-
-# Over Time
-class OverTimeViews(APIView):
+# batch
+class BatchViews(APIView):
 
     def get(self, request, pk = None):
         filter_values = dict(request.GET.items())
@@ -9766,14 +9763,14 @@ class OverTimeViews(APIView):
         try:
 
             if pk:
-                list = models.OverTime.objects.filter(pk=pk).exclude(status='3').get()
-                serializeobj = cSerializer.ListOverTimeSerializer(list)
+                list = models.Batch.objects.filter(pk=pk).exclude(status='3').get()
+                serializeobj = cSerializer.ListBatchSerializer(list)
                 return Response({"status": error.context['success_code'], "data": serializeobj.data}, status=status.HTTP_200_OK)
        
-        except models.OverTime.DoesNotExist:
+        except models.Batch.DoesNotExist:
             return Response({"status" : error.context['error_code'], "message":"Status" +language.context[language.defaultLang]['dataNotFound'] }, status = status.HTTP_200_OK)
 
-        lists = models.OverTime.objects.exclude(status='3')
+        lists = models.Batch.objects.exclude(status='3')
         if normal_values:
             lists = lists.filter(reduce(operator.and_, 
                                (Q(**d) for d in [dict([i]) for i in normal_values.items()])))
@@ -9814,75 +9811,44 @@ class OverTimeViews(APIView):
         elif limit_end:
                 lists = lists[0:int(limit_end)]          
     
-        serializer = cSerializer.ListOverTimeSerializer(lists, many=True)
+        serializer = cSerializer.ListBatchSerializer(lists, many=True)
         return Response({"status":error.context['success_code'] , "data": serializer.data}, status=status.HTTP_200_OK)
 
 
-class OverTimeDetailViews(APIView):
+class BatchDetailViews(APIView):
 
     def get_object(self,pk):
 
         try:
-            return models.OverTime.objects.get(pk = pk)
-        except OverTime.DoesNotExist:
+            return models.Batch.objects.get(pk = pk)
+        except Batch.DoesNotExist:
             raise Http404
 
 
     def post(self,request, pk = None):
 
-        if 'name' not in request.data and request.data['status'] != 3:
-            return Response({"status":error.context['error_code'], "message" : "Name" +language.context[language.defaultLang]['missing']},status=status.HTTP_200_OK)
-        elif 'code' not in request.data and request.data['status'] != 3:
-            return Response({"status":error.context['error_code'], "message" : "Code" +language.context[language.defaultLang]['missing'] },status=status.HTTP_200_OK)
-        else: 
-
-            if 'code' in request.data:
-                request.data['code']=(request.data['code']).upper()
-            if 'sequence' in request.data:
-                request.data['sequence']=request.data['sequence'] if(request.data['sequence']!='')  else 0
-            if 'id' in request.data:
-                pk = request.data['id']
-                created_ip = Common.get_client_ip(request)
-                request.data['created_ip'] = created_ip  
-               
-                if not pk: 
-                    duplicate_code = models.OverTime.objects.values('code').filter(code=request.data['code']).exclude(status=3)
-                    duplicate_name = models.OverTime.objects.values('name').filter(name=request.data['name']).exclude(status=3)
-                            
-                    if duplicate_code:            
-                        return Response({"status" :error.context['error_code'], "message":language.context[language.defaultLang]['exit code'] },status=status.HTTP_200_OK)                    
-                    
-                    elif duplicate_name:   
-                        return Response({"status" :error.context['error_code'], "message":language.context[language.defaultLang]['exit name'] },status=status.HTTP_200_OK)                    
-                    
-                    else:
+        if 'id' not in request.data:
+            return Response({"status" : {"id" : ['id' +language.context[language.defaultLang]['missing']]}}, status=status.HTTP_200_OK)
+        else:
+            pk = request.data['id']
+            
                 
-                        saveserialize = cSerializer.OverTimeSerializer(data = request.data)
-                        if saveserialize.is_valid():
-                            saveserialize.save()
-                            return Response({"status" :error.context['success_code'], "message":"New Over Time" +language.context[language.defaultLang]['insert'], "data":saveserialize.data}, status=status.HTTP_200_OK)
-                        else:
-                            return Response({"status" :error.context['error_code'], "message": error.serializerError(saveserialize)}, status=status.HTTP_200_OK)
+            if not pk:
 
+                request.data['created_ip'] = Common.get_client_ip(request)
+                saveserialize = cSerializer.BatchSerializer(data = request.data)
+
+                if saveserialize.is_valid():
+                    saveserialize.save()
+
+                    return Response({"status" : error.context['success_code'], "message":"batch" +language.context[language.defaultLang]['insert'], "data":''}, status=status.HTTP_200_OK)
                 else:
-                    if request.data['status'] != 3:
-                        duplicate_code = models.OverTime.objects.values('code').filter(code=request.data['code']).exclude(Q(id=request.data['id']) | Q(status=3))
-                        duplicate_name = models.OverTime.objects.values('name').filter(name=request.data['name']).exclude(Q(id=request.data['id']) | Q(status=3))
-                        if duplicate_code:            
-                            return Response({"status" :error.context['error_code'], "message":language.context[language.defaultLang]['exit code'] },status=status.HTTP_200_OK)                    
-                        elif duplicate_name:   
-                            return Response({"status" :error.context['error_code'], "message":language.context[language.defaultLang]['exit name'] },status=status.HTTP_200_OK)                                            
+                    return Response({"status" :error.context['error_code'], "message":error.serializerError(saveserialize)}, status=status.HTTP_200_OK)
+            else:
 
-                    list = self.get_object(pk)
+                request.data['modified_ip'] = Common.get_client_ip(request)
+                request.data['modified_by'] = request.user.id
 
-                    saveserialize = cSerializer.OverTimeSerializer(list, data = request.data, partial= True)
-                    if saveserialize.is_valid():
-                        saveserialize.save()
-                        return Response({"status" :error.context['success_code'], "message":"Over Time" +language.context[language.defaultLang]['update'], "data":saveserialize.data}, status=status.HTTP_200_OK)
-                    else:
-                        return Response({"status" :error.context['error_code'], "message":error.serializerError(saveserialize)}, status = status.HTTP_200_OK)
-            else: 
-                return Response({"status" : {"id" : ['id' +language.context[language.defaultLang]['missing']]}}, status=status.HTTP_200_OK)
 
 
 
@@ -10053,3 +10019,13 @@ class HolidayDetailViews(APIView):
             else: 
                 return Response({"status" : {"id" : ['id' +language.context[language.defaultLang]['missing']]}}, status=status.HTTP_200_OK)
 
+                list = self.get_object(pk)
+                
+                saveserialize = cSerializer.BatchSerializer(list, data = request.data, partial= True)                
+                if saveserialize.is_valid():
+                    saveserialize.save()
+                    
+
+                    return Response({"status" :error.context['success_code'], "message":"batch" +language.context[language.defaultLang]['update'], "data":''}, status=status.HTTP_200_OK)
+                else:
+                    return Response({"status" :error.context['error_code'],"message":error.serializerError(saveserialize)}, status = status.HTTP_200_OK)
