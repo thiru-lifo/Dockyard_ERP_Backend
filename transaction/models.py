@@ -2541,7 +2541,7 @@ class Attendance(models.Model):
     check_in = models.DateTimeField(blank=True, null=True)
     check_out = models.DateTimeField(blank=True, null=True)
     attendance_status = models.SmallIntegerField(choices=((1,'Present'),(2,'Absent')))
-    total_work = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    total_work = models.DecimalField(max_digits=4, decimal_places=2)
     status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
     created_on = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='a_user')
@@ -2608,4 +2608,4 @@ class MonthlyCreditsDebits(models.Model):
         verbose_name = 'monthly_credits_debits'
         verbose_name_plural = 'monthly_credits_debits'
 
-
+        
