@@ -922,3 +922,16 @@ class ListOverTimeSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.OverTime
         fields = "__all__"
+
+
+class HolidaySerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.Holiday
+        fields = "__all__"       
+
+class ListHolidaySerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.Holiday
+        fields = "__all__"

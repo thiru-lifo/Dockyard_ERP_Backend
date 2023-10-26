@@ -101,6 +101,7 @@ class User(AbstractBaseUser):
     pay_grade = models.ForeignKey('master.PayGrade', on_delete = models.CASCADE, null = True)
     current_basic_salary = models.DecimalField(max_digits = 6, decimal_places = 2, null=True, blank=True)    
     rank = models.ForeignKey('master.Rank', on_delete = models.CASCADE, null = True)
+    phone_no = models.CharField(max_length= 30, null= True, blank=True)
     is_active = models.BooleanField(default=True)
     staff = models.BooleanField(default=False) # a admin user; non super-user
     admin = models.BooleanField(default=False) # a superuser

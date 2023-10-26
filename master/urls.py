@@ -256,17 +256,13 @@ urlpatterns = [
     path('course/details', views. CourseDetailViews.as_view(), name = 'add_course'),
 
 
-    path('over-time', views. OverTimeViews.as_view(), name = 'view_over_time'),
-    path('over-time/<int:pk>', views. OverTimeViews.as_view(), name = 'view_over_time'),
-    path('over-time/details', views. OverTimeDetailViews.as_view(), name = 'add_over_time'),
+    path('over-time', views.OverTimeViews.as_view(), name = 'view_over_time'),
+    path('over-time/<int:pk>', views.OverTimeViews.as_view(), name = 'view_over_time'),
+    path('over-time/details', views.OverTimeDetailViews.as_view(), name = 'add_over_time'),
 
 
-
-
-
-
-
-
-
+    path('holiday', views.HolidayViews.as_view(), name = 'view_holiday'),
+    path('holiday/<int:pk>', views.HolidayViews.as_view(), name = 'view_holiday'),
+    path('holiday/details', views.HolidayDetailViews.as_view(), name = 'add_holiday'),
 
 ]
