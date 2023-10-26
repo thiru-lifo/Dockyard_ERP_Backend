@@ -9398,7 +9398,7 @@ class IssueViews(APIView):
                 else:
                     normal_values[key]=(values)
 
-            strings = ['code','description']
+            strings = ['code']
             search_string = dict((k, normal_values[k]) for k in strings
                                             if k in normal_values)  
             order_column =  request.GET.get('order_column')
@@ -9500,8 +9500,8 @@ class IssueDetailViews(APIView):
             return Response({"status":error.context['error_code'], "message" : "Code" +language.context[language.defaultLang]['missing'] },status=status.HTTP_200_OK)
         else: 
 
-            # if 'code' in request.data:
-            #     request.data['code']=(request.data['code']).upper()
+            if 'code' in request.data:
+                request.data['code']=(request.data['code']).upper()
             if 'sequence' in request.data:
                 request.data['sequence']=request.data['sequence'] if(request.data['sequence']!='')  else 0
             if 'id' in request.data:

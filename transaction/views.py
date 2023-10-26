@@ -18833,6 +18833,11 @@ class CheckInOutOLD(APIView):
 
 class CheckInOut(APIView):
     def post(self, request, pk=None):
+
+        import pytz
+        original_tz = pytz.timezone('Asia/Kolkata')
+        from dateutil.relativedelta import relativedelta
+
         if "check_type" in request.data:
 
             check_type = request.data['check_type']
@@ -18845,8 +18850,8 @@ class CheckInOut(APIView):
                 models.Attendance.objects.create(
                     user_id = request.user.id,
                     center_id = center[0]['center'],
-                    attendance_date = datetime.now(),
-                    check_in = datetime.now(), 
+                    attendance_date = datetime.now(original_tz),
+                    check_in = datetime.now(original_tz), 
                     attendance_status = 1,
                     status = 1,
                     created_ip = ipAddress,
@@ -18860,20 +18865,28 @@ class CheckInOut(APIView):
 
             if check_type == 'check_out':
 
+                lists = models.Attendance.objects.values('id', 'user_id', 'check_in').filter(user_id=request.user.id, attendance_date=datetime.now(original_tz)).first()
 
-                lists = models.Attendance.objects.values('id', 'user_id', 'check_in').filter(user_id=request.user.id, attendance_date=datetime.now()).first()
-
-                check_out = datetime.now(timezone.utc)
-                check_in = lists['check_in']
+                #check_out = datetime.now(timezone.utc)
+                check_out = datetime.now(original_tz)
+                #check_in = lists['check_in'].astimezone(original_tz)
+                check_in = lists['check_in'].astimezone(original_tz)
                 diff = check_out-check_in
                 diff_hours = diff.total_seconds() / 3600
 
-                total_work = round(diff_hours,2)
+                #total_work = round(diff_hours,2)
+                #total_work = diff_hours
 
-                print(diff_hours,'DDD',total_work)
+                #print(diff_hours,'DDD',total_work)
 
-                models.Attendance.objects.filter(user_id=request.user.id, attendance_date=datetime.now()).update(
-                    check_out = datetime.now(), 
+                diff1 = relativedelta(check_out, check_in)
+                #print(diff1.days, diff1.minutes, diff1.seconds)
+
+                #total_work = str(diff1.days)+":"+str(diff1.minutes)+":"+str(diff1.seconds)
+                total_work = str(diff1.days)+":"+str(diff1.minutes)
+                models.Attendance.objects.filter(user_id=request.user.id, attendance_date=datetime.now(original_tz)).update(
+                    check_out = datetime.now(original_tz), 
+                    #total_work = total_work,
                     total_work = total_work,
                     modified_ip = ipAddress,
                     modified_by = request.user.id,

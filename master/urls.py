@@ -261,6 +261,11 @@ urlpatterns = [
     path('batch/details', views. BatchDetailViews.as_view(), name = 'add_batch'),
 
 
+    path('over-time', views. OverTimeViews.as_view(), name = 'view_over_time'),
+    path('over-time/<int:pk>', views. OverTimeViews.as_view(), name = 'view_over_time'),
+    path('over-time/details', views. OverTimeDetailViews.as_view(), name = 'add_over_time'),
+
+
 
 
 
