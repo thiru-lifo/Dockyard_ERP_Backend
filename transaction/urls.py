@@ -420,4 +420,7 @@ urlpatterns = [
     path('monthly-credits-debits',views.MonthlyCreditsDebitsList.as_view(), name = 'Monthly Credits Debits List'),
     path('monthly-credits-debits/crud',views.MonthlyCreditsDebitsCRUD.as_view(), name = 'Monthly Credits Debits CRUD'),
 
+    path('manpower-booking',views.ManpowerBookingList.as_view(), name = 'Manpower Booking List'),
+    path('manpower-booking/crud',views.ManpowerBookingCRUD.as_view(), name = 'Manpower Booking CRUD'),
+
 ]
