@@ -276,4 +276,9 @@ urlpatterns = [
     path('stock_register/details', views.StockRegisterDetailViews.as_view(), name = 'add_stock_register'),
 
 
+    path('promotion', views.PromotionViews.as_view(), name = 'view_promotion'),
+    path('promotion/<int:pk>', views.PromotionViews.as_view(), name = 'view_promotion'),
+    path('promotion/details', views.PromotionDetailViews.as_view(), name = 'add_promotion'),
+
+
 ]

@@ -959,3 +959,24 @@ class ListStockRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.StockRegister
         fields = "__all__"
+
+
+class PromotionSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.Promotion
+        fields = "__all__"       
+
+class ListPromotionSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.Promotion
+        fields = "__all__"
+
+    def to_representation(self, instance):        
+        response = super().to_representation(instance) 
+        from_rank = response['from_rank']
+        to_rank = response['to_rank']
+        response['from_rank_det'] = models.Rank.objects.values('id','name',).filter(id=from_rank).first()
+        response['to_rank_det'] = models.Rank.objects.values('id','name',).filter(id=to_rank).first()
+        return response

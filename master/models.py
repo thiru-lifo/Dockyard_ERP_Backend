@@ -1468,3 +1468,27 @@ class Holiday(models.Model):
         db_table = 'master.holiday'
         verbose_name = 'holiday'
         verbose_name_plural = 'holiday'
+
+
+class Promotion(models.Model):
+    from_rank = models.ForeignKey(Rank,on_delete=models.CASCADE,null=True)
+    to_rank = models.ForeignKey(Rank,on_delete=models.CASCADE,null=True, related_name='to_rank_promotion')
+    by_time_by_selection = models.SmallIntegerField(choices=((1,'By Time'),(2,'By Selection'))) # 1 or 2
+    time_for_promotion = models.DateTimeField(blank=True, null=True)
+    qualification_course_id = models.CharField(max_length=50,blank=True, null=True)
+    qualification_course_marks = models.CharField(max_length=15,blank=True, null=True)
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True) 
+
+    def __str__(self):
+        return self.from_rank
+
+    class Meta:
+        db_table = 'master.promotion'
+        verbose_name = 'promotion'
+        verbose_name_plural = 'promotion'
