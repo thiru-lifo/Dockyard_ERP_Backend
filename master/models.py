@@ -1181,13 +1181,17 @@ class DeductionsMaster(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
     code = models.CharField(max_length=15)
+    on_per_of_basic_pay = models.SmallIntegerField( choices = ((1,'Yes'),(2,'No')))
+    per_of_basic_pay = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
+    on_fixed_amount = models.SmallIntegerField( choices = ((1,'Yes'),(2,'No')))
+    amount_of_deduction = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
     status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
     created_on = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
     created_ip = models.GenericIPAddressField()
     modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
     modified_by = models.CharField(max_length=100, blank=True, null=True)
-    modified_ip = models.GenericIPAddressField(blank=True, null=True) 
+    modified_ip = models.GenericIPAddressField(blank=True, null=True)
 
     def __str__(self):
         return self.name
