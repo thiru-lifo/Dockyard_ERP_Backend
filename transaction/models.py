@@ -12,7 +12,7 @@ import phonenumbers
 from phonenumber_field.modelfields import PhoneNumberField
 from accounts.models import User
 #from master.models import Project
-from master.models import Project, Section, Unit, Compartment, System, Equipment, Module, SubModule, GlobalSection, GlobalSubSection, GlobalSubSubSection, Class, Command, Department, RefitType, Center, AllowancesMaster, DeductionsMaster
+from master.models import Project, Section, Unit, Compartment, System, Equipment, Module, SubModule, GlobalSection, GlobalSubSection, GlobalSubSubSection, Class, Command, Department, RefitType, Center, AllowancesMaster, DeductionsMaster, OverTime, Shopfloor, StatusMaster
 from access.models import AccessUserRoles,ProcessFlow
 
 
@@ -2609,4 +2609,31 @@ class MonthlyCreditsDebits(models.Model):
         verbose_name = 'monthly_credits_debits'
         verbose_name_plural = 'monthly_credits_debits'
 
-        
+
+class ManpowerBooking(models.Model):
+
+    date = models.DateField(blank=True, null=True)
+    time = models.DateField(blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    center = models.ForeignKey(Center, on_delete=models.CASCADE, null=True)
+    shop_floor = models.ForeignKey(Shopfloor, on_delete=models.CASCADE, null=True)
+    status_master = models.ForeignKey(StatusMaster, on_delete=models.CASCADE, null=True)
+    work_instruction = models.ForeignKey(WorkInstruction, on_delete=models.CASCADE, null=True)
+    job_card = models.ForeignKey(JobCard, on_delete=models.CASCADE, null=True)
+
+    over_time = models.ForeignKey(OverTime, on_delete=models.CASCADE, null=True)
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='mb_user')
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True)
+
+    def __str__(self):
+        return self.date
+
+    class Meta:
+        db_table = 'transaction.manpower_booking'
+        verbose_name = 'manpower_booking'
+        verbose_name_plural = 'manpower_booking'
