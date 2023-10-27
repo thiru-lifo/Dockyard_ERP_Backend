@@ -885,7 +885,7 @@ class IssueSerializer(serializers.ModelSerializer):
         fields = "__all__"       
 
 class ListIssueSerializer(serializers.ModelSerializer):
-    
+    item= ListItemsMasterSerializer(read_only=True)
     class Meta:
         model = models.Issue
         fields = "__all__"
@@ -894,8 +894,10 @@ class ListIssueSerializer(serializers.ModelSerializer):
         response = super().to_representation(instance) 
         
         demand_id= response['demand']
+        # code_id= response['items_master']
         
         response['demand_master_det'] = models.DemandMaster.objects.values('id','qty',).filter(id=demand_id).first()
+        # response['items_master_det'] = models.ItemsMaster.objects.values('id','qty',).filter(id=code_id).first()
         return response
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -958,4 +960,16 @@ class ListStockRegisterSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = models.StockRegister
+        fields = "__all__"
+
+class StockLogSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.StockLog
+        fields = "__all__"       
+
+class ListStockLogSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.StockLog
         fields = "__all__"
