@@ -2613,7 +2613,7 @@ class MonthlyCreditsDebits(models.Model):
 class ManpowerBooking(models.Model):
 
     date = models.DateField(blank=True, null=True)
-    time = models.DateField(blank=True, null=True)
+    time = models.DateTimeField(blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     center = models.ForeignKey(Center, on_delete=models.CASCADE, null=True)
     shop_floor = models.ForeignKey(Shopfloor, on_delete=models.CASCADE, null=True)
