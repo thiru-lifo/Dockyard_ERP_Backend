@@ -9831,24 +9831,33 @@ class BatchDetailViews(APIView):
             return Response({"status" : {"id" : ['id' +language.context[language.defaultLang]['missing']]}}, status=status.HTTP_200_OK)
         else:
             pk = request.data['id']
-            
-                
+           
             if not pk:
 
                 request.data['created_ip'] = Common.get_client_ip(request)
-                saveserialize = cSerializer.BatchSerializer(data = request.data)
+                # request.data['created_ip'] = created_ip  
+               
+                saveserialize = cSerializer.BatchDebitsSerializer(data = request.data)
 
                 if saveserialize.is_valid():
                     saveserialize.save()
 
-                    return Response({"status" : error.context['success_code'], "message":"batch" +language.context[language.defaultLang]['insert'], "data":''}, status=status.HTTP_200_OK)
+                    return Response({"status" : error.context['success_code'], "message":"Batch" +language.context[language.defaultLang]['insert'], "data":''}, status=status.HTTP_200_OK)
                 else:
                     return Response({"status" :error.context['error_code'], "message":error.serializerError(saveserialize)}, status=status.HTTP_200_OK)
             else:
 
-                request.data['modified_ip'] = Common.get_client_ip(request)
-                request.data['modified_by'] = request.user.id
+               
 
+                list = self.get_object(pk)
+                request.data['created_ip'] = Common.get_client_ip(request)
+                saveserialize = cSerializer.BatchSerializer(list, data = request.data, partial= True)                
+                if saveserialize.is_valid():
+                    saveserialize.save()
+
+                    return Response({"status" :error.context['success_code'], "message":"Batch" +language.context[language.defaultLang]['insert'], "data":''}, status=status.HTTP_200_OK)
+                else:
+                    return Response({"status" :error.context['error_code'],"message":error.serializerError(saveserialize)}, status = status.HTTP_200_OK)
 
 
 
@@ -10359,13 +10368,4 @@ class StockRegisterDetailViews(APIView):
             else: 
                 return Response({"status" : {"id" : ['id' +language.context[language.defaultLang]['missing']]}}, status=status.HTTP_200_OK)
 
-                list = self.get_object(pk)
-                
-                saveserialize = cSerializer.BatchSerializer(list, data = request.data, partial= True)                
-                if saveserialize.is_valid():
-                    saveserialize.save()
-                    
-
-                    return Response({"status" :error.context['success_code'], "message":"StockRegister" +language.context[language.defaultLang]['update'], "data":''}, status=status.HTTP_200_OK)
-                else:
-                    return Response({"status" :error.context['error_code'],"message":error.serializerError(saveserialize)}, status = status.HTTP_200_OK)
+               
