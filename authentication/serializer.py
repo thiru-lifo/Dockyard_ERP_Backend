@@ -145,6 +145,19 @@ class DataAccessFormSerializer(serializers.ModelSerializer):
         model = transactionModels.DataAccessForms
         fields = "__all__"
 
+
+class UserPersonnelDetailsSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = transactionModels.UserPersonnelDetails
+        fields = "__all__"
+
+class UserPersonnelDetailsChildSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = transactionModels.UserPersonnelDetailsChild
+        fields = "__all__"
+
 class UserListSerializer(serializers.ModelSerializer):
     process = Processserializer (read_only=True)
     #designation = DesignationSerializer(read_only=True)
@@ -167,6 +180,12 @@ class UserListSerializer(serializers.ModelSerializer):
         #response['designation'] = UnitSerializer(Unit.objects.filter(id=response['desig']),many=True).data
         
         response['data_access']=DataAccessFormSerializer(transactionModels.DataAccessForms.objects.filter(user_id=response['id']),many=True).data  
+
+        response['personnel_detail']=UserPersonnelDetailsSerializer(transactionModels.UserPersonnelDetails.objects.filter(user_id=response['id']),many=True).data
+
+        response['child_list']=UserPersonnelDetailsChildSerializer(transactionModels.UserPersonnelDetailsChild.objects.filter(user_id=response['id']),many=True).data
+
+
         return response
 
 

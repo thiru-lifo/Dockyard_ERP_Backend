@@ -2644,17 +2644,17 @@ class UserPersonnelDetails(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     mobile_no = models.CharField(max_length= 30, null= True, blank=True)
     address = models.CharField(max_length= 250, null= True, blank=True)
-    nok = models.IntegerField(null=True)
+    nok = models.IntegerField(null=True, blank=True)
     nok_mobile = models.CharField(max_length= 30, null= True, blank=True)
-    child_name = models.CharField(max_length= 30, null= True, blank=True)
-    child_school_class = models.CharField(max_length= 250, null= True, blank=True)
-    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
-    created_on = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True, related_name='upd_user')
-    created_ip = models.GenericIPAddressField()
-    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
-    modified_by = models.CharField(max_length=100, blank=True, null=True)
-    modified_ip = models.GenericIPAddressField(blank=True, null=True) 
+    # child_name = models.CharField(max_length= 30, null= True, blank=True)
+    # child_school_class = models.CharField(max_length= 250, null= True, blank=True)
+    # status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    # created_on = models.DateTimeField(auto_now_add=True)
+    # created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True, related_name='upd_user')
+    # created_ip = models.GenericIPAddressField()
+    # modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    # modified_by = models.CharField(max_length=100, blank=True, null=True)
+    # modified_ip = models.GenericIPAddressField(blank=True, null=True) 
 
     def __str__(self):
         return self.user
@@ -2663,3 +2663,18 @@ class UserPersonnelDetails(models.Model):
         db_table = 'transaction.user_personnel_details'
         verbose_name = 'user_personnel_details'
         verbose_name_plural = 'user_personnel_details'
+
+
+class UserPersonnelDetailsChild(models.Model):
+    #user_personnel_details = models.ForeignKey(UserPersonnelDetails, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    child_name = models.CharField(max_length= 30, null= True, blank=True)
+    child_school_class = models.CharField(max_length= 250, null= True, blank=True) 
+
+    def __str__(self):
+        return self.user
+
+    class Meta:
+        db_table = 'transaction.user_personnel_details_child'
+        verbose_name = 'user_personnel_details_child'
+        verbose_name_plural = 'user_personnel_details_child'

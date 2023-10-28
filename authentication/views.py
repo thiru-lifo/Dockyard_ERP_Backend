@@ -393,6 +393,23 @@ class usersCRUD(APIView):
                             if 'form_id' in access:
                                 transactionModels.DataAccessForms.objects.create(**{"form_id":access['form_id'],"user_id":request.data['id']})
 
+                    # Personal Details
+                    if request.data['child_list']:
+
+                        transactionModels.UserPersonnelDetails.objects.filter(user_id=request.data['id']).delete()
+                        transactionModels.UserPersonnelDetailsChild.objects.filter(user_id=request.data['id']).delete()
+
+                        transactionModels.UserPersonnelDetails.objects.create(
+                            user_id = request.data['id'],
+                            mobile_no = request.data['pd_mobile_no'],
+                            address = request.data['pd_address'],
+                            nok = request.data['pd_nok']
+                        )
+
+                        for child in (request.data['child_list']):
+                            if 'child_name' in child:
+                                transactionModels.UserPersonnelDetailsChild.objects.create(**{"child_name":child['child_name'],"child_school_class":child['child_school_class'],"user_id":request.data['id']})
+
 
 
                     return Response({"status":error.context['success_code'],"message" : "User updated successfully"},status=status.HTTP_200_OK)
@@ -433,6 +450,25 @@ class usersCRUD(APIView):
                             for access in (request.data['data_access']):
                                 if 'form_id' in access:
                                     transactionModels.DataAccessForms.objects.create(**{"form_id":access['form_id'],"user_id":saveserialize.data['id']})
+
+
+                        # Personal Details
+                        if request.data['child_list']:
+
+                            transactionModels.UserPersonnelDetails.objects.filter(user_id=saveserialize.data['id']).delete()
+                            transactionModels.UserPersonnelDetailsChild.objects.filter(user_id=saveserialize.data['id']).delete()
+
+                            transactionModels.UserPersonnelDetails.objects.create(
+                                user_id = saveserialize.data['id'],
+                                mobile_no = request.data['pd_mobile_no'],
+                                address = request.data['pd_address'],
+                                nok = request.data['pd_nok']
+                            )
+
+                            for child in (request.data['child_list']):
+                                if 'child_name' in child:
+                                    transactionModels.UserPersonnelDetailsChild.objects.create(**{"child_name":child['child_name'],"child_school_class":child['child_school_class'],"user_id":saveserialize.data['id']})
+
 
                         return Response({"status" : error.context['success_code'], "message":"New user" +language.context[language.defaultLang]['insert'], "data":saveserialize.data}, status=status.HTTP_200_OK)
                     else:
