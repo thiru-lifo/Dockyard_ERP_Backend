@@ -403,7 +403,7 @@ class usersCRUD(APIView):
                             user_id = request.data['id'],
                             mobile_no = request.data['pd_mobile_no'],
                             address = request.data['pd_address'],
-                            nok = request.data['pd_nok']
+                            #nok = request.data['pd_nok']
                         )
 
                         for child in (request.data['child_list']):

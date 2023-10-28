@@ -2669,7 +2669,8 @@ class UserPersonnelDetailsChild(models.Model):
     #user_personnel_details = models.ForeignKey(UserPersonnelDetails, on_delete=models.CASCADE, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     child_name = models.CharField(max_length= 30, null= True, blank=True)
-    child_school_class = models.CharField(max_length= 250, null= True, blank=True) 
+    child_school_class = models.CharField(max_length= 250, null= True, blank=True)
+    nok_mobile = models.CharField(max_length= 30, null= True, blank=True) 
 
     def __str__(self):
         return self.user
