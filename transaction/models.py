@@ -2679,3 +2679,43 @@ class UserPersonnelDetailsChild(models.Model):
         db_table = 'transaction.user_personnel_details_child'
         verbose_name = 'user_personnel_details_child'
         verbose_name_plural = 'user_personnel_details_child'
+
+
+class UserAllowance(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    allowance = models.ForeignKey(AllowancesMaster, on_delete=models.CASCADE, null=True)
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True, related_name='ua_user')
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True) 
+
+    def __str__(self):
+        return self.user
+
+    class Meta:
+        db_table = 'transaction.user_allowance'
+        verbose_name = 'user_allowance'
+        verbose_name_plural = 'user_allowance'
+
+
+class UserDeduction(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    deduction = models.ForeignKey(DeductionsMaster, on_delete=models.CASCADE, null=True)
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True, related_name='ud_user')
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True) 
+
+    def __str__(self):
+        return self.user
+
+    class Meta:
+        db_table = 'transaction.user_deduction'
+        verbose_name = 'user_deduction'
+        verbose_name_plural = 'user_deduction'
