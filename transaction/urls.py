@@ -423,4 +423,10 @@ urlpatterns = [
     path('manpower-booking',views.ManpowerBookingList.as_view(), name = 'Manpower Booking List'),
     path('manpower-booking/crud',views.ManpowerBookingCRUD.as_view(), name = 'Manpower Booking CRUD'),
 
+
+    # Pay Slip
+    path('generate-pay-slip',views.GeneratePaySlip.as_view(), name = 'Generate Pay Slip'),
+    path('generate-pay-slip-pdf/<id>',views.GeneratePaySlipPDF, name = 'Generate Pay Slip PDF'),
+    
+
 ]
