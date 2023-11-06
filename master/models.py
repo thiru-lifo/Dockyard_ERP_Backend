@@ -1384,47 +1384,7 @@ class Course(models.Model):
         verbose_name = 'course'
         verbose_name_plural = 'course'
 
-class Batch(models.Model):
-    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
-    created_on = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True,related_name='bt_user')
-    created_ip = models.GenericIPAddressField()
-    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
-    modified_by = models.CharField(max_length=100, blank=True, null=True)
-    modified_ip = models.GenericIPAddressField(blank=True, null=True) 
 
-    def __str__(self):
-        return self.id
-
-    class Meta:
-        db_table = 'master.batch'
-        verbose_name = 'batch'
-        verbose_name_plural = 'batch'
-
-class StockRegister(models.Model):
-    name = models.CharField(max_length=100 ,null=True)
-    code = models.ForeignKey(ItemsMaster,on_delete=models.CASCADE,null=True)
-    stock_qty = models.CharField(max_length=15,null=True, blank=True)
-    last_updt_on = models.DateTimeField(auto_now=True, blank=True, null=True)
-    unit_cost = models.DecimalField(max_digits=6, decimal_places=2)
-    batch = models.ForeignKey(Batch,on_delete=models.CASCADE,null=True)
-    storage_location = models.ForeignKey(StorageLocation,on_delete=models.CASCADE,null=True)
-    available_qty = models.CharField(max_length=15,null=True, blank=True)
-    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
-    created_on = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True,related_name='sr_user')
-    created_ip = models.GenericIPAddressField()
-    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
-    modified_by = models.CharField(max_length=100, blank=True, null=True)
-    modified_ip = models.GenericIPAddressField(blank=True, null=True) 
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        db_table = 'master.stock_register'
-        verbose_name = 'stock_register'
-        verbose_name_plural = 'stock_register'
 
 class OverTime(models.Model):
     name = models.CharField(max_length=100)
@@ -1468,6 +1428,77 @@ class Holiday(models.Model):
         db_table = 'master.holiday'
         verbose_name = 'holiday'
         verbose_name_plural = 'holiday'
+
+
+class Design(models.Model):
+    storage_location = models.ForeignKey(StorageLocation,on_delete=models.CASCADE,null=True)
+    code = models.CharField(max_length=15,blank=True, null=True)
+    description = models.CharField(max_length=15,blank=True, null=True)
+    bar_code = models.CharField(max_length=15,blank=True, null=True)
+    qty = models.CharField(max_length=15,blank=True, null=True)
+    unit_cost= models.DecimalField(max_digits=6, decimal_places=2,blank=True, null=True)
+    # batch = models.ForeignKey(Batch,on_delete=models.CASCADE,null=True)
+    # name = models.CharField(max_length=100, null=True, blank=True)
+    # status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True,related_name='d_user')
+    # created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True) 
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = 'master.design'
+        verbose_name = 'design'
+        verbose_name_plural = 'design'
+
+
+class Batch(models.Model):
+    # design = models.ForeignKey(Design, on_delete=models.CASCADE, related_name="Design_details")
+    # batch_number = models.CharField(max_length=15)
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')),null=True)
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True,related_name='bt_user')
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True) 
+
+    def __str__(self):
+        return self.id
+
+    class Meta:
+        db_table = 'master.batch'
+        verbose_name = 'batch'
+        verbose_name_plural = 'batch'
+
+class StockRegister(models.Model):
+    name = models.CharField(max_length=100 ,null=True)
+    code = models.ForeignKey(ItemsMaster,on_delete=models.CASCADE,null=True)
+    stock_qty = models.CharField(max_length=15,null=True, blank=True)
+    last_updt_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    unit_cost = models.DecimalField(max_digits=6, decimal_places=2)
+    batch = models.ForeignKey(Batch,on_delete=models.CASCADE,null=True)
+    storage_location = models.ForeignKey(StorageLocation,on_delete=models.CASCADE,null=True)
+    available_qty = models.CharField(max_length=15,null=True, blank=True)
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True,related_name='sr_user')
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True) 
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = 'master.stock_register'
+        verbose_name = 'stock_register'
+        verbose_name_plural = 'stock_register'
 
 class StockLog(models.Model):
     name = models.CharField(max_length=100, null=True, blank=True)

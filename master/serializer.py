@@ -973,3 +973,16 @@ class ListStockLogSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.StockLog
         fields = "__all__"
+
+
+class DesignSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.Design
+        fields = "__all__"       
+
+class ListDesignSerializer(serializers.ModelSerializer):
+    item= ListItemsMasterSerializer(read_only=True)
+    class Meta:
+        model = models.Design
+        fields = "__all__"

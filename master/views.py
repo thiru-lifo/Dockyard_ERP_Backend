@@ -29,6 +29,8 @@ from . import serializer as cSerializer
 import pandas as pd
 import os
 import csv
+import barcode
+from barcode.writer import ImageWriter
 from django.core.files.storage import FileSystemStorage
 from NavyTrials import language,error,settings,common
 # from Glosys import error
@@ -3396,8 +3398,7 @@ class CompartmentDetailViews(APIView):
                     else:
                         return Response({"status" :error.context['error_code'], "message":error.serializerError(saveserialize)}, status = status.HTTP_200_OK)
             else: 
-                return Response({"status" : {"id" : ['id' +language.context[language.defaultLang]['missing']]}}, status=status.HTTP_200_OK)
-
+                return Response({"status" :error.context['error_code'], "message":error.serializerError(saveserialize)}, status = status.HTTP_200_OK)
 
 class SystemViews(APIView):
 
@@ -8004,7 +8005,7 @@ class ItemsMasterDetailViews(APIView):
         else: 
 
             if 'code' in request.data:
-                request.data['code']=(request.data['code']).upper()
+                request.data['code']=(request.data['code'])
             if 'sequence' in request.data:
                 request.data['sequence']=request.data['sequence'] if(request.data['sequence']!='')  else 0
             if 'id' in request.data:
@@ -8012,6 +8013,7 @@ class ItemsMasterDetailViews(APIView):
                 created_ip = Common.get_client_ip(request)
                 request.data['created_ip'] = created_ip  
                
+                
                 if not pk: 
                     duplicate_code = models.ItemsMaster.objects.values('code').filter(code=request.data['code']).exclude(status=3)
                     
@@ -8044,9 +8046,19 @@ class ItemsMasterDetailViews(APIView):
                     else:
                         return Response({"status" :error.context['error_code'], "message":error.serializerError(saveserialize)}, status = status.HTTP_200_OK)
             else: 
+                
                 return Response({"status" : {"id" : ['id' +language.context[language.defaultLang]['missing']]}}, status=status.HTTP_200_OK)
-
-
+            
+ #barcode   
+    
+    # def generate_barcode(request,code=None):
+    #     from django.http import HttpResponse
+    
+    #         writer = barcode.writer.SVGWriter()
+    #         #writer.set_options( {"module_width":0.35, "module_height":10, "font_size": 50, "text_distance": 1, "quiet_zone": 3})
+    #         _code = barcode.get('code128', code, writer=writer)
+    
+    # return HttpResponse(_code.render({"module_width":0.55, "module_height":15, "font_size": 12, "text_distance": 5, "quiet_zone": 1,"center_text":True,"background":"white","write_text":False}), content_type="image/svg+xml")
 
 #allowancesmaster
 
@@ -9835,12 +9847,13 @@ class BatchDetailViews(APIView):
             if not pk:
 
                 request.data['created_ip'] = Common.get_client_ip(request)
-                # request.data['created_ip'] = created_ip  
+                request.data['created_ip'] = created_ip  
                
-                saveserialize = cSerializer.BatchDebitsSerializer(data = request.data)
+                saveserialize = cSerializer.BatchSerializer(data = request.data)
 
                 if saveserialize.is_valid():
                     saveserialize.save()
+                    print("serialize",saveserialize)
 
                     return Response({"status" : error.context['success_code'], "message":"Batch" +language.context[language.defaultLang]['insert'], "data":''}, status=status.HTTP_200_OK)
                 else:
@@ -9854,6 +9867,11 @@ class BatchDetailViews(APIView):
                 saveserialize = cSerializer.BatchSerializer(list, data = request.data, partial= True)                
                 if saveserialize.is_valid():
                     saveserialize.save()
+                    # Create or retrieve a BatchMaster instance
+                        # batch_master = BatchMaster.objects.get_or_create(name="Batch 1")[0]
+
+                        # Create a new Stock entry associated with the batch master
+                        # stock_entry = Stock.objects.create(quantity=100, batch_master=batch_master)
 
                     return Response({"status" :error.context['success_code'], "message":"Batch" +language.context[language.defaultLang]['insert'], "data":''}, status=status.HTTP_200_OK)
                 else:
@@ -10535,3 +10553,172 @@ class StockLogDetailViews(APIView):
                         return Response({"status" :error.context['error_code'], "message":error.serializerError(saveserialize)}, status = status.HTTP_200_OK)
             else: 
                 return Response({"status" : {"id" : ['id' +language.context[language.defaultLang]['missing']]}}, status=status.HTTP_200_OK)
+
+
+#new design
+class DesignViews(APIView):
+
+    def get(self, request, pk = None):
+        filter_values = dict(request.GET.items())
+        search_string=order_type=order_column=limit_start=limit_end=''
+        normal_values=dict()
+        array_values=dict()
+        if filter_values:
+            for key,values in filter_values.items():
+                if values.find("[") !=-1 and values.find("]") !=-1:
+                    res = values.strip('][').split(',')
+                    array_values[key]=(res)
+                else:
+                    normal_values[key]=(values)
+
+            strings = ['code','name']
+            search_string = dict((k, normal_values[k]) for k in strings
+                                            if k in normal_values)  
+            order_column =  request.GET.get('order_column')
+            order_type = request.GET.get('order_type')  
+            limit_start = request.GET.get('limit_start')
+            limit_end = request.GET.get('limit_end')  
+
+            if order_column is not None:                                      
+                normal_values.pop('order_column')
+            if order_type is not None: 
+                normal_values.pop('order_type') 
+            if limit_start is not None: 
+                normal_values.pop('limit_start')
+            if limit_end is not None: 
+                normal_values.pop('limit_end')      
+
+            for key in strings:
+                if key in normal_values:
+                    normal_values.pop(key)
+
+            if search_string:       
+                filter_string = None
+                for field in search_string:
+                    q = Q(**{"%s__contains" % field: search_string[field] })
+                    if filter_string:
+                        filter_string = filter_string & q
+                    else:
+                        filter_string = q
+        try:
+
+            if pk:
+                list = models.Design.objects.filter(pk=pk).get()
+                serializeobj = cSerializer.ListDesignSerializer(list)
+                return Response({"status": error.context['success_code'], "data": serializeobj.data}, status=status.HTTP_200_OK)
+       
+        except models.Design.DoesNotExist:
+            return Response({"status" : error.context['error_code'], "message":"Status" +language.context[language.defaultLang]['dataNotFound'] }, status = status.HTTP_200_OK)
+
+        lists = models.Design.objects
+        if normal_values:
+            lists = lists.filter(reduce(operator.and_, 
+                               (Q(**d) for d in [dict([i]) for i in normal_values.items()])))
+        if array_values:
+            for key,values in array_values.items():
+                queries= [Q(**{"%s__contains" % key: value }) for value in values]
+                query=queries.pop()
+                for item in queries:
+                    query |= item
+                lists = lists.filter(query)
+
+        if search_string:
+            lists = lists.filter(filter_string)
+
+        if order_type is None: 
+            if order_column:
+                lists = lists.order_by(order_column)  
+
+        elif order_type in 'asc':
+            if order_column:
+                lists = lists.order_by(order_column)
+            else: 
+                lists = lists.order_by('id')   
+
+        elif order_type in 'desc':
+            if order_column:
+                order_column = '-' + str(order_column)
+                lists = lists.order_by(order_column)
+            else: 
+                lists = lists.order_by('-id') 
+
+        if limit_start and limit_end:
+                lists = lists[int(limit_start):int(limit_end)]
+
+        elif limit_start:
+                lists = lists[int(limit_start):]
+
+        elif limit_end:
+                lists = lists[0:int(limit_end)]          
+    
+        serializer = cSerializer.ListDesignSerializer(lists, many=True)
+        return Response({"status":error.context['success_code'] , "data": serializer.data}, status=status.HTTP_200_OK)
+
+from datetime import datetime
+class DesignDetailViews(APIView):
+
+    def get_object(self,pk):
+
+        try:
+            return models.Design.objects.get(pk = pk)
+        except Design.DoesNotExist:
+            raise Http404
+
+
+    def post(self,request, pk = None):
+       
+        if 'id' in request.data:
+            pk = request.data['id']
+            created_ip = Common.get_client_ip(request)
+            request.data['created_ip'] = created_ip  
+            
+            if not pk: 
+                print('11111111111111111111')                
+                saveserialize = cSerializer.BatchSerializer(data = {"created_on":datetime.now(),"statua":1,"batch__namuber":"test","created_ip":"192.168.1.171"})
+                if saveserialize.is_valid():
+                    saveserialize.save()
+                    running_id = saveserialize.data['id']
+                    # models.Batch.objects.create(
+                    #     'created_ip': created_ip,
+                    #     'created_by': created_by,
+                    #             )
+                    # print("runningid",running_id)
+                    
+                    if request.data['itemc']:
+                        # accessModels.HospitalAccess.objects.filter(user_id=saveserialize.data['id']).delete()
+                        print("allitems",request.data)
+                        # Data=models.Design()
+                        # Data.bar_code = request.data['bar_code']
+                        # Data.storage_location = request.data['storage_location']
+                        # Data.save()
+
+                        for itemc in request.data['itemc']:
+                            print("itemc",itemc)
+                            
+                            Data=models.Design()
+                            Data.unit_cost = itemc['unit_cost']
+                            Data.qty = itemc['qty']
+                            Data.code = itemc['item_code']
+                            Data.description = itemc['description']
+                            Data.save()
+
+                    return Response({"status" : error.context['success_code'], "message":"New stock" +language.context[language.defaultLang]['insert'], "data":saveserialize.data}, status=status.HTTP_200_OK)
+                else:
+                    return Response({"status" :error.context['error_code'], "message":error.serializerError(saveserialize)}, status=status.HTTP_200_OK)
+                    return Response({"status" :error.context['success_code'], "message":"New Stock" +language.context[language.defaultLang]['insert'], "data":saveserialize.data}, status=status.HTTP_200_OK)
+            
+
+            else:                                                            
+                list = self.get_object(pk)
+
+                saveserialize = cSerializer.DesignSerializer(list, data = request.data, partial= True)
+                if saveserialize.is_valid():
+                    saveserialize.save()
+                    return Response({"status" :error.context['success_code'], "message":"Stock" +language.context[language.defaultLang]['update'], "data":saveserialize.data}, status=status.HTTP_200_OK)
+                else:
+                    return Response({"status" :error.context['error_code'], "message":error.serializerError(saveserialize)}, status = status.HTTP_200_OK)
+        else: 
+            return Response({"status" : {"id" : ['id' +language.context[language.defaultLang]['missing']]}}, status=status.HTTP_200_OK)
+
+
+
