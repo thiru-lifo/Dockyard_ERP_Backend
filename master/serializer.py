@@ -962,6 +962,8 @@ class ListStockRegisterSerializer(serializers.ModelSerializer):
         model = models.StockRegister
         fields = "__all__"
 
+
+
 class StockLogSerializer(serializers.ModelSerializer):
     
     class Meta:
@@ -969,22 +971,9 @@ class StockLogSerializer(serializers.ModelSerializer):
         fields = "__all__"       
 
 class ListStockLogSerializer(serializers.ModelSerializer):
-    
-    class Meta:
-        model = models.StockLog
-        fields = "__all__"
-
-
-class DesignSerializer(serializers.ModelSerializer):
-    
-    class Meta:
-        model = models.Design
-        fields = "__all__"       
-
-class ListDesignSerializer(serializers.ModelSerializer):
     item= ListItemsMasterSerializer(read_only=True)
     class Meta:
-        model = models.Design
+        model = models.StockLog
         fields = "__all__"
 
 class PromotionSerializer(serializers.ModelSerializer):

@@ -10387,8 +10387,7 @@ class StockRegisterDetailViews(APIView):
                 return Response({"status" : {"id" : ['id' +language.context[language.defaultLang]['missing']]}}, status=status.HTTP_200_OK)
 
 
-# stock log
-
+#new design
 class StockLogViews(APIView):
 
     def get(self, request, pk = None):
@@ -10436,14 +10435,14 @@ class StockLogViews(APIView):
         try:
 
             if pk:
-                list = models.StockLog.objects.filter(pk=pk).exclude(status='3').get()
+                list = models.StockLog.objects.filter(pk=pk).get()
                 serializeobj = cSerializer.ListStockLogSerializer(list)
                 return Response({"status": error.context['success_code'], "data": serializeobj.data}, status=status.HTTP_200_OK)
        
         except models.StockLog.DoesNotExist:
             return Response({"status" : error.context['error_code'], "message":"Status" +language.context[language.defaultLang]['dataNotFound'] }, status = status.HTTP_200_OK)
 
-        lists = models.StockLog.objects.exclude(status='3')
+        lists = models.StockLog.objects
         if normal_values:
             lists = lists.filter(reduce(operator.and_, 
                                (Q(**d) for d in [dict([i]) for i in normal_values.items()])))
@@ -10487,7 +10486,7 @@ class StockLogViews(APIView):
         serializer = cSerializer.ListStockLogSerializer(lists, many=True)
         return Response({"status":error.context['success_code'] , "data": serializer.data}, status=status.HTTP_200_OK)
 
-
+from datetime import datetime
 class StockLogDetailViews(APIView):
 
     def get_object(self,pk):
@@ -10499,178 +10498,13 @@ class StockLogDetailViews(APIView):
 
 
     def post(self,request, pk = None):
-
-        if 'name' not in request.data and request.data['status'] != 3:
-            return Response({"status":error.context['error_code'], "message" : "Name" +language.context[language.defaultLang]['missing']},status=status.HTTP_200_OK)
-        elif 'code' not in request.data and request.data['status'] != 3:
-            return Response({"status":error.context['error_code'], "message" : "Code" +language.context[language.defaultLang]['missing'] },status=status.HTTP_200_OK)
-        else: 
-
-            if 'code' in request.data:
-                request.data['code']=(request.data['code']).upper()
-            if 'sequence' in request.data:
-                request.data['sequence']=request.data['sequence'] if(request.data['sequence']!='')  else 0
-            if 'id' in request.data:
-                pk = request.data['id']
-                created_ip = Common.get_client_ip(request)
-                request.data['created_ip'] = created_ip  
-               
-                if not pk: 
-                    duplicate_code = models.StockLog.objects.values('code').filter(code=request.data['code']).exclude(status=3)
-                    duplicate_name = models.StockLog.objects.values('name').filter(name=request.data['name']).exclude(status=3)
-                            
-                    if duplicate_code:            
-                        return Response({"status" :error.context['error_code'], "message":language.context[language.defaultLang]['exit code'] },status=status.HTTP_200_OK)                    
-                    
-                    elif duplicate_name:   
-                        return Response({"status" :error.context['error_code'], "message":language.context[language.defaultLang]['exit name'] },status=status.HTTP_200_OK)                    
-                    
-                    else:
-                
-                        saveserialize = cSerializer.StockLogSerializer(data = request.data)
-                        if saveserialize.is_valid():
-                            saveserialize.save()
-                            return Response({"status" :error.context['success_code'], "message":"New StockLog" +language.context[language.defaultLang]['insert'], "data":saveserialize.data}, status=status.HTTP_200_OK)
-                        else:
-                            return Response({"status" :error.context['error_code'], "message": error.serializerError(saveserialize)}, status=status.HTTP_200_OK)
-
-                else:
-                    if request.data['status'] != 3:
-                        duplicate_code = models.StockLog.objects.values('code').filter(code=request.data['code']).exclude(Q(id=request.data['id']) | Q(status=3))
-                        duplicate_name = models.StockLog.objects.values('name').filter(name=request.data['name']).exclude(Q(id=request.data['id']) | Q(status=3))
-                        if duplicate_code:            
-                            return Response({"status" :error.context['error_code'], "message":language.context[language.defaultLang]['exit code'] },status=status.HTTP_200_OK)                    
-                        elif duplicate_name:   
-                            return Response({"status" :error.context['error_code'], "message":language.context[language.defaultLang]['exit name'] },status=status.HTTP_200_OK)                                            
-
-                    list = self.get_object(pk)
-
-                    saveserialize = cSerializer.StockLogSerializer(list, data = request.data, partial= True)
-                    if saveserialize.is_valid():
-                        saveserialize.save()
-                        return Response({"status" :error.context['success_code'], "message":"StockLog" +language.context[language.defaultLang]['update'], "data":saveserialize.data}, status=status.HTTP_200_OK)
-                    else:
-                        return Response({"status" :error.context['error_code'], "message":error.serializerError(saveserialize)}, status = status.HTTP_200_OK)
-            else: 
-                return Response({"status" : {"id" : ['id' +language.context[language.defaultLang]['missing']]}}, status=status.HTTP_200_OK)
-
-
-#new design
-class DesignViews(APIView):
-
-    def get(self, request, pk = None):
-        filter_values = dict(request.GET.items())
-        search_string=order_type=order_column=limit_start=limit_end=''
-        normal_values=dict()
-        array_values=dict()
-        if filter_values:
-            for key,values in filter_values.items():
-                if values.find("[") !=-1 and values.find("]") !=-1:
-                    res = values.strip('][').split(',')
-                    array_values[key]=(res)
-                else:
-                    normal_values[key]=(values)
-
-            strings = ['code','name']
-            search_string = dict((k, normal_values[k]) for k in strings
-                                            if k in normal_values)  
-            order_column =  request.GET.get('order_column')
-            order_type = request.GET.get('order_type')  
-            limit_start = request.GET.get('limit_start')
-            limit_end = request.GET.get('limit_end')  
-
-            if order_column is not None:                                      
-                normal_values.pop('order_column')
-            if order_type is not None: 
-                normal_values.pop('order_type') 
-            if limit_start is not None: 
-                normal_values.pop('limit_start')
-            if limit_end is not None: 
-                normal_values.pop('limit_end')      
-
-            for key in strings:
-                if key in normal_values:
-                    normal_values.pop(key)
-
-            if search_string:       
-                filter_string = None
-                for field in search_string:
-                    q = Q(**{"%s__contains" % field: search_string[field] })
-                    if filter_string:
-                        filter_string = filter_string & q
-                    else:
-                        filter_string = q
-        try:
-
-            if pk:
-                list = models.Design.objects.filter(pk=pk).get()
-                serializeobj = cSerializer.ListDesignSerializer(list)
-                return Response({"status": error.context['success_code'], "data": serializeobj.data}, status=status.HTTP_200_OK)
-       
-        except models.Design.DoesNotExist:
-            return Response({"status" : error.context['error_code'], "message":"Status" +language.context[language.defaultLang]['dataNotFound'] }, status = status.HTTP_200_OK)
-
-        lists = models.Design.objects
-        if normal_values:
-            lists = lists.filter(reduce(operator.and_, 
-                               (Q(**d) for d in [dict([i]) for i in normal_values.items()])))
-        if array_values:
-            for key,values in array_values.items():
-                queries= [Q(**{"%s__contains" % key: value }) for value in values]
-                query=queries.pop()
-                for item in queries:
-                    query |= item
-                lists = lists.filter(query)
-
-        if search_string:
-            lists = lists.filter(filter_string)
-
-        if order_type is None: 
-            if order_column:
-                lists = lists.order_by(order_column)  
-
-        elif order_type in 'asc':
-            if order_column:
-                lists = lists.order_by(order_column)
-            else: 
-                lists = lists.order_by('id')   
-
-        elif order_type in 'desc':
-            if order_column:
-                order_column = '-' + str(order_column)
-                lists = lists.order_by(order_column)
-            else: 
-                lists = lists.order_by('-id') 
-
-        if limit_start and limit_end:
-                lists = lists[int(limit_start):int(limit_end)]
-
-        elif limit_start:
-                lists = lists[int(limit_start):]
-
-        elif limit_end:
-                lists = lists[0:int(limit_end)]          
-    
-        serializer = cSerializer.ListDesignSerializer(lists, many=True)
-        return Response({"status":error.context['success_code'] , "data": serializer.data}, status=status.HTTP_200_OK)
-
-from datetime import datetime
-class DesignDetailViews(APIView):
-
-    def get_object(self,pk):
-
-        try:
-            return models.Design.objects.get(pk = pk)
-        except Design.DoesNotExist:
-            raise Http404
-
-
-    def post(self,request, pk = None):
        
         if 'id' in request.data:
             pk = request.data['id']
             created_ip = Common.get_client_ip(request)
-            request.data['created_ip'] = created_ip  
+            request.data['created_ip'] = created_ip 
+            
+             
             
             if not pk: 
                 print('11111111111111111111')                
@@ -10678,29 +10512,37 @@ class DesignDetailViews(APIView):
                 if saveserialize.is_valid():
                     saveserialize.save()
                     running_id = saveserialize.data['id']
-                    # models.Batch.objects.create(
-                    #     'created_ip': created_ip,
-                    #     'created_by': created_by,
+                    # models.StockLog.objects.create(
+                    #   request.data['batch_id']= running_id,
+                    #     # 'created_by': created_by,
                     #             )
                     # print("runningid",running_id)
                     
-                    if request.data['itemc']:
+                    if request.data['itemc'] and saveserialize.data['id']:
                         # accessModels.HospitalAccess.objects.filter(user_id=saveserialize.data['id']).delete()
                         print("allitems",request.data)
-                        # Data=models.Design()
+                        # Data=models.StockLog()
                         # Data.bar_code = request.data['bar_code']
-                        # Data.storage_location = request.data['storage_location']
+                        # Data.storage_location_id = request.data['storage_location']
                         # Data.save()
 
                         for itemc in request.data['itemc']:
+                            storage_location = request.data['storage_location']
+                            bar_code = request.data['bar_code']
                             print("itemc",itemc)
                             
-                            Data=models.Design()
+                            Data=models.StockLog()
+                            Data.bar_code = bar_code
+                            Data.storage_location_id = storage_location
                             Data.unit_cost = itemc['unit_cost']
                             Data.qty = itemc['qty']
+                            Data.batch_id = saveserialize.data['id'] 
                             Data.code = itemc['item_code']
                             Data.description = itemc['description']
+                            # Data.storage_location = request.data['storage_location']  # Set the storage_location field
+                            # Data.bar_code = request.data['bar_code']
                             Data.save()
+                            # Data.bar_code = request.data['bar_code']
 
                     return Response({"status" : error.context['success_code'], "message":"New stock" +language.context[language.defaultLang]['insert'], "data":saveserialize.data}, status=status.HTTP_200_OK)
                 else:
@@ -10711,7 +10553,7 @@ class DesignDetailViews(APIView):
             else:                                                            
                 list = self.get_object(pk)
 
-                saveserialize = cSerializer.DesignSerializer(list, data = request.data, partial= True)
+                saveserialize = cSerializer.StockLogSerializer(list, data = request.data, partial= True)
                 if saveserialize.is_valid():
                     saveserialize.save()
                     return Response({"status" :error.context['success_code'], "message":"Stock" +language.context[language.defaultLang]['update'], "data":saveserialize.data}, status=status.HTTP_200_OK)
@@ -10719,6 +10561,7 @@ class DesignDetailViews(APIView):
                     return Response({"status" :error.context['error_code'], "message":error.serializerError(saveserialize)}, status = status.HTTP_200_OK)
         else: 
             return Response({"status" : {"id" : ['id' +language.context[language.defaultLang]['missing']]}}, status=status.HTTP_200_OK)
+
 
 #Promotion
 class PromotionViews(APIView):

@@ -275,13 +275,13 @@ urlpatterns = [
     path('stock_register/<int:pk>', views.StockRegisterViews.as_view(), name = 'view_stock_register'),
     path('stock_register/details', views.StockRegisterDetailViews.as_view(), name = 'add_stock_register'),
 
-    path('stock_log', views.StockLogViews.as_view(), name = 'view_stock_log'),
-    path('stock_log/<int:pk>', views.StockLogViews.as_view(), name = 'view_stock_log'),
-    path('stock_log/details', views.StockLogDetailViews.as_view(), name = 'add_stock_log'),
+    # path('stock_log', views.StockLogViews.as_view(), name = 'view_stock_log'),
+    # path('stock_log/<int:pk>', views.StockLogViews.as_view(), name = 'view_stock_log'),
+    # path('stock_log/details', views.StockLogDetailViews.as_view(), name = 'add_stock_log'),
 
-    path('stock_generation', views.DesignViews.as_view(), name = 'view_stock_generation'),
-    path('stock_generation/<int:pk>', views.DesignViews.as_view(), name = 'view_stock_generation'),
-    path('stock_generation/details', views.DesignDetailViews.as_view(), name = 'add_stock_generation'),
+    path('stock_generation', views.StockLogViews.as_view(), name = 'view_stock_generation'),
+    path('stock_generation/<int:pk>', views.StockLogViews.as_view(), name = 'view_stock_generation'),
+    path('stock_generation/details', views.StockLogDetailViews.as_view(), name = 'add_stock_generation'),
 
 
 
