@@ -2637,3 +2637,113 @@ class ManpowerBooking(models.Model):
         db_table = 'transaction.manpower_booking'
         verbose_name = 'manpower_booking'
         verbose_name_plural = 'manpower_booking'
+
+
+## Employee Personnel Details Transaction
+class UserPersonnelDetails(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    mobile_no = models.CharField(max_length= 30, null= True, blank=True)
+    address = models.CharField(max_length= 250, null= True, blank=True)
+    nok = models.IntegerField(null=True, blank=True)
+    nok_mobile = models.CharField(max_length= 30, null= True, blank=True)
+    # child_name = models.CharField(max_length= 30, null= True, blank=True)
+    # child_school_class = models.CharField(max_length= 250, null= True, blank=True)
+    # status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    # created_on = models.DateTimeField(auto_now_add=True)
+    # created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True, related_name='upd_user')
+    # created_ip = models.GenericIPAddressField()
+    # modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    # modified_by = models.CharField(max_length=100, blank=True, null=True)
+    # modified_ip = models.GenericIPAddressField(blank=True, null=True) 
+
+    def __str__(self):
+        return self.user
+
+    class Meta:
+        db_table = 'transaction.user_personnel_details'
+        verbose_name = 'user_personnel_details'
+        verbose_name_plural = 'user_personnel_details'
+
+
+class UserPersonnelDetailsChild(models.Model):
+    #user_personnel_details = models.ForeignKey(UserPersonnelDetails, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    child_name = models.CharField(max_length= 30, null= True, blank=True)
+    child_school_class = models.CharField(max_length= 250, null= True, blank=True)
+    nok_mobile = models.CharField(max_length= 30, null= True, blank=True) 
+
+    def __str__(self):
+        return self.user
+
+    class Meta:
+        db_table = 'transaction.user_personnel_details_child'
+        verbose_name = 'user_personnel_details_child'
+        verbose_name_plural = 'user_personnel_details_child'
+
+
+class UserAllowance(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    allowance = models.ForeignKey(AllowancesMaster, on_delete=models.CASCADE, null=True)
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True, related_name='ua_user')
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True) 
+
+    def __str__(self):
+        return self.user
+
+    class Meta:
+        db_table = 'transaction.user_allowance'
+        verbose_name = 'user_allowance'
+        verbose_name_plural = 'user_allowance'
+
+
+class UserDeduction(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    deduction = models.ForeignKey(DeductionsMaster, on_delete=models.CASCADE, null=True)
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True, related_name='ud_user')
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True) 
+
+    def __str__(self):
+        return self.user
+
+    class Meta:
+        db_table = 'transaction.user_deduction'
+        verbose_name = 'user_deduction'
+        verbose_name_plural = 'user_deduction'
+
+
+class MonthlyPaySalary(models.Model):
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    for_month = models.DateTimeField(blank=True,null=True)
+    total_credits = models.DecimalField(max_digits=6, decimal_places=2)
+    total_debits = models.DecimalField(max_digits=6, decimal_places=2)
+    gross_salary = models.DecimalField(max_digits=6, decimal_places=2)
+    net_salary = models.DecimalField(max_digits=6, decimal_places=2)
+    current_basic_salary = models.DecimalField(max_digits=6, decimal_places=2)
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='mps_user')
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True)
+
+    
+    def __str__(self):
+        return self.user
+     
+     
+    class Meta:
+        db_table = 'transaction.monthly_pay_salary'
+        verbose_name = 'monthly_pay_salary'
+        verbose_name_plural = 'monthly_pay_salary'

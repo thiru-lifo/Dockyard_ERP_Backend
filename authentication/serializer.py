@@ -21,12 +21,12 @@ from access.views import Common
 from log.models import UserLogin
 from datetime import datetime
 from access.models import RolesPermissions,AccessUserRoles,UserRoleMapping
-from master.models import Designation, Unit, DataAccess, CategoryType, PayScale, Center, Shopfloor, PayGrade, Rank, PersonnelType
+from master.models import Designation, Unit, DataAccess, CategoryType, PayScale, Center, Shopfloor, PayGrade, Rank, PersonnelType, AllowancesMaster, DeductionsMaster
 from django.template import Context, Template
 from django.shortcuts import render
 import requests
 from access.serializer import UserRoleMappingSerializer,Processserializer
-from master.serializer import DesignationSerializer, UnitSerializer, DataAccessSerializer, PayScaleSerializer, CategoryTypeSerializer, CenterSerializer, ShopfloorSerializer, PayGradeSerializer, RankSerializer
+from master.serializer import DesignationSerializer, UnitSerializer, DataAccessSerializer, PayScaleSerializer, CategoryTypeSerializer, CenterSerializer, ShopfloorSerializer, PayGradeSerializer, RankSerializer, AllowancesMasterSerializer, DeductionsMasterSerializer
 from NavyTrials.encryption import AESify
 aes = AESify(block_len=16, salt_len=4)
 from transaction import models as transactionModels
@@ -145,6 +145,35 @@ class DataAccessFormSerializer(serializers.ModelSerializer):
         model = transactionModels.DataAccessForms
         fields = "__all__"
 
+
+class UserPersonnelDetailsSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = transactionModels.UserPersonnelDetails
+        fields = "__all__"
+
+class UserPersonnelDetailsChildSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = transactionModels.UserPersonnelDetailsChild
+        fields = "__all__"
+
+
+class UserAllowanceSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = transactionModels.UserAllowance
+        fields = "__all__"
+
+class UserDeductionSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = transactionModels.UserDeduction
+        fields = "__all__"
+
+
+
+
 class UserListSerializer(serializers.ModelSerializer):
     process = Processserializer (read_only=True)
     #designation = DesignationSerializer(read_only=True)
@@ -165,8 +194,14 @@ class UserListSerializer(serializers.ModelSerializer):
         response['rank'] = RankSerializer(Rank.objects.filter(id=response['rank']),many=True).data
         response['personnel_type'] = RankSerializer(PersonnelType.objects.filter(id=response['personnel_type']),many=True).data
         #response['designation'] = UnitSerializer(Unit.objects.filter(id=response['desig']),many=True).data
-        
-        response['data_access']=DataAccessFormSerializer(transactionModels.DataAccessForms.objects.filter(user_id=response['id']),many=True).data  
+        response['data_access']=DataAccessFormSerializer(transactionModels.DataAccessForms.objects.filter(user_id=response['id']),many=True).data
+        response['personnel_detail']=UserPersonnelDetailsSerializer(transactionModels.UserPersonnelDetails.objects.filter(user_id=response['id']),many=True).data
+        response['child_list']=UserPersonnelDetailsChildSerializer(transactionModels.UserPersonnelDetailsChild.objects.filter(user_id=response['id']),many=True).data
+
+        response['allowance_list'] = UserAllowanceSerializer(transactionModels.UserAllowance.objects.filter(user_id=response['id']),many=True).data
+
+        response['deduction_list'] = UserDeductionSerializer(transactionModels.UserDeduction.objects.filter(user_id=response['id']),many=True).data
+
         return response
 
 

@@ -10720,5 +10720,167 @@ class DesignDetailViews(APIView):
         else: 
             return Response({"status" : {"id" : ['id' +language.context[language.defaultLang]['missing']]}}, status=status.HTTP_200_OK)
 
+#Promotion
+class PromotionViews(APIView):
+
+    def get(self, request, pk = None):
+        filter_values = dict(request.GET.items())
+        search_string=order_type=order_column=limit_start=limit_end=''
+        normal_values=dict()
+        array_values=dict()
+        if filter_values:
+            for key,values in filter_values.items():
+                if values.find("[") !=-1 and values.find("]") !=-1:
+                    res = values.strip('][').split(',')
+                    array_values[key]=(res)
+                else:
+                    normal_values[key]=(values)
+
+            strings = ['code','name']
+            search_string = dict((k, normal_values[k]) for k in strings
+                                            if k in normal_values)  
+            order_column =  request.GET.get('order_column')
+            order_type = request.GET.get('order_type')  
+            limit_start = request.GET.get('limit_start')
+            limit_end = request.GET.get('limit_end')  
+
+            if order_column is not None:                                      
+                normal_values.pop('order_column')
+            if order_type is not None: 
+                normal_values.pop('order_type') 
+            if limit_start is not None: 
+                normal_values.pop('limit_start')
+            if limit_end is not None: 
+                normal_values.pop('limit_end')      
+
+            for key in strings:
+                if key in normal_values:
+                    normal_values.pop(key)
+
+            if search_string:       
+                filter_string = None
+                for field in search_string:
+                    q = Q(**{"%s__contains" % field: search_string[field] })
+                    if filter_string:
+                        filter_string = filter_string & q
+                    else:
+                        filter_string = q
+        try:
+
+            if pk:
+                list = models.Promotion.objects.filter(pk=pk).exclude(status='3').get()
+                serializeobj = cSerializer.ListPromotionSerializer(list)
+                return Response({"status": error.context['success_code'], "data": serializeobj.data}, status=status.HTTP_200_OK)
+       
+        except models.Promotion.DoesNotExist:
+            return Response({"status" : error.context['error_code'], "message":"Status" +language.context[language.defaultLang]['dataNotFound'] }, status = status.HTTP_200_OK)
+
+        lists = models.Promotion.objects.exclude(status='3')
+        if normal_values:
+            lists = lists.filter(reduce(operator.and_, 
+                               (Q(**d) for d in [dict([i]) for i in normal_values.items()])))
+        if array_values:
+            for key,values in array_values.items():
+                queries= [Q(**{"%s__contains" % key: value }) for value in values]
+                query=queries.pop()
+                for item in queries:
+                    query |= item
+                lists = lists.filter(query)
+
+        if search_string:
+            lists = lists.filter(filter_string)
+
+        if order_type is None: 
+            if order_column:
+                lists = lists.order_by(order_column)  
+
+        elif order_type in 'asc':
+            if order_column:
+                lists = lists.order_by(order_column)
+            else: 
+                lists = lists.order_by('id')   
+
+        elif order_type in 'desc':
+            if order_column:
+                order_column = '-' + str(order_column)
+                lists = lists.order_by(order_column)
+            else: 
+                lists = lists.order_by('-id') 
+
+        if limit_start and limit_end:
+                lists = lists[int(limit_start):int(limit_end)]
+
+        elif limit_start:
+                lists = lists[int(limit_start):]
+
+        elif limit_end:
+                lists = lists[0:int(limit_end)]          
+    
+        serializer = cSerializer.ListPromotionSerializer(lists, many=True)
+        return Response({"status":error.context['success_code'] , "data": serializer.data}, status=status.HTTP_200_OK)
+
+class PromotionDetailViews(APIView):
+
+    def get_object(self,pk):
+
+        try:
+            return models.Promotion.objects.get(pk = pk)
+        except Promotion.DoesNotExist:
+            raise Http404
 
 
+    def post(self,request, pk = None):
+
+        if 'from_rank' not in request.data and request.data['status'] != 3:
+            return Response({"status":error.context['error_code'], "message" : "From rank" +language.context[language.defaultLang]['missing']},status=status.HTTP_200_OK)
+        elif 'to_rank' not in request.data and request.data['status'] != 3:
+            return Response({"status":error.context['error_code'], "message" : "To rank" +language.context[language.defaultLang]['missing'] },status=status.HTTP_200_OK)
+        else: 
+
+            # if 'code' in request.data:
+            #     request.data['code']=(request.data['code']).upper()
+            # if 'sequence' in request.data:
+            #     request.data['sequence']=request.data['sequence'] if(request.data['sequence']!='')  else 0
+            if 'id' in request.data:
+                pk = request.data['id']
+                created_ip = Common.get_client_ip(request)
+                request.data['created_ip'] = created_ip  
+               
+                if not pk: 
+                    # duplicate_code = models.Promotion.objects.values('code').filter(code=request.data['code']).exclude(status=3)
+                    # duplicate_name = models.Promotion.objects.values('name').filter(name=request.data['name']).exclude(status=3)
+                            
+                    # if duplicate_code:            
+                    #     return Response({"status" :error.context['error_code'], "message":language.context[language.defaultLang]['exit code'] },status=status.HTTP_200_OK)                    
+                    
+                    # elif duplicate_name:   
+                    #     return Response({"status" :error.context['error_code'], "message":language.context[language.defaultLang]['exit name'] },status=status.HTTP_200_OK)                    
+                    
+                    # else:
+                
+                    saveserialize = cSerializer.PromotionSerializer(data = request.data)
+                    if saveserialize.is_valid():
+                        saveserialize.save()
+                        return Response({"status" :error.context['success_code'], "message":"New promotion" +language.context[language.defaultLang]['insert'], "data":saveserialize.data}, status=status.HTTP_200_OK)
+                    else:
+                        return Response({"status" :error.context['error_code'], "message": error.serializerError(saveserialize)}, status=status.HTTP_200_OK)
+
+                else:
+                    if request.data['status'] != 3:
+                        # duplicate_code = models.Promotion.objects.values('code').filter(code=request.data['code']).exclude(Q(id=request.data['id']) | Q(status=3))
+                        # duplicate_name = models.Promotion.objects.values('name').filter(name=request.data['name']).exclude(Q(id=request.data['id']) | Q(status=3))
+                        # if duplicate_code:            
+                        #     return Response({"status" :error.context['error_code'], "message":language.context[language.defaultLang]['exit code'] },status=status.HTTP_200_OK)                    
+                        # elif duplicate_name:   
+                        #     return Response({"status" :error.context['error_code'], "message":language.context[language.defaultLang]['exit name'] },status=status.HTTP_200_OK)
+
+                        list = self.get_object(pk)
+
+                        saveserialize = cSerializer.PromotionSerializer(list, data = request.data, partial= True)
+                        if saveserialize.is_valid():
+                            saveserialize.save()
+                            return Response({"status" :error.context['success_code'], "message":"Promotion" +language.context[language.defaultLang]['update'], "data":saveserialize.data}, status=status.HTTP_200_OK)
+                        else:
+                            return Response({"status" :error.context['error_code'], "message":error.serializerError(saveserialize)}, status = status.HTTP_200_OK)
+            else: 
+                return Response({"status" : {"id" : ['id' +language.context[language.defaultLang]['missing']]}}, status=status.HTTP_200_OK)

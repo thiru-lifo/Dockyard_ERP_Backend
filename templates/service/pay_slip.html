@@ -1,0 +1,84 @@
+<html>
+<head>
+<style>
+table{
+width: 100%;
+border-collapse:collapse;
+border: 1px solid black;
+}
+table td{line-height:25px;padding-left:15px;}
+table th{background-color:#90EE90; color:#363636;}
+</style>
+
+</head>
+<body>
+
+<table border="1">
+<tr height="100px" style="background-color:#363636;color:#ffffff;text-align:center;font-size:24px; font-weight:600;">
+<td colspan='4'>Navy</td>
+</tr>
+<tr>
+<th>Name</th>
+<td>{% if userDetail %}{{ userDetail.first_name }}{% endif %}</td>
+<th>Email</th>
+<td>{% if userDetail %}{{ userDetail.email }}{% endif %}</td>
+</tr>
+
+
+<tr>
+<th>Location</th>
+<td>India</td>
+<!-- <th>Working Days</th>
+<td>30</td> -->
+</tr>
+
+<tr>
+<th>Department</th>
+<td>Navy</td>
+<th>Designation</th>
+<td>{% if userDetail %}{{ userDetail.design__name }}{% endif %}</td>
+</tr>
+</table>
+<tr></tr>
+
+<br/>
+<table border="1">
+<tr>
+<th >Allowance</th>
+<th>Amount</th>
+<th >Deductions</th>
+<th>Amount</th>
+</tr>
+<tr>
+<td></td>
+
+
+<td>{% if monthSalDetail%}{{ monthSalDetail.total_credits }}{% endif %}</td>
+<td></td>
+<td>{% if monthSalDetail%}{{ monthSalDetail.total_debits }}{% endif %}</td>
+</tr>
+
+
+<tr>
+<td></td>
+<td><strong>Basic Salary</strong></td>
+<td>Rs.{% if monthSalDetail%}{{ monthSalDetail.current_basic_salary }}{% endif %}</td>
+<td></td>
+</tr>
+
+<tr>
+<td></td>
+<td><strong>Gross Salary</strong></td>
+<td>Rs.{% if monthSalDetail%}{{ monthSalDetail.gross_salary }}{% endif %}</td>
+<td></td>
+</tr>
+
+<tr>
+<td></td>
+<td><strong>NET SALARY</strong></td>
+<td>Rs.{% if monthSalDetail%}{{ monthSalDetail.net_salary }}{% endif %}</td>
+<td></td>
+</tr>
+</table>
+</body>
+</html>

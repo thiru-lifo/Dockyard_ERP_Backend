@@ -340,9 +340,13 @@ class usersCRUD(APIView):
         elif ('user_role_id' not in request.data or not request.data['user_role_id']) and request.data['status'] != 3:  
             return Response({"status":error.context['error_code'],"message" : "User role" +language.context[language.defaultLang]['missing'] },status=status.HTTP_200_OK)
         # elif ('data_access' not in request.data or not request.data['data_access']) and request.data['status'] != 3:  
-        #     return Response({"status":error.context['error_code'],"message" : "Data access" +language.context[language.defaultLang]['missing'] },status=status.HTTP_200_OK)                 
+        #     return Response({"status":error.context['error_code'],"message" : "Data access" +language.context[language.defaultLang]['missing'] },status=status.HTTP_200_OK)     
+
+        
+
         else:
-             try:
+            try:
+                created_ip = Common.get_client_ip(request)
                 # DELETE OPERATION
                 if (request.data['status']==3 and request.data['id']!=''):
                     User.objects.filter(id=request.data['id']).update(status=3)
@@ -393,6 +397,43 @@ class usersCRUD(APIView):
                             if 'form_id' in access:
                                 transactionModels.DataAccessForms.objects.create(**{"form_id":access['form_id'],"user_id":request.data['id']})
 
+                    # Personal Details
+                    if request.data['child_list']:
+
+                        transactionModels.UserPersonnelDetails.objects.filter(user_id=request.data['id']).delete()
+                        transactionModels.UserPersonnelDetailsChild.objects.filter(user_id=request.data['id']).delete()
+
+                        transactionModels.UserPersonnelDetails.objects.create(
+                            user_id = request.data['id'],
+                            mobile_no = request.data['pd_mobile_no'],
+                            address = request.data['pd_address'],
+                            #nok = request.data['pd_nok']
+                        )
+
+                        for child in (request.data['child_list']):
+                            if 'child_name' in child:
+                                transactionModels.UserPersonnelDetailsChild.objects.create(**{"child_name":child['child_name'],"child_school_class":child['child_school_class'],"user_id":request.data['id']})
+
+
+                    # Allowance
+                    if request.data['allowance_list']:
+
+                        transactionModels.UserAllowance.objects.filter(user_id=request.data['id']).delete()
+
+                        for allowance in (request.data['allowance_list']):
+                            if 'allowance_id' in allowance:
+                                transactionModels.UserAllowance.objects.create(**{"allowance_id":allowance['allowance_id'],"created_ip":created_ip,"created_by_id":request.user.id,"status":1,"user_id":request.data['id']})
+
+                    # Deduction
+                    if request.data['deduction_list']:
+
+                        transactionModels.UserDeduction.objects.filter(user_id=request.data['id']).delete()
+
+                        for allowance in (request.data['deduction_list']):
+                            if 'deduction_id' in allowance:
+                                transactionModels.UserDeduction.objects.create(**{"deduction_id":allowance['deduction_id'],"created_ip":created_ip,"created_by_id":request.user.id,"status":1,"user_id":request.data['id']})
+
+
 
 
                     return Response({"status":error.context['success_code'],"message" : "User updated successfully"},status=status.HTTP_200_OK)
@@ -434,10 +475,48 @@ class usersCRUD(APIView):
                                 if 'form_id' in access:
                                     transactionModels.DataAccessForms.objects.create(**{"form_id":access['form_id'],"user_id":saveserialize.data['id']})
 
+
+                        # Personal Details
+                        if request.data['child_list']:
+
+                            transactionModels.UserPersonnelDetails.objects.filter(user_id=saveserialize.data['id']).delete()
+                            transactionModels.UserPersonnelDetailsChild.objects.filter(user_id=saveserialize.data['id']).delete()
+
+                            transactionModels.UserPersonnelDetails.objects.create(
+                                user_id = saveserialize.data['id'],
+                                mobile_no = request.data['pd_mobile_no'],
+                                address = request.data['pd_address'],
+                                #nok = request.data['pd_nok']
+                            )
+
+                            for child in (request.data['child_list']):
+                                if 'child_name' in child:
+                                    transactionModels.UserPersonnelDetailsChild.objects.create(**{"child_name":child['child_name'],"child_school_class":child['child_school_class'],"user_id":saveserialize.data['id']})
+
+
+                        # Allowance
+                        if request.data['allowance_list']:
+
+                            transactionModels.UserAllowance.objects.filter(user_id=saveserialize.data['id']).delete()
+
+                            for allowance in (request.data['allowance_list']):
+                                if 'allowance_id' in allowance:
+                                    transactionModels.UserAllowance.objects.create(**{"allowance_id":allowance['allowance_id'],"created_ip":created_ip,"created_by_id":request.user.id,"status":1,"user_id":saveserialize.data['id']})
+
+                        # Deduction
+                        if request.data['deduction_list']:
+
+                            transactionModels.UserDeduction.objects.filter(user_id=saveserialize.data['id']).delete()
+
+                            for allowance in (request.data['deduction_list']):
+                                if 'deduction_id' in allowance:
+                                    transactionModels.UserDeduction.objects.create(**{"deduction_id":allowance['deduction_id'],"created_ip":created_ip,"created_by_id":request.user.id,"status":1,"user_id":saveserialize.data['id']})
+
+
                         return Response({"status" : error.context['success_code'], "message":"New user" +language.context[language.defaultLang]['insert'], "data":saveserialize.data}, status=status.HTTP_200_OK)
                     else:
                         return Response({"status" :error.context['error_code'], "message":error.serializerError(saveserialize)}, status=status.HTTP_200_OK)
-             except:
+            except:
                return Response({"status":error.context['error_code'],"message" : "Failed to perform this action"},status=status.HTTP_200_OK)
 
 

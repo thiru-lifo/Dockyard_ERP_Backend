@@ -19431,3 +19431,143 @@ class ManpowerBookingCRUD(APIView):
                     return Response({"status" :error.context['success_code'], "message":"Manpower booking" +language.context[language.defaultLang]['update'], "data":''}, status=status.HTTP_200_OK)
                 else:
                     return Response({"status" :error.context['error_code'],"message":error.serializerError(saveserialize)}, status = status.HTTP_200_OK)
+
+
+
+class GeneratePaySlip(APIView):
+    def post(self, request, pk=None):
+
+        if not request.data['user']:
+            return Response({"status":error.context['error_code'], "message": "Employee is missing"}, status=status.HTTP_200_OK)
+
+        if not request.data['for_month']:
+            return Response({"status":error.context['error_code'], "message": "For month is missing"}, status=status.HTTP_200_OK)
+
+        else:
+
+            created_ip = Common.get_client_ip(request)
+            user_id = request.data['user']
+
+            # User
+            user =  models.User.objects.values(
+                    "id",
+                    "current_basic_salary"
+                ).filter(id=user_id)
+
+
+            current_basic_salary = float(user[0]['current_basic_salary'])
+
+            # Allowance
+            allowances = models.UserAllowance.objects.values(
+                    "id",
+                    "user_id",
+                    "allowance",
+                    "allowance__amount_of_allowance",
+                    "allowance__per_of_basic_pay",
+                ).filter(user_id=user_id)
+
+            allowance_total = sum((int(allowance['allowance__per_of_basic_pay'])/100)*current_basic_salary for allowance in allowances)
+
+            # for allowance in allowances:
+            #     print(allowance['allowance__per_of_basic_pay'])
+            # print(allowance_total,"Total Allowance")
+
+            # Deduction
+            deductions = models.UserDeduction.objects.values(
+                    "id",
+                    "user_id",
+                    "deduction",
+                    "deduction__amount_of_deduction",
+                    "deduction__per_of_basic_pay",
+                ).filter(user_id=user_id)
+
+
+            deduction_total = sum((float(deduction['deduction__per_of_basic_pay'])/100)*current_basic_salary for deduction in deductions)
+
+            #for deduction in deductions:
+                #print(deduction['deduction__per_of_basic_pay'])
+                #print(sum(deduction['deduction__per_of_basic_pay']/100)*current_basic_salary)
+            #print(deduction_total,"Total Deduction")
+
+
+            #print(user, current_basic_salary,"GGGGGG")
+            #print(allowances)
+            #print(deductions)
+
+            total_credits = allowance_total
+            total_debits = deduction_total
+            gross_salary = current_basic_salary+total_credits
+            net_salary = gross_salary-total_debits
+
+            models.MonthlyPaySalary.objects.create(
+                user_id = user_id,
+                current_basic_salary = current_basic_salary,
+                total_credits = total_credits,
+                total_debits = total_debits,
+                gross_salary = gross_salary,
+                net_salary = net_salary,
+                created_ip = created_ip,
+                created_by_id = request.user.id,
+                status = 1,
+            )
+
+
+
+
+            # context = {
+            #             'current_basic_salary' : current_basic_salary,
+            #             'total_credits' : total_credits,
+            #             "total_debits" : total_debits, 
+            #             "gross_salary" : gross_salary,
+            #             "net_salary" : net_salary,
+            #             }
+
+
+            # html = loader.render_to_string('service/bls.html', context=context)
+            # import pdfkit
+            # import platform
+            # if platform.system()=='Windows':
+            #     pdf = pdfkit.from_string(html, False, verbose=True,configuration=pdfkit.configuration(wkhtmltopdf=common.WKHTML_PATH))
+            # else:
+            #     pdf = pdfkit.from_string(html, False, verbose=True)
+            # response = HttpResponse(pdf, content_type='application/pdf')
+            # if response:
+            #     return response  # returns the response.
+
+            # return HttpResponse(html, content_type='text/html')
+
+
+            return Response(
+                {"status": error.context["success_code"], "message": "Payslip generated successfully"},
+                status=status.HTTP_200_OK,
+            )
+
+
+@xframe_options_exempt
+def GeneratePaySlipPDF(self, id=None):
+
+    userDetail = models.User.objects.values('first_name','last_name','email','design__name','phone_no').filter(id=int(id)).first()
+
+    monthSalDetail = models.MonthlyPaySalary.objects.values('current_basic_salary','total_credits','total_debits','gross_salary','net_salary').filter(user_id=int(id)).first()
+
+    allowanceDetail = models.UserAllowance.objects.values('user_id','allowance','allowance__name','allowance__per_of_basic_pay').filter(user_id=int(id)).first()
+
+    # print(monthSalDetail, "monthSalDetail")
+    context = { 
+                'monthSalDetail':monthSalDetail, 
+                'userDetail':userDetail,
+                'allowanceDetail':allowanceDetail
+              }
+
+    html = loader.render_to_string('service/pay_slip.html', context=context)
+    import pdfkit
+    import platform
+    if platform.system()=='Windows':
+        pdf = pdfkit.from_string(html, False, verbose=True,configuration=pdfkit.configuration(wkhtmltopdf=common.WKHTML_PATH))
+    else:
+        pdf = pdfkit.from_string(html, False, verbose=True)
+    response = HttpResponse(pdf, content_type='application/pdf')
+    if response:
+        return response  # returns the response.
+
+    return HttpResponse(html, content_type='text/html')
