@@ -242,6 +242,16 @@ class RefitType(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
     code = models.CharField(max_length=15)
+
+    dl_1 = models.CharField(max_length=15, blank=True, null=True)
+    dl_2 = models.CharField(max_length=15, blank=True, null=True)
+    dl_3 = models.CharField(max_length=15, blank=True, null=True)
+    sdl = models.CharField(max_length=15, blank=True, null=True)
+
+    awrf_1 = models.CharField(max_length=15, blank=True, null=True)
+    awrf_2 = models.CharField(max_length=15, blank=True, null=True)
+    awrf_3 = models.CharField(max_length=15, blank=True, null=True)
+
     sequence = models.IntegerField(null=True)
     status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
     created_on = models.DateTimeField(auto_now_add=True)
@@ -1065,26 +1075,6 @@ class CategoryType(models.Model):
         verbose_name = 'categorytype'
         verbose_name_plural = 'categorytype'
 
-class PayScale(models.Model):
-    name = models.CharField(max_length=100)
-    description = models.TextField(null=True, blank=True)
-    code = models.CharField(max_length=15)
-    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
-    created_on = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
-    created_ip = models.GenericIPAddressField()
-    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
-    modified_by = models.CharField(max_length=100, blank=True, null=True)
-    modified_ip = models.GenericIPAddressField(blank=True, null=True) 
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        db_table = 'master.payscale'
-        verbose_name = 'payscale'
-        verbose_name_plural = 'payscale'
-
 
 class DemandMaster(models.Model):
     qty = models.CharField(max_length=100)
@@ -1524,7 +1514,7 @@ class StockLog(models.Model):
         verbose_name_plural = 'stock_log'
         
 
-    class Promotion(models.Model):
+class Promotion(models.Model):
     from_rank = models.ForeignKey(Rank,on_delete=models.CASCADE,null=True)
     to_rank = models.ForeignKey(Rank,on_delete=models.CASCADE,null=True, related_name='to_rank_promotion')
     by_time_by_selection = models.SmallIntegerField(choices=((1,'By Time'),(2,'By Selection'))) # 1 or 2
@@ -1546,4 +1536,25 @@ class StockLog(models.Model):
         db_table = 'master.promotion'
         verbose_name = 'promotion'
         verbose_name_plural = 'promotion'
-        
+
+
+class PayScale(models.Model):
+    designation = models.ForeignKey(Designation, on_delete= models.CASCADE, blank=True, null=True)
+    name = models.CharField(max_length=100)
+    description = models.TextField(null=True, blank=True)
+    code = models.CharField(max_length=15)
+    status = models.SmallIntegerField(choices=((1,'Active'),(2,'Inactive'),(3,'Delete')))
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    created_ip = models.GenericIPAddressField()
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.CharField(max_length=100, blank=True, null=True)
+    modified_ip = models.GenericIPAddressField(blank=True, null=True) 
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = 'master.payscale'
+        verbose_name = 'payscale'
+        verbose_name_plural = 'payscale'
